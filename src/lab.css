@@ -25,3 +25,84 @@
       margin: 3px;
       cursor: pointer;
   }
+
+  /*Source: http://androidcss.com/css-shape-icon-generator/# */
+.FrontArrow{
+    display:inline-block;
+    position:relative;
+    width:40px;height:40px;
+    background-color:#08A696;
+    border-radius:50%;
+    border:none;
+}
+
+.FrontArrow:before{
+    position:absolute;
+    content:'';
+    margin:auto;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:calc(40px/3);
+    height:calc(40px/3);
+    background:rgba(0,0,0,0);
+    border:calc(30px/8) solid #fff;
+    border-right:none;
+    border-top:none;
+    transform:rotate(-135deg);
+    box-sizing:content-box}
+
+.FrontArrow:after{
+    position:absolute;
+    content:'';
+    margin:auto;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:calc(40px/2);
+    height:calc(40px/10);
+    background-color: white;
+    box-sizing:content-box
+}
+
+.BackArrow{
+    display:inline-block;
+    position:relative;
+    width:40px;height:40px;
+    background-color:#08A696;
+    border-radius:50%;
+    border:none;
+}
+
+.BackArrow:before{
+    position:absolute;
+    content:'';
+    margin:auto;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:calc(40px/3);
+    height:calc(40px/3);
+    background:rgba(0,0,0,0);
+    border:calc(30px/8) solid #fff;
+    border-right:none;
+    border-top:none;
+    transform:rotate(45deg);
+    box-sizing:content-box}
+
+.BackArrow:after{
+    position:absolute;
+    content:'';
+    margin:auto;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:calc(40px/2);
+    height:calc(40px/10);
+    background-color:#fff;
+    box-sizing:content-box}
+
