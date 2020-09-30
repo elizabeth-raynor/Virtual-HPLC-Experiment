@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>real time graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+
+<body>
+    <h1>Case 1 Real Time Graph</h1>
+
+    <canvas id="chart" width="1000" height="500"></canvas>
+    <script>
+        const xlabels = [];
+        const ylabels = [];
+        const realTimeX = [];
+        const realTimeY = [];
+        
+        chartIt();
+        async function getData(){
+            const response = await fetch('Chrom1.csv');
+            const data = await response.text();
+            console.log(data);
+
+            const rows = data.split('\n');
+            console.log(rows);
+            rows.forEach(elt => {
+                const row = elt.split(',');
+                const time = row[0];
+                realTimeX.push(time);
+                const signal = row[1];
+                realTimeY.push(signal);
+                console.log(time,signal);
+            });
+        }
+        async function chartIt(){
+            await getData();
+            const ctx = document.getElementById('chart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xlabels,
+                    datasets: [{
+                        label: 'Signal(arb. units)',
+                        data: ylabels,
+                    }]
+                },
+                options: {
+                responsive: false
+            }
+            });
+
+            var i;
+            for(i=0; i < realTimeX.length; i++){
+                await sleep(realTimeX[i]*60000);
+                addData(myChart,realTimeX[i],realTimeY[i]);
+            }
+        }
+
+        function addData(chart, label, data) {
+            chart.data.labels.push(label);
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.push(data);
+            });
+            chart.update();
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+    </script>
+
+</body>
+</html>
