@@ -12,21 +12,41 @@
     <!-- source: https://www.w3schools.com/tags/tag_button.asp -->
     <!-- source: https://www.toptal.com/designers/htmlarrows/arrows/-->
     <!-- source: https://stackoverflow.com/questions/38320878/circle-button-css-->
-    
-     <div class="roww">  
-        <div class="cloumn side">
-            <img src="/images/BlueBottle.png" height = "400">
-        </div>
-        <div class="cloumn middle">
-            <div class="row">
-                <button class="Arrow UpArrow"></button>
-            </div>
-            <div class="row">
-                <button class="Arrow DownArrow"></button>
-            </div>
+
+<div class="flex-container left" style="flex-direction: row; flex-grow: 2;";>
+    <div>
+        <img src="/images/BlueBottle.png" width = 80%>
+    </div>
+    <div>
+        <div class="flex-container middle" style="flex-direction: column; flex-grow: 1;">
+            <button class="Arrow UpArrow" onclick="incresePercent()"></button>
+            <p id="percent" style="font-size: 50px">65%</p>
+            <button class="Arrow DownArrow"></button> 
         </div>
     </div>
+    <div>
+        <div class="flex-container right" style="flex-direction: column; justify-content: center;">
+            <div class="flex-container right" style="flex-direction: row; justify-content: space-evenly;">
+                <img src="/images/GreenBottle.png" width = 30%>
+                <p>45%</p>
+            </div>
+            <img src="/images/Column.png" width = 60%>
+        </div>
+    </div>
+    <div>
+        <button class="GreenButton" style="align-self: baseline;">Start</button>
+    </div>
+</div>
     
+    <script> 
+    var percents = ["15%", "35", "50%", "65%", "80%"];
+    var index = 0;
+    function increasePercent() {
+        index++;
+        document.getElementById("percent").innerHTML = percents[index];
+
+    }
+    </script>
     <!--
     <button class="GreenButton">Start</button>
     <button class="GreenButton">Try Again</button>
