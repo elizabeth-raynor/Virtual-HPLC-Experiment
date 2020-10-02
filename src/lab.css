@@ -24,71 +24,7 @@
     cursor: pointer;
 }
 
-.FrontArrow:before{
-    position:absolute;
-    content:'';
-    margin:auto;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    width:calc(100px/3);
-    height:clac(100px/3);
-    background:rgba(0,0,0,0);
-    border:calc(12.5%) solid #fff;
-    border-right:none;
-    border-top:none;
-    transform:rotate(-135deg);
-    box-sizing:content-box
-}
-
-.FrontArrow:after{
-    position:absolute;
-    content:'';
-    margin:auto;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    width:calc(49%);
-    height:calc(10%);
-    background-color: white;
-    box-sizing:content-box
-}
-
-.BackArrow:before{
-    position:absolute;
-    content:'';
-    margin:auto;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    width:calc(33.33%);
-    height:calc(33.33%);
-    background:rgba(0,0,0,0);
-    border:calc(12.8%) solid #fff;
-    border-right:none;
-    border-top:none;
-    transform:rotate(45deg);
-    box-sizing:content-box
-}
-
-.BackArrow:after{
-    position:absolute;
-    content:'';
-    margin:auto;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    width:calc(49%);
-    height:calc(10%);
-    background-color:#fff;
-    box-sizing:content-box
-}
-
-.UpArrow:before{
+.Arrow:before{
     position:absolute;
     content:'';
     margin:auto;
@@ -106,7 +42,7 @@
     box-sizing:content-box
 }
 
-.UpArrow:after{
+.Arrow:after{
     position:absolute;
     content:'';
     margin:auto;
@@ -119,37 +55,6 @@
     background-color:#fff;box-sizing:content-box
 }
 
-.DownArrow:before{
-    position:absolute;
-    content:'';
-    margin:auto;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    width:calc(33.33%);
-    height:calc(33.33%);
-    background:rgba(0,0,0,0);
-    border:calc(100px/10) solid #fff;
-    border-right:none;
-    border-top:none;
-    transform:rotate(-45deg);
-    box-sizing:content-box
-}
-
-.DownArrow:after{
-    position:absolute;
-    content:'';
-    margin:auto;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    width:calc(10%);
-    height:calc(49%);
-    background-color:#fff;
-    box-sizing:content-box
-}
 
 .flex-container {
     display: flex;
