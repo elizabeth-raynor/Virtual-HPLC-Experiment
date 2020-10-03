@@ -28,9 +28,9 @@
             console.log(rows);
             rows.forEach(elt => {
                 const row = elt.split(',');
-                const time = row[0];
+                const time = parseFloat(row[0]);
                 realTimeX.push(time);
-                const signal = row[1];
+                const signal = parseFloat(row[1]);
                 realTimeY.push(signal);
                 console.log(time,signal);
             });
@@ -46,22 +46,34 @@
                     datasets: [{
                         label: 'Signal(arb. units)',
                         data: ylabels,
-                    }]
+                    },
+                    ],
                 },
                 options: {
-                responsive: false
-            }
+                responsive: false,
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                            max: 10,
+                            min: 0,
+                            maxTicksLimit: 40,
+                            }
+                        }]
+                    }
+                }
             });
+            ;
 
             var i;
             for(i=0; i < realTimeX.length; i++){
-                await sleep(realTimeX[i]*60);
-                addData(myChart,realTimeX[i],realTimeY[i]);
+                await sleep(realTimeX[i]*1);
+                addData(myChart,realTimeY[i]);
             }
+
         }
 
-        function addData(chart, label, data) {
-            chart.data.labels.push(label);
+        function addData(chart,data) {
+            //chart.data.labels.push(label);
             chart.data.datasets.forEach((dataset) => {
                 dataset.data.push(data);
             });
