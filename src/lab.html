@@ -7,6 +7,26 @@
     <title>Document</title>
     <link rel="stylesheet" href="lab.css">
 </head>
+<script> 
+    var percentsB = ["15%", "35%", "50%", "65%", "85%"];
+    var percentsA = ["85%", "65%", "50%", "35%", "15%"];
+    var index = 3;
+    function increasePercent() {
+        if (index != percentsB.length-1) {
+            index++;
+        }       
+        document.getElementById("percentB").innerHTML = percentsB[index];
+        document.getElementById("percentA").innerHTML = percentsA[index];
+    }
+
+    function decreasePercent() {
+        if (index != 0) {
+        index--
+        }
+        document.getElementById("percentB").innerHTML = percentsB[index]
+        document.getElementById("percentA").innerHTML = percentsA[index];
+    }
+</script>
 <body>
     <!--Button stuff-->
     <!-- source: https://www.w3schools.com/tags/tag_button.asp -->
@@ -19,42 +39,23 @@
     </div>
     <div>
         <div class="flex-container middle" style="flex-direction: column; flex-grow: 1;">
-            <button class="Arrow" onclick="incresePercent()"></button>
-            <p id="percent" style="font-size: 50px">65%</p>
-            <button class="Arrow" style="transform: rotate(180deg);"></button> 
+            <button class="Arrow" onclick="increasePercent()"></button>
+            <p class="text" id="percentB" style="font-size: 50px; color:#08A696;">50%</p>
+            <button class="Arrow" onclick="decreasePercent()" style="transform: rotate(180deg);"></button> 
         </div>
     </div>
     <div>
         <div class="flex-container right" style="flex-direction: column; justify-content: center;">
-            <div class="flex-container right" style="flex-direction: row; justify-content: space-evenly;">
+            <div class="flex-container right" style="flex-direction: row; justify-content: center;">
                 <img src="/images/GreenBottle.png" width = 30%>
-                <p>45%</p>
+                <p class="text" id="percentA" style="font-size: 40px; color:#56BF84">50%</p>
             </div>
             <img src="/images/Column.png" width = 60%>
         </div>
     </div>
     <div>
-        <button class="GreenButton" style="align-self: baseline;">Start</button>
+        <button class="GreenButton text" style="align-self: baseline;">Run</button>
     </div>
 </div>
-
-    
-    <script> 
-    var percents = ["15%", "35", "50%", "65%", "80%"];
-    var index = 0;
-    function increasePercent() {
-        index++;
-        document.getElementById("percent").innerHTML = percents[index];
-
-    }
-    </script>
-    <!--
-    <button class="GreenButton">Start</button>
-    <button class="GreenButton">Try Again</button>
-    <button class="Arrow FrontArrow"></button>
-    <button class="Arrow FrontArrow"></button>
-    <button class="Arrow UpArrow"></button>
-    <button class="Arrow DownArrow"></button>
-    -->
 </body>
 </html>
