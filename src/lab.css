@@ -3,6 +3,9 @@
     font-weight: bold;
 }
 
+.navBar {
+}
+
 
 .GreenButton {
     border: none;
@@ -67,12 +70,16 @@
     justify-content: space-evenly;
     align-content: center;
     align-items: center;
-    border: black;
+}
+
+.column {
+    flex-direction: column;
 }
 */
 
+/*
 .left {
-    width: 30%;
+    width: 40%;
 }
 
 .middleLeft {
@@ -84,5 +91,6 @@
 }
 
 .right {
-    min-height: 5%;
+    min-height: 10%;
 }
+*/
