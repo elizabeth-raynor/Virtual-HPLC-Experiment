@@ -27,7 +27,8 @@
         document.getElementById("percentA").innerHTML = percentsA[index];
     }
 </script>
-<body>
+<!-- https://stackoverflow.com/questions/3855854/my-website-have-a-horizontal-scrollbar-that-i-want-to-get-rid-of-->
+<body scroll="no" style="overflow: hidden">
     <!--Button stuff-->
     <!-- source: https://www.w3schools.com/tags/tag_button.asp -->
     <!-- source: https://www.toptal.com/designers/htmlarrows/arrows/-->
@@ -35,26 +36,26 @@
 
 <div class="flex-container left" style="flex-direction: row; flex-grow: 2;";>
     <div>
-        <img src="/images/BlueBottle.png" width = 80%>
+        <img src="/images/BlueBottle.png" width = 60%>
     </div>
     <div>
-        <div class="flex-container middle" style="flex-direction: column; flex-grow: 1;">
+        <div class="flex-container middleLeft" style="flex-direction: column; flex-grow: 1;">
             <button class="Arrow" onclick="increasePercent()"></button>
-            <p class="text" id="percentB" style="font-size: 50px; color:#08A696;">50%</p>
+            <p class="text" id="percentB" style="font-size: 5vw; color:#096073;">50%</p>
             <button class="Arrow" onclick="decreasePercent()" style="transform: rotate(180deg);"></button> 
         </div>
     </div>
     <div>
-        <div class="flex-container right" style="flex-direction: column; justify-content: center;">
+        <div class="flex-container middleRight" style="flex-direction: column; justify-content: center; height: 95vh;">
             <div class="flex-container right" style="flex-direction: row; justify-content: center;">
-                <img src="/images/GreenBottle.png" width = 30%>
-                <p class="text" id="percentA" style="font-size: 40px; color:#56BF84">50%</p>
+                <img src="/images/GreenBottle.png" width = "25%">
+                <p class="text" id="percentA" style="font-size: 3vw; color:#56BF84">50%</p>
             </div>
-            <img src="/images/Column.png" width = 60%>
+            <img src="/images/Column.png" width="40%">
         </div>
     </div>
-    <div>
-        <button class="GreenButton text" style="align-self: baseline;">Run</button>
+    <div class="flex-container middleRight" style=" align-items: flex-end; align-content: flex-end;">
+        <button class="GreenButton text" style= "width: 8vw; height: 4.5vw">Run</button>
     </div>
 </div>
 </body>
