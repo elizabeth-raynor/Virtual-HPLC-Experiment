@@ -20,7 +20,7 @@
         
         chartIt();
         async function getData(){
-            const response = await fetch('https://raw.githubusercontent.com/jw4590/Virtual-Chem-Lab/Jenny/index.csv');
+            const response = await fetch('index.csv');
             const data = await response.text();
             console.log(data);
 
@@ -41,11 +41,13 @@
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
+                    // change this to make it draw a data set instead of just y value
                     labels: xlabels,
                     datasets: [{
                         label: 'Signal(arb. units)',
-                        data: ylabels,
-                    }]
+                        data: realTimeY,
+                    },
+                    ],
                 },
                 options: {
                 responsive: false,
@@ -60,20 +62,21 @@
                     }
                 }
             });
-            
+            ;
+
             var i;
             for(i=0; i < realTimeX.length; i++){
                 await sleep(realTimeX[i]*1);
-                addData(myChart,realTimeX[i],realTimeY[i]);
+                addData(myChart,realTimeX[i]);
             }
-            
+
         }
 
-        function addData(chart, label, data) {
+        function addData(chart,label) {
             chart.data.labels.push(label);
-            chart.data.datasets.forEach((dataset) => {
-                dataset.data.push(data);
-            });
+            //chart.data.datasets.forEach((dataset) => {
+            //    dataset.data.push(data);
+           // });
             chart.update();
         }
 
