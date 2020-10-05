@@ -130,7 +130,10 @@ body {
     background:rgba(0,0,0,0);
     border:none;
     border-bottom:calc(3vw/8) solid#08A696;
-    box-sizing:content-box}
+    box-sizing:content-box;
+    cursor: pointer;
+}
+
 
 .Download:before{
     position:absolute;
