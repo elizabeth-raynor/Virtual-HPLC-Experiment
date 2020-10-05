@@ -63,7 +63,7 @@
             
             var i;
             for(i=0; i < realTimeX.length; i++){
-                await sleep(realTimeX[i]*1);
+                await sleep(realTimeX[i]*60);
                 addData(myChart,realTimeX[i],realTimeY[i]);
             }
             
