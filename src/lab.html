@@ -28,34 +28,42 @@
     }
 </script>
 <!-- https://stackoverflow.com/questions/3855854/my-website-have-a-horizontal-scrollbar-that-i-want-to-get-rid-of-->
-<body scroll="no">
+<!--<body scroll="no" style="overflow: hidden">-->
+<body></body>
     <!--Button stuff-->
     <!-- source: https://www.w3schools.com/tags/tag_button.asp -->
     <!-- source: https://www.toptal.com/designers/htmlarrows/arrows/-->
     <!-- source: https://stackoverflow.com/questions/38320878/circle-button-css-->
+<div class="topNav text">
+    <a style= "font-size: 150%; ">CHEM230L: Drug Doping Lab</a>
+</div>
+<div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
+    <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;"></button>
+    <button class="Download"></button>
+</div>
 
 <div class="flex-container" style="flex-direction: row;";>
     <div>
-        <img src="/images/BlueBottle.png" width = 60%>
+        <img src="/images/BlueBottle.png" width = 55%>
     </div>
     <div>
         <div class="flex-container" style="flex-direction: column;">
             <button class="Arrow" onclick="increasePercent()"></button>
-            <p class="text" id="percentB" style="font-size: 5vw; color:#096073;">50%</p>
+            <p class="text" id="percentB" style="font-size: 5vw; color:#08A696;">50%</p>
             <button class="Arrow" onclick="decreasePercent()" style="transform: rotate(180deg);"></button> 
         </div>
     </div>
     <div>
-        <div class="flex-container" style="flex-direction: column; justify-content: center; height: 95vh;">
-            <div class="flex-container" style="flex-direction: row; justify-content: center;">
-                <img src="/images/GreenBottle.png" width = "25%">
+        <div class="flex-container" style="flex-direction: column; ">
+            <div class="flex-container" style="flex-direction: row;">
+                <img src="/images/GreenBottle.png" width = "20%">
                 <p class="text" id="percentA" style="font-size: 3vw; color:#56BF84">50%</p>
             </div>
-            <img src="/images/Column.png" width="40%">
+            <img src="/images/Column.png" width="35%">
         </div>
     </div>
-    <div class="flex-container" style=" flex-direction: column; align-items: flex-end;">
-        <button class="GreenButton text" style= "width: 8vw; height: 4.5vw" onclick="MakeChroms()">Run</button>
+    <div class="flex-container" style=" flex-direction: column; align-self: flex-end;">
+        <button class="GreenButton text" style= "width: 140%; height: 50%" onclick="MakeChroms()">Run</button>
     </div>
 </div>
 </body>

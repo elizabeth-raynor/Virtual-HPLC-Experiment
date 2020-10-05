@@ -3,9 +3,35 @@
     font-weight: bold;
 }
 
-.navBar {
+body {
+    margin: 0px;
+    margin-bottom: 1%;
 }
 
+/*source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
+.topNav {
+    background-color: #096073;
+    overflow: hidden;
+}
+
+.topNav a {
+    float: left;
+    color: white;
+    text-align: left;
+    padding: 1% 2%;
+    text-decoration: none;
+    font-size: 5%;
+}
+
+/*.topNav a:hover {
+    background-color: #06424f;
+}
+*/
+
+.topNav a.active {
+    background-color: #A3D86C;
+    color: white;
+}
 
 .GreenButton {
     border: none;
@@ -43,7 +69,7 @@
     width:calc(33.33%);
     height:calc(33.33%);
     background:rgba(0,0,0,0);
-    border:calc(100px/10) solid #fff;
+    border:calc(7vw/10) solid #fff;
     border-right:none;
     border-top:none;
     transform:rotate(135deg);
@@ -67,15 +93,15 @@
 
 .flex-container {
     display: flex;
-    justify-content: space-evenly;
-    align-content: center;
-    align-items: center;
+    justify-content: center;
+    align-content: flex-start;
+    align-items: center;;
 }
 
 .column {
     flex-direction: column;
 }
-*/
+
 
 /*
 .left {
@@ -91,6 +117,42 @@
 }
 
 .right {
-    min-height: 10%;
+    align-content: flex-end;
+    align-items: flex-end;
 }
 */
+
+.Download{
+    display:inline-block;
+    position:relative;
+    width:3vw;
+    height:3vw;
+    background:rgba(0,0,0,0);
+    border:none;
+    border-bottom:calc(3vw/8) solid#08A696;
+    box-sizing:content-box}
+
+.Download:before{
+    position:absolute;
+    content:'';
+    margin:auto;top:0;
+    bottom:calc(-1*30px/3);
+    left:0;
+    right:0;
+    width:0;
+    height:0;
+    border-top:calc(3vw/3) solid #08A696;
+    border-left:calc(3vw/3) solid transparent;
+    border-right:calc(3vw/3) solid transparent}
+
+.Download:after{
+    position:absolute;
+    content:'';
+    margin:auto;
+    top:0;
+    bottom:calc(3vw/6);
+    left:0;
+    right:0;
+    width:calc(3vw/3);
+    height:calc(3vw/3);
+    background-color:#08A696}
