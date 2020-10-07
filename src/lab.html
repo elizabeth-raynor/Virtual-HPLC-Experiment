@@ -12,25 +12,7 @@
     var percentsA = ["85%", "65%", "50%", "35%", "15%"];
     var runStatus = [false, false, false, false, false];
     var index = 2;
-    /*
-    function increasePercent() {
-        if (index != percentsB.length-1) {
-            index++;
-        }
-        if (runStatus[index]) {
-            document.getElementById("percentB").style.color = "#b1e0dc";
-            document.getElementById("runButton").style.cursor = "context-menu";
-            document.getElementById("runButton").disabled = true;
-        }       
-        else {
-            document.getElementById("percentB").style.color = "#08A696"; 
-            document.getElementById("runButton").style.cursor = "pointer";
-            document.getElementById("runButton").disabled = false;  
-        }
-        document.getElementById("percentB").innerHTML = percentsB[index];
-        document.getElementById("percentA").innerHTML = percentsA[index];
-    }
-    */
+
 
     function changePercent(direction) {
         if (direction == 1 && index != percentsB.length-1) {
@@ -53,25 +35,6 @@
         document.getElementById("percentA").innerHTML = percentsA[index];
     }
 
-    /*
-    function decreasePercent() {
-        if (index != 0) {
-        index--
-        }
-        if (runStatus[index]) {
-            document.getElementById("percentB").style.color = "#b1e0dc";
-            document.getElementById("runButton").style.cursor = "context-menu";
-            document.getElementById("runButton").disabled = true;
-        }       
-        else {
-            document.getElementById("percentB").style.color = "#08A696"; 
-            document.getElementById("runButton").style.cursor = "pointer";
-            document.getElementById("runButton").disabled = false;  
-        }
-        document.getElementById("percentB").innerHTML = percentsB[index]
-        document.getElementById("percentA").innerHTML = percentsA[index];
-    }
-    */
 
     function MakeChroms() {
         runStatus[index] = true;
