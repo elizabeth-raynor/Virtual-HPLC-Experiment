@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="lab.css">
+    <link rel="stylesheet" href="add-solvent.css">
 </head>
 <script> 
     var percentsB = ["15%", "35%", "50%", "65%", "85%"];
@@ -38,6 +38,18 @@
 
     function MakeChroms() {
         runStatus[index] = true;
+        switch(index) {
+            case 0:
+            break;
+            case 1:
+            break;
+            case 2:
+            break;
+            case 3:
+            break;
+            case 4:
+            break;
+        }
     }
 </script>
 <!-- https://stackoverflow.com/questions/3855854/my-website-have-a-horizontal-scrollbar-that-i-want-to-get-rid-of-->
@@ -76,7 +88,7 @@
         </div>
     </div>
     <div class="flex-container" style=" flex-direction: column; align-self: flex-end;">
-        <button id= "runButton" class="GreenButton text" style= "width: 140%; height: 50%" onclick="MakeChroms()">Run</button>
+       <a><button id= "runButton" class="GreenButton text" style= "width: 140%; height: 50%" onclick="MakeChroms()">Run</button>
     </div>
 </div>
 </body>
