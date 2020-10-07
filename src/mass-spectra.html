@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mass Spectra</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script type="text/javascript" src="d3.v2.min.js"></script>
+</head>
+<body>
+    <h1>Mass Spectra</h1>
+
+    <canvas id="massSpectra" width="1000" height="500"></canvas>
+
+    
+    <!-- source: https://www.chartjs.org/docs/latest/getting-started/-->
+    <script>
+    d3.csv('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2814973/atp_wta.csv')
+    .then(makeChart);
+    
+    function makeChart(dataPoints) {
+        /*var ctx = document.getElementById('massSpectra').getContext('2d');*/
+        var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
+
+        // The data for our dataset
+        data: {
+            datasets: [{
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [0, 10, 5, 2, 20, 30, 45]
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+        });
+    }
+</script>
+    
+</body>
+</html>
