@@ -11,32 +11,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datasource@0.1.0"></script>
 </head>
-<body>
-    <div class="topNav text">
-        <a style= "font-size: 150%; ">CHEM230L: Drug Doping Lab</a>
-    </div>
-    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
-        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 3vw; height: 3vw;"></button>
-        <button class="Download"></button>
-    </div>
-    <h1 class="header text" style="font-weight: bold; color: #096073; margin: 3%;">Mass Spectra</h1>
-
-    <canvas id="massSpectra" width="90%" height="25%"></canvas>
-
-    
-    <!-- source: https://www.chartjs.org/docs/latest/getting-started/-->
-    <script>
-    chartIt();
-    const xVals = [];
-    const yVals = [];
+<!-- source: https://www.chartjs.org/docs/latest/getting-started/-->
+<script>
+    chartIt('Ethacrynic_acid_methylMS.csv');
     
     // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
     async function getData(filename) {
+        // arrays for x and y values
+        const xVals = [];
+        const yVals = [];
+
+        // reads csv file and trims is
         const path = '../data/DopingLab_dev/MSData/'+filename;
         const response = await fetch(path);
         var data = await response.text();
         data = data.trim();
 
+        // populate the arrays with the data
         const rows = data.split('\n');
         console.log(rows);
         rows.forEach(element => {
@@ -47,11 +38,11 @@
             yVals.push(abund);
             console.log(ratio, abund);
         });
+        return {xVals, yVals};
     }
     
-
-    async function chartIt() {
-        await getData('CaffeineMS.csv');
+    async function chartIt(filename) {
+        const data = await getData(filename);
         var ctx = document.getElementById('massSpectra');
         var chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -59,12 +50,13 @@
 
         // The data for our dataset
         data: {
-            labels: xVals,
+            labels: data.xVals,
             datasets: [{
-                data: yVals,
-                backgroundColor: ' #08A696',
+                data: data.yVals,
+                backgroundColor: '#A3D86C',
                 borderColor: 'grey',
-                hoverBackgroundColor: '#036e62' 
+                hoverBackgroundColor: '#56BF84', 
+                barPercentage: 1.0
             }]
         },
 
@@ -78,13 +70,17 @@
                     scaleLabel: {
                         display: true,
                         labelString: 'Relative Abundance',
-                    }
+                    },
                 }],
                 xAxes: [{
+                    
                     scaleLabel: {
                         display: true,
                         labelString: 'Mass-to-Change Ratio (m/z)',
                     },
+                    ticks: {
+                            beginAtZero: false,
+                            }
                 }]
             },
         }
@@ -92,6 +88,20 @@
     }
 
 </script>
+<body>
+    <div class="topNav text">
+        <a style= "font-size: 180%; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
+        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 3vw; height: 3vw;"></button>
+        <h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;">Mass Spectra</h1>
+        <button class="Download"></button>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="massSpectra"></canvas>
+    </div>
+    
     
 </body>
 </html>

@@ -98,33 +98,25 @@ body {
 .flex-container {
     display: flex;
     justify-content: center;
-    align-content: flex-start;
-    align-items: center;;
+    /*align-content: flex-start;*/
+    align-items: center;
+    margin-right: 0;
+    text-align: center;
 }
 
 .column {
     flex-direction: column;
 }
-
-
-/*
-.left {
-    width: 40%;
+canvas {
+    display: inline;
 }
 
-.middleLeft {
-    min-height: 10%;
+.chart-container {
+    display: flex;
+    width: 65%;
+    margin: auto;
 }
 
-.middleRight {
-    min-height: 40%;
-}
-
-.right {
-    align-content: flex-end;
-    align-items: flex-end;
-}
-*/
 
 .Download{
     display:inline-block;
