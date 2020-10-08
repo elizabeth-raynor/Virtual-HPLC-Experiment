@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mass Spectra</title>
+    <!--source: https://www.chartjs.org/docs/latest/getting-started/-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
+    <!-- Source: https://stackoverflow.com/questions/41489790/how-do-i-import-a-csv-into-chart-js-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script type="text/javascript" src="d3.v2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datasource@0.1.0"></script>
 </head>
 <body>
     <h1>Mass Spectra</h1>
@@ -15,21 +18,42 @@
     
     <!-- source: https://www.chartjs.org/docs/latest/getting-started/-->
     <script>
-    d3.csv('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2814973/atp_wta.csv')
-    .then(makeChart);
+    chartIt();
+    const xVals = [];
+    const yVals = [];
     
-    function makeChart(dataPoints) {
-        /*var ctx = document.getElementById('massSpectra').getContext('2d');*/
+    // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
+    async function getData(filename) {
+        const path = '../data/DopingLab_dev/MSData/'+filename;
+        const response = await fetch(path);
+        var data = await response.text();
+        data = data.trim();
+
+        const rows = data.split('\n');
+        console.log(rows);
+        rows.forEach(element => {
+            const row = element.split(',');
+            const ratio = parseFloat(row[0]);
+            xVals.push(ratio);
+            const abund = parseFloat(row[1]);
+            yVals.push(abund);
+            console.log(ratio, abund);
+    });
+    
+    }
+    async function chartIt() {
+        await getData('CaffeineMS.csv');
+        var ctx = document.getElementById('massSpectra');
         var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'bar',
 
         // The data for our dataset
         data: {
+            labels: xVals,
             datasets: [{
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45]
+                data: yVals,
+
             }]
         },
 
