@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mass Spectra</title>
+    <link rel="stylesheet" href="add-solvent.css">
     <!--source: https://www.chartjs.org/docs/latest/getting-started/-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
     <!-- Source: https://stackoverflow.com/questions/41489790/how-do-i-import-a-csv-into-chart-js-->
@@ -11,9 +12,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datasource@0.1.0"></script>
 </head>
 <body>
-    <h1>Mass Spectra</h1>
+    <div class="topNav text">
+        <a style= "font-size: 150%; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
+        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 3vw; height: 3vw;"></button>
+        <button class="Download"></button>
+    </div>
+    <h1 class="header text" style="font-weight: bold; color: #096073; margin: 3%;">Mass Spectra</h1>
 
-    <canvas id="massSpectra" width="1000" height="500"></canvas>
+    <canvas id="massSpectra" width="90%" height="25%"></canvas>
 
     
     <!-- source: https://www.chartjs.org/docs/latest/getting-started/-->
@@ -35,12 +43,13 @@
             const row = element.split(',');
             const ratio = parseFloat(row[0]);
             xVals.push(ratio);
-            const abund = parseFloat(row[1]);
+            const abund = parseFloat(row[1]/10000);
             yVals.push(abund);
             console.log(ratio, abund);
-    });
-    
+        });
     }
+    
+
     async function chartIt() {
         await getData('CaffeineMS.csv');
         var ctx = document.getElementById('massSpectra');
@@ -53,14 +62,35 @@
             labels: xVals,
             datasets: [{
                 data: yVals,
-
+                backgroundColor: ' #08A696',
+                borderColor: 'grey',
+                hoverBackgroundColor: '#036e62' 
             }]
         },
 
         // Configuration options go here
-        options: {}
-        });
+        options: {
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Relative Abundance',
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Mass-to-Change Ratio (m/z)',
+                    },
+                }]
+            },
+        }
+        })
     }
+
 </script>
     
 </body>

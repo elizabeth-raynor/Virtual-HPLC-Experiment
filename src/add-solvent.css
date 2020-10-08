@@ -8,6 +8,10 @@ body {
     margin-bottom: 1%;
 }
 
+.header {
+    text-align: center;
+}
+
 /*source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
 .topNav {
     background-color: #096073;
@@ -69,7 +73,7 @@ body {
     width:calc(33.33%);
     height:calc(33.33%);
     background:rgba(0,0,0,0);
-    border:calc(7vw/10) solid #fff;
+    border:calc(7vw/10) solid white;
     border-right:none;
     border-top:none;
     transform:rotate(135deg);
