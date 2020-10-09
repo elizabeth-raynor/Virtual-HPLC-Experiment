@@ -130,14 +130,15 @@ source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
     position:absolute;
     content:'';
     margin:auto;top:0;
-    bottom:calc(-1*30px/3);
+    bottom:calc(-1*3vw/3);
     left:0;
     right:0;
     width:0;
     height:0;
     border-top:calc(3vw/3) solid #08A696;
     border-left:calc(3vw/3) solid transparent;
-    border-right:calc(3vw/3) solid transparent}
+    border-right:calc(3vw/3) solid transparent
+}
 
 .Download:after{
     position:absolute;
@@ -151,6 +152,8 @@ source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
     height:calc(3vw/3);
     background-color:#08A696}
 
+
+   
    
 /* https://levelup.gitconnected.com/css-only-custom-styled-select-99b1b022bfbf*/
 select {
@@ -166,45 +169,14 @@ select {
     padding: 10px;
     /* Adding transition effect */
     transition: color 0.3s ease, background-color 0.3s ease, border-bottom-color 0.3s ease;
-  }
-  /* For IE <= 11 */
-  select::-ms-expand {
-    display: none; 
-  }
-  select:hover,
-  select:focus {
+}
+
+select:hover,
+select:focus {
     color: #096073;
     background-color: white;
-  }
-
-  select:hover ~ .downTriangle,
-  select:focus ~ .downTriangle {
-    background-color: #096073;
-    border-color: #096073;
-  }
-
-
-.downTriangle{
-    display:inline-block;
-    position:relative;
-    width:30px;
-    height:30px;
-    background:rgba(0,0,0,0);
-    border:none;
 }
 
-.downTriangle:before{
-    position:absolute;
-    content:'';
-    margin:auto;
-    top:calc(30px/15);
-    bottom:0;
-    left:0;
-    right:0;
-    width:0;
-    height:0;
-    border-top:calc(30px/3) solid #56BF84;
-    border-left:calc(30px/3) solid transparent;
-    border-right:calc(30px/3) solid transparent
-}
+
+
   

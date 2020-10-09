@@ -17,16 +17,18 @@
         <button class="Download"></button>
     </div>
     <div>
-        <p class="text" style= "color: #096073; font-size: 250%;">Choose a compound from the dropdown <br> menu and click Run</p>
+        <p class="text" style= "color: #096073; font-size: 230%;">Choose a compound from the dropdown <br> menu and click Run</p>
     </div>
     <div class="flex-container" style="flex-direction: row;">
         <form>  
             <select id = "compoundList">
                 <option>Compound</option>
-            </select>
-            <input type="button" class="GreenButton">
+            </select> 
         </form>
     </div>
+    <div class="flex-container" style=" flex-direction: column; align-self: flex-end; margin: 7%;">
+        <a><button id= "runButton" class="GreenButton text" type= "submit" style= "width: 140%; height: 50%" onclick="MakeChroms()">Run</button>
+     </div>
 
 
     <script>
