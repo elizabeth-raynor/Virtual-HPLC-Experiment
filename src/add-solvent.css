@@ -1,18 +1,23 @@
+/* Format all text in the web app*/
 .text {
     font-family: "Arial";
     font-weight: bold;
+    text-align: center;
 }
 
+/* Format the body pages */
 body {
     margin: 0px;
     margin-bottom: 1%;
 }
 
+/* Format the header */
 .header {
     text-align: center;
 }
 
-/*source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
+/* Format the bar at the top of each page
+source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
 .topNav {
     background-color: #096073;
     overflow: hidden;
@@ -26,23 +31,20 @@ body {
     text-decoration: none;
     font-size: 5%;
 }
-
-/*.topNav a:hover {
-    background-color: #06424f;
-}
-*/
-
+/*
 .topNav a.active {
     background-color: #A3D86C;
     color: white;
 }
+*/
 
+/* Format the green buttons */
 .GreenButton {
     border: none;
-    border-radius: 15px;
+    border-radius: 10px;
     background: #56BF84;
     color: white;
-    padding: .2vw .5vw;
+    padding: .2vw .2vw;
     text-align: center;
     display: inline-block;
     font-weight: bold;
@@ -50,8 +52,8 @@ body {
     cursor: pointer;
   }
 
-  /*Source: http://androidcss.com/css-shape-icon-generator/# */
-
+  /* Format the arrow buttons
+  Source: http://androidcss.com/css-shape-icon-generator/# */
   .Arrow{
     display:inline-block;
     position:relative;
@@ -94,7 +96,7 @@ body {
     box-sizing:content-box
 }
 
-
+/* Format the flex containers */
 .flex-container {
     display: flex;
     justify-content: center;
@@ -104,20 +106,14 @@ body {
     text-align: center;
 }
 
-.column {
-    flex-direction: column;
-}
-canvas {
-    display: inline;
-}
-
+/* Format the container for charts */
 .chart-container {
     display: flex;
     width: 65%;
     margin: auto;
 }
 
-
+/* Format the download button */
 .Download{
     display:inline-block;
     position:relative;
@@ -129,7 +125,6 @@ canvas {
     box-sizing:content-box;
     cursor: pointer;
 }
-
 
 .Download:before{
     position:absolute;
@@ -155,3 +150,61 @@ canvas {
     width:calc(3vw/3);
     height:calc(3vw/3);
     background-color:#08A696}
+
+   
+/* https://levelup.gitconnected.com/css-only-custom-styled-select-99b1b022bfbf*/
+select {
+    width: 100%;
+    height: 100%;
+    font-size: 100%;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: white;
+    border: 2px solid#56BF84;
+    color: #56BF84;
+    padding: 10px;
+    /* Adding transition effect */
+    transition: color 0.3s ease, background-color 0.3s ease, border-bottom-color 0.3s ease;
+  }
+  /* For IE <= 11 */
+  select::-ms-expand {
+    display: none; 
+  }
+  select:hover,
+  select:focus {
+    color: #096073;
+    background-color: white;
+  }
+
+  select:hover ~ .downTriangle,
+  select:focus ~ .downTriangle {
+    background-color: #096073;
+    border-color: #096073;
+  }
+
+
+.downTriangle{
+    display:inline-block;
+    position:relative;
+    width:30px;
+    height:30px;
+    background:rgba(0,0,0,0);
+    border:none;
+}
+
+.downTriangle:before{
+    position:absolute;
+    content:'';
+    margin:auto;
+    top:calc(30px/15);
+    bottom:0;
+    left:0;
+    right:0;
+    width:0;
+    height:0;
+    border-top:calc(30px/3) solid #56BF84;
+    border-left:calc(30px/3) solid transparent;
+    border-right:calc(30px/3) solid transparent
+}
+  

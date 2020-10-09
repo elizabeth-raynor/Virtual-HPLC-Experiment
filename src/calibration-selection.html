@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calibration Compound Selection</title>
+    <link rel="stylesheet" href="add-solvent.css">
+</head>
+
+<body>
+    <div class="topNav text">
+        <a style= "font-size: 130%; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
+        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 3vw; height: 3vw;"></button>
+        <!--<h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;">Calibration Compound Selection</h1>-->
+        <button class="Download"></button>
+    </div>
+    <div>
+        <p class="text" style= "color: #096073; font-size: 250%;">Choose a compound from the dropdown <br> menu and click Run</p>
+    </div>
+    <div class="flex-container" style="flex-direction: row;">
+        <form>  
+            <select id = "compoundList">
+                <option>Compound</option>
+            </select>
+            <input type="button" class="GreenButton">
+        </form>
+    </div>
+
+
+    <script>
+        var compounds = ["Acetaminophen", "Acetylsalicylic Acid", "Amphetamine Case 4", "Amphetamine Case 1,2,3", 
+        "Caffeine", "Chlorothiazide", "Ephedrine", "Ethacrycin Acid Methyl Ester", "Ibuprofen", "Methamphetamine",
+        "Methylphenidate", "Phenylephrine", "Pseudoephrine", "THC"];
+    
+        // source: https://electrictoolbox.com/javascript-add-options-html-select/
+        var cmpdSelection = document.getElementById('compoundList');
+        for(var i = 0; i < compounds.length-1; i++) {
+            var cmpd = compounds[i];
+            var opt = document.createElement("option");
+            opt.textContent = cmpd;
+            opt.value = cmpd;
+            cmpdSelection.appendChild(opt);
+        }
+    </script>
+</body>
+</html>
