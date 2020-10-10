@@ -46,6 +46,7 @@
                     datasets: [{
                         label: 'Signal(arb. units)',
                         data: ylabels,
+                        fill:'orange',
                     },
                     ],
                 },
@@ -58,15 +59,20 @@
                             min: 0,
                             maxTicksLimit: 40,
                             }
-                        }]
-                    }
+                        }],
+                    },
+                onClick: function(elements) {
+                    console.log(elements);
+                },
+                fill:'red',
+                
                 }
             });
             ;
 
             var i;
             for(i=0; i < realTimeX.length; i++){
-                await sleep(realTimeX[i]*6000);
+                await sleep(realTimeX[i]*6);
                 addData(myChart,realTimeY[i]);
             }
 
@@ -83,6 +89,10 @@
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
+
+        function onMouseover(e){
+		alert(  e.dataSeries.type+ ", dataPoint { x:" + e.dataPoint.x + ", y: "+ e.dataPoint.y + " }" );
+	}
 
     </script>
 
