@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Solvent</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <link rel="stylesheet" href="add-solvent.css">
     <script src="app.js"></script>
 </head>
@@ -93,5 +94,10 @@
        <a><button id= "runButton" class="GreenButton text" type= "submit" style= "width: 140%; height: 50%" onclick="MakeChroms()">Run</button>
     </div>
 </div>
+
+<div class="chart-container">
+    <canvas id="chrom"></canvas>
+</div>
+
 </body>
 </html>
