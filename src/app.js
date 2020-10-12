@@ -107,7 +107,7 @@ async function chartChrom(path){
 
     var i;
     for(i=0; i < xValsChrom.length; i++){
-        await sleep(xValsChrom[i]*6000);
+        await sleep(xValsChrom[i]*10);
         addChromData(myChart,xValsChrom[i]);
     }
 
