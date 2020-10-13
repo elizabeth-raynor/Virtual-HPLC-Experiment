@@ -50,7 +50,7 @@ function MakeChroms() {
 
 /****************************************************************************/
 // Real-time Graph
-
+//chartChrom('../data/DopingLab_dev/Case1/Chrom1.csv');
 const xlabels = [];
 const ylabels = [];
 const xValsChrom = [];
@@ -128,7 +128,7 @@ function sleep(ms) {
 
 /**************************************************************************************/
 // Mass Spectra
-chartMS('Ethacrynic_acid_methylMS.csv');
+//chartMS('Ethacrynic_acid_methylMS.csv');
 
 // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
 async function getMSData(filename) {
