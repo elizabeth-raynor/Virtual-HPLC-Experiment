@@ -1,12 +1,15 @@
+  
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>real time graph</title>
+    <title>real time FINAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
-    <style>
+    
+    <link rel="stylesheet" href="add-solvent.css">
+    <!--<style>
         h4{ color:#096073 }
         #text{
         position: absolute;
@@ -23,24 +26,32 @@
         border-radius:5px;
         opacity: 0;
         }
-        </style>
+        </style>-->
 </head>
 
 <body>
-    <h1>Case 1 Real Time Graph</h1>
-    <div margin="auto" max-width="1050px" padding="20" text-align="center">
-        <h4>Tip: Hover over each peak to show its area and width of the base.</h4>
-        <div id="text"></div>
-    <canvas id="chart" width="1000" height="500" margin="auto" display="block"></canvas>
-</div>
+    <div class="topNav text">
+        <a style= "font-size: 130%; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%; margin-bottom: 0;" >
+        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 3vw; height: 3vw;"></button>
+        <h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;">Case 1 Chromatogram</h1>
+        <button class="Download"></button>
+    </div>
+    <h4 class="text" style="font-size: 80%; margin: .7%;">Tip: Hover over each peak to show its area and width of the base.</h4>
+    <div id="Hover-Info"></div>
+    <div class="chart-container">
+        <canvas id="chrom" width="800" height="400" margin="auto" display="block"></canvas>
+    </div>
+
+    <!--
     <script>
-        var fileSource = "Chrom1.csv";
+        var fileSource = "real-time-graph.csv";
         const realTimeX = [];
         const realTimeY = [];
         var hoverMode = false;
-
         
-        const ctx = document.getElementById('chart').getContext('2d');
+        const ctx = document.getElementById('chart');
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -91,12 +102,10 @@
                 }
             }
         });
-
         async function getData(fileSource){
-            const response = await fetch(fileSource);
+            const response = await fetch("real-time-graph.csv");
             const data = await response.text();
             console.log(data);
-
             const rows = data.split('\n');
             console.log(rows);
             rows.forEach(elt => {
@@ -108,7 +117,6 @@
                 console.log(time,signal);
             });
         }
-
         async function chartIt(){
             hoverMode = false;
             await getData(fileSource);
@@ -119,7 +127,6 @@
             }
             hoverMode = true;  
         }
-
         function addData(chart, label, data) {
             chart.data.labels.push(label);
             chart.data.datasets.forEach((dataset) => {
@@ -127,11 +134,9 @@
             });
             chart.update();
         }
-
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
-
         function getCursorPosition(event) {
             var i;
             if(hoverMode){
@@ -155,11 +160,10 @@
                
             }
         }
-
-
         chartIt();
-
     </script>
+    -->
 
 </body>
+<script src="app.js"></script>
 </html>
