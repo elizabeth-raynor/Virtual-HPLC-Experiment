@@ -7,7 +7,7 @@
     <title>real time HOVER</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
     <link rel="stylesheet" href="add-solvent.css">
-
+    <script src="app.js"></script>
 </head>
 
 <body>
@@ -23,10 +23,12 @@
     <div id="Hover-Info" class="text" style="font-size: 80%; margin: .7%;"></div>
     <div class="chart-container">
         <canvas id="chrom" width="800" height="400" margin="auto" display="block"></canvas>
+        <!--<canvas id="chromText" width="200", height="100", margin="auto", display="block"></canvas>-->
     </div>
 
     
     <script>
+    /*
     chartChrom('../data/DopingLab_dev/Case1/Chrom3.csv');
     var dict = {};
     const realTimeX = [];
@@ -145,34 +147,6 @@
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-    /*
-    function getCursorPosition(event) {
-        var i;
-        if(hoverMode){
-        const can = document.getElementById('chrom');
-        const rect = can.getBoundingClientRect();
-        //console.log(rect.left); left = 240, but changes when inspect window open. Values probably diff on diff computers
-        //console.log(rect.right); right = 1040, but changes when inspect window open. Values probably diff on diff computers
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        var chartX=(x-62)/73.3;
-        var chartY=(332-y)*30.72;
-        //console.log("x: " + x + " y: " + y);
-        //console.log("x: " + chartX + " y: " + chartY);
-        for(i=103;i<200;i++){
-            if(Math.abs(chartX-realTimeX[i])<0.05 && 0<chartY<realTimeY[i]){
-                //console.log("x: " + chartX + " y: " + chartY);
-                //alert("Area for Peak1");
-                document.getElementById("Hover-Info").innerHTML="Area for Peak1<br>Width of Peak1";
-                document.getElementById("Hover-Info").style.opacity="1";
-                return;
-            }
-        }
-        document.getElementById("Hover-Info").innerHTML="";
-        document.getElementById("Hover-Info").style.opacity="0";   
-        }        
-    }
-    */
     
     function getCursorPosition(event) { 
         const canvas = document.getElementById('chrom');
@@ -187,14 +161,6 @@
         //console.log("Data x: " + xData);
         // Convert y on canvas to y value on the graph
         var yCoord = (((331-y))/(331))*maxY;
-        /*
-        console.log("x: " + x,  // x range is 57 - 795
-                    "\ny: " + y,  // y range is 2 - 331
-                    "\nCoordinate x: " + xData,
-                    "\nCoordinate y: " + yCoord,
-                    "\nDictionary y: " + dict[xData]
-        );
-        */ 
         if (yCoord < dict[xData]){
             console.log('inside');
             ctx.font = "50px Arial";
@@ -214,7 +180,7 @@
         { 
             getMousePosition(e); 
         });
-    
+    */
     </script>
 </body>
 </html>

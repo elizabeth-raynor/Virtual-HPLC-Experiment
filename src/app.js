@@ -3,9 +3,10 @@
 const caseNum = "Case1";
 
 // Global constants for solvent ratios
-const percentsB = ["15%", "35%", "50%", "65%", "85%"];
-const percentsA = ["85%", "65%", "50%", "35%", "15%"];
+const percentsB = ["0%", "15%", "25%", "45%", "70%"];
+const percentsA = ["100%", "85%", "75%", "55%", "30%"];
 var runStatus = [false, false, false, false, false];
+const areas = [[86674,99256,110955], [21250,141568, 6225], [15203,42560,10525], [2256, 9536, 25638]];
 var ratioNum = 2;
 var peakNum = 1;
 
@@ -50,64 +51,13 @@ function MakeChroms() {
 
 /****************************************************************************/
 // Real-time Graph -- uncomment when running real-time-final.html, comment out when not
-chartChrom('../../data/DopingLab_dev/Case1/Chrom1.csv');
+
+chartChrom('../data/DopingLab_dev/Case1/Chrom3.csv');
+var dict = {};
 const realTimeX = [];
 const realTimeY = [];
 var hoverMode = false;
-
-const ctx = document.getElementById('chrom').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        // change this to make it draw a data set instead of just y value
-        labels: [],
-        datasets: [{
-            label: 'Signal(arb. units)',
-            data: [],
-            backgroundColor: 
-            'rgba(163, 216, 108, 0.5)',
-        }],
-    },
-    options: {
-        legend: {
-            display: false
-        },
-        responsive: false,
-        scales: {
-            xAxes: [{
-                ticks: {
-                max: 10,
-                min: 0,
-                maxTicksLimit: 40,
-                },
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Retention Time (min)'
-                }
-            }],
-            yAxes: [{
-                ticks: {
-                max: 10000,
-                min: 0,
-                maxTicksLimit: 11,
-                },
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Signal (arb. units)'
-                }
-            }],
-        },
-        //onClick: getCursorPosition,
-        hover: {
-            // Overrides the global setting
-            enabled: true,
-            //mode: 'dataset',
-            onHover: function(elements) {
-                getCursorPosition(elements);
-            }
-        }
-    }
-});
+var maxY = 0;
 
 async function getChromData(path){
     const response = await fetch(path);
@@ -119,20 +69,107 @@ async function getChromData(path){
     //console.log(rows);
     rows.forEach(elt => {
         const row = elt.split(',');
+        //console.log(row);
+        dict[row[0]] = row[1];
         const time = parseFloat(row[0]);
-        realTimeX.push(time);
+        if (!isNaN(Number(time))) {
+            realTimeX.push(time);
+        }
         const signal = parseFloat(row[1]);
-        realTimeY.push(signal);
-        console.log(time,signal);
+        if (!isNaN(Number(signal))) {
+            realTimeY.push(signal);
+        }  
+        //console.log(time,signal);
     });
+    //console.log(dict);
+    maxY = getMaxY();
+    maxY = Math.ceil(maxY/1000)*1000;
+}
+
+function getMaxY() {
+    realTimeYNum = [];
+    realTimeY.forEach(number => {
+        var num = Number(number)
+        if (!isNaN(num)) {
+            realTimeYNum.push(num);
+        }
+    });
+    //realTimeY.forEach(number => console.log(typeof(number)));
+    return Math.max.apply(Math, realTimeYNum);
 }
 
 async function chartChrom(path){
     await getChromData(path);
+    const ctx = document.getElementById('chrom').getContext('2d');    
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            // change this to make it draw a data set instead of just y value
+            labels: [],
+            datasets: [{
+                label: 'Signal(arb. units)',
+                data: [],
+                backgroundColor: 
+                'rgba(163, 216, 108, 0.5)',
+                radius: 2
+            }],
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            responsive: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                    max: 10,
+                    min: 0,
+                    maxTicksLimit: 40,
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Retention Time (min)'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                    max: maxY,
+                    min: 0,
+                    maxTicksLimit: 11,
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Signal (arb. units)'
+                    }
+                }],
+            },
+            hover: {
+                onHover: function(elements) {
+                    getCursorPosition(elements, ctx);
+                }
+            },
+            tooltips: {
+                callbacks: {
+                    title: function(tooltipItem, data) {
+                        var title = "Retention Time: " + realTimeX[tooltipItem[0].index] + " min";
+                        return title;
+                    },
+                    label: function(tooltipItem, data) {
+                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += Math.round(tooltipItem.yLabel * 100) / 100;
+                        return label;
+                    }
+                }
+            }
+        }
+});
     hoverMode = false;
     var i;
     for(i=0; i < realTimeX.length; i++){
-        await sleep(realTimeX[i]*0);
+        //await sleep(realTimeX[i]*0);
         addData(myChart,realTimeX[i],realTimeY[i]);
     }
     hoverMode = true;  
@@ -150,31 +187,33 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function getCursorPosition(event) {
-    var i;
-    if(hoverMode){
-    const can = document.getElementById('chrom');
-    const rect = can.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    var chartX=(x-62)/73.3;
-    var chartY=(332-y)*30.72;
-    //console.log("x: " + x + " y: " + y);
-    //console.log("x: " + chartX + " y: " + chartY);
-        for(i=103;i<200;i++){
-            if(Math.abs(chartX-realTimeX[i])<0.05 && 0<chartY<realTimeY[i]){
-                console.log("x: " + chartX + " y: " + chartY);
-                //alert("Area for Peak1");
-                document.getElementById("Hover-Info").innerHTML="Area for Peak1<br>Width of Peak1";
-                document.getElementById("Hover-Info").style.opacity="1";
-                return;
-            }
-        }
-        document.getElementById("Hover-Info").innerHTML="";
-        document.getElementById("Hover-Info").style.opacity="0";
-        
+function getCursorPosition(event, ctx) { 
+    const canvas = document.getElementById('chrom');
+    let rect = canvas.getBoundingClientRect(); 
+    let x = event.clientX - rect.left; 
+    let y = event.clientY - rect.top; 
+    
+    //Convert x on cavas to x value in the data set
+    var xCoord = ((x-57)/(795-57))*10
+    console.log();
+    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
+    //console.log("Data x: " + xData);
+    // Convert y on canvas to y value on the graph
+    var yCoord = (((331-y))/(331))*maxY;
+    if (yCoord < dict[xData]){
+        //console.log('inside');
+        ctx.font = "30px Arial";
+        ctx.fillText('Area' ,600,35);
+        //document.getElementById("Hover-Info").innerHTML="Area for Peak1<br>Width of Peak1";
+        //document.getElementById("Hover-Info").style.opacity="1";
     }
-}
+    else {
+        //console.log("outside");
+        //document.getElementById("Hover-Info").innerHTML="";
+        //document.getElementById("Hover-Info").style.opacity="0";
+    }
+} 
+
 
 
 /**************************************************************************************/
