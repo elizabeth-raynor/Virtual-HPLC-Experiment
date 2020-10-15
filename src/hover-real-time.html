@@ -34,6 +34,8 @@
     var hoverMode = false;
     var maxY = 0;
 
+    const ctx = document.getElementById('chrom').getContext('2d');
+
     async function getChromData(path){
         const response = await fetch(path);
         var data = await response.text();
@@ -71,7 +73,6 @@
 
     async function chartChrom(path){
         await getChromData(path);
-        const ctx = document.getElementById('chrom').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
