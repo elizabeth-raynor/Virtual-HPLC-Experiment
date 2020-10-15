@@ -63,39 +63,35 @@ async function getChromData(path){
     const response = await fetch(path);
     var data = await response.text();
     data = data.trim();
-    //console.log(data);
 
     const rows = data.split('\n');
-    //console.log(rows);
     rows.forEach(elt => {
         const row = elt.split(',');
-        //console.log(row);
         dict[row[0]] = row[1];
         const time = parseFloat(row[0]);
+        
+        // Add times to x-axis array if they are a number
         if (!isNaN(Number(time))) {
             realTimeX.push(time);
         }
+        
+        // Add signals to y-axis array if they are a number
         const signal = parseFloat(row[1]);
         if (!isNaN(Number(signal))) {
             realTimeY.push(signal);
         }  
-        //console.log(time,signal);
     });
-    //console.log(dict);
     maxY = getMaxY();
-    maxY = Math.ceil(maxY/1000)*1000;
 }
 
 function getMaxY() {
     realTimeYNum = [];
     realTimeY.forEach(number => {
-        var num = Number(number)
-        if (!isNaN(num)) {
-            realTimeYNum.push(num);
-        }
+        realTimeYNum.push(Number(number));
     });
-    //realTimeY.forEach(number => console.log(typeof(number)));
-    return Math.max.apply(Math, realTimeYNum);
+    var max = Math.max.apply(Math, realTimeYNum);
+    var roundedMax = Math.ceil(max/1000)*1000;
+    return roundedMax; 
 }
 
 async function chartChrom(path){
@@ -151,7 +147,7 @@ async function chartChrom(path){
             tooltips: {
                 callbacks: {
                     title: function(tooltipItem, data) {
-                        var title = "Retention Time: " + realTimeX[tooltipItem[0].index] + " min";
+                        var title = "Retention Time (min): " + realTimeX[tooltipItem[0].index];
                         return title;
                     },
                     label: function(tooltipItem, data) {
@@ -169,7 +165,7 @@ async function chartChrom(path){
     hoverMode = false;
     var i;
     for(i=0; i < realTimeX.length; i++){
-        //await sleep(realTimeX[i]*0);
+        //await sleep(realTimeX[i]*10000);
         addData(myChart,realTimeX[i],realTimeY[i]);
     }
     hoverMode = true;  
@@ -197,13 +193,15 @@ function getCursorPosition(event, ctx) {
     var xCoord = ((x-57)/(795-57))*10
     console.log();
     var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
-    //console.log("Data x: " + xData);
+    
     // Convert y on canvas to y value on the graph
     var yCoord = (((331-y))/(331))*maxY;
+
+    ctx.save();
     if (yCoord < dict[xData]){
         //console.log('inside');
         ctx.font = "30px Arial";
-        ctx.fillText('Area' ,600,35);
+        ctx.fillText('Area', 600,35);
         //document.getElementById("Hover-Info").innerHTML="Area for Peak1<br>Width of Peak1";
         //document.getElementById("Hover-Info").style.opacity="1";
     }
