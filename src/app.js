@@ -200,14 +200,14 @@ function getCursorPosition(event, ctx) {
 
     ctx.save();
     if (yCoord < dict[xData]){
-        console.log('inside');
+        //console.log('inside');
         //ctx.font = "30px Arial";
         //ctx.fillText('Area', 600,35);
         document.getElementById("Hover-Info").innerHTML= areaInfo();
         document.getElementById("Hover-Info").style.opacity="1";
     }
     else {
-        console.log("outside");
+        //console.log("outside");
         document.getElementById("Hover-Info").style.opacity="0";
     }
 } 
@@ -216,19 +216,32 @@ function areaInfo() {
     text = '';
     switch (ratioNum) {
         case 0:
-            text += 'Peak 1 Area = ' + Math.sum.apply(areas[ratioNum]);
+            console.log("Case " + (ratioNum+1));
+            text += 'Peak 1 Area = ' + areas[ratioNum].reduce((a,b) => a + b, 0);
+            //console.log(areas[ratioNum].reduce((a,b) => a + b, 0));
             break;
         case 1:
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + '<br>Peak 2 Area = ' + areas[ratioNum][1]+areas[ratioNum][2];
+            console.log("Case " + (ratioNum+1));
+            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
+                    '<br>Peak 2 Area = ' + areas[ratioNum][1]+areas[ratioNum][2];
             break;
         case 2:
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + ' <br>Peak 2 Area = ' + areas[ratioNum][1] + '<br>Peak 3 Area = ' + areas[ratioNum][3];
+            console.log("Case " + (ratioNum+1));
+            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
+                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
+                    '<br>Peak 3 Area = ' + areas[ratioNum][2];
             break;
         case 3:
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + '<br>Peak 2 Area = ' + areas[ratioNum][1] + '<br>Peak 3 Area = ' + areas[ratioNum][3];
+            console.log("Case " + (ratioNum+1));
+            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
+                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
+                    '<br>Peak 3 Area = ' + areas[ratioNum][2];
             break;
         case 4:
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + '<br>Peak 2 Area = ' + areas[ratioNum][1] + '<br>Peak 3 Area = ' + areas[ratioNum][3]-2000;
+            console.log("Case " + (ratioNum+1));
+            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
+                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
+                    '<br>Peak 3 Area = ' + areas[ratioNum][2]-2000;
             break;
     }
     return text;
