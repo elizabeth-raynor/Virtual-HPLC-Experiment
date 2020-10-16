@@ -7,7 +7,7 @@ const percentsB = ["0%", "15%", "25%", "45%", "70%"];
 const percentsA = ["100%", "85%", "75%", "55%", "30%"];
 var runStatus = [false, false, false, false, false];
 const areas = [[86674,99256,110955], [21250,141568, 6225], [15203,42560,10525], [2256, 9536, 25638]];
-var ratioNum = 2;
+var ratioNum = 0;
 var peakNum = 1;
 
 // Paths
@@ -52,7 +52,7 @@ function MakeChroms() {
 /****************************************************************************/
 // Real-time Graph -- uncomment when running real-time-final.html, comment out when not
 
-chartChrom('../data/DopingLab_dev/Case1/Chrom3.csv');
+chartChrom('../data/DopingLab_dev/Case1/Chrom1.csv');
 var dict = {};
 const realTimeX = [];
 const realTimeY = [];
@@ -191,27 +191,48 @@ function getCursorPosition(event, ctx) {
     
     //Convert x on cavas to x value in the data set
     var xCoord = ((x-57)/(795-57))*10
-    console.log();
+
     var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
     
     // Convert y on canvas to y value on the graph
     var yCoord = (((331-y))/(331))*maxY;
+    //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
     ctx.save();
     if (yCoord < dict[xData]){
-        //console.log('inside');
-        ctx.font = "30px Arial";
-        ctx.fillText('Area', 600,35);
-        //document.getElementById("Hover-Info").innerHTML="Area for Peak1<br>Width of Peak1";
-        //document.getElementById("Hover-Info").style.opacity="1";
+        console.log('inside');
+        //ctx.font = "30px Arial";
+        //ctx.fillText('Area', 600,35);
+        document.getElementById("Hover-Info").innerHTML= areaInfo();
+        document.getElementById("Hover-Info").style.opacity="1";
     }
     else {
-        //console.log("outside");
-        //document.getElementById("Hover-Info").innerHTML="";
-        //document.getElementById("Hover-Info").style.opacity="0";
+        console.log("outside");
+        document.getElementById("Hover-Info").style.opacity="0";
     }
 } 
 
+function areaInfo() {
+    text = '';
+    switch (ratioNum) {
+        case 0:
+            text += 'Peak 1 Area = ' + Math.sum.apply(areas[ratioNum]);
+            break;
+        case 1:
+            text += 'Peak 1 Area = ' + areas[ratioNum][0] + '<br>Peak 2 Area = ' + areas[ratioNum][1]+areas[ratioNum][2];
+            break;
+        case 2:
+            text += 'Peak 1 Area = ' + areas[ratioNum][0] + ' <br>Peak 2 Area = ' + areas[ratioNum][1] + '<br>Peak 3 Area = ' + areas[ratioNum][3];
+            break;
+        case 3:
+            text += 'Peak 1 Area = ' + areas[ratioNum][0] + '<br>Peak 2 Area = ' + areas[ratioNum][1] + '<br>Peak 3 Area = ' + areas[ratioNum][3];
+            break;
+        case 4:
+            text += 'Peak 1 Area = ' + areas[ratioNum][0] + '<br>Peak 2 Area = ' + areas[ratioNum][1] + '<br>Peak 3 Area = ' + areas[ratioNum][3]-2000;
+            break;
+    }
+    return text;
+}
 
 
 /**************************************************************************************/

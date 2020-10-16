@@ -110,7 +110,6 @@ source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
 .chart-container {
     justify-content: center;
     display: flex;
-    width: 65%;
     margin: auto;
 }
 canvas {
