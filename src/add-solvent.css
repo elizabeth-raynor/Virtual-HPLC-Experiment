@@ -75,7 +75,7 @@ source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
     width:calc(33.33%);
     height:calc(33.33%);
     background:rgba(0,0,0,0);
-    border:calc(7vw/10) solid white;
+    border:calc(5.5vw/10) solid white;
     border-right:none;
     border-top:none;
     transform:rotate(135deg);

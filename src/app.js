@@ -7,7 +7,7 @@ const percentsB = ["0%", "15%", "25%", "45%", "70%"];
 const percentsA = ["100%", "85%", "75%", "55%", "30%"];
 var runStatus = [false, false, false, false, false];
 const areas = [[86674,99256,110955], [21250,141568, 6225], [15203,42560,10525], [2256, 9536, 25638]];
-var ratioNum = 0;
+var ratioNum = 1;
 var peakNum = 1;
 
 // Paths
