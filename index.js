@@ -372,7 +372,7 @@ async function chart4in1(){
                     ticks: {
                     max: maxY,
                     min: 0,
-                    maxTicksLimit: 5,
+                    maxTicksLimit: maxY/1000,
                     beginAtZero:true
                     },
                     scaleLabel: {
