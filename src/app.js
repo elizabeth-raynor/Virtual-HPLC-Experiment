@@ -51,7 +51,7 @@ function MakeChroms() {
 
 /****************************************************************************/
 // Real-time Graph -- uncomment when running real-time-final.html, comment out when not
-
+/*
 chartChrom('../data/DopingLab_dev/Case1/Chrom1.csv');
 var dict = {};
 const realTimeX = [];
@@ -246,18 +246,18 @@ function areaInfo() {
     }
     return text;
 }
-
+*/
 
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
-/*
+
 chartMS('Ethacrynic_acid_methylMS.csv');
+// arrays for x and y values
+const xValsMS = [];
+const yValsMS = [];
 
 // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
 async function getMSData(filename) {
-    // arrays for x and y values
-    const xValsMS = [];
-    const yValsMS = [];
 
     // reads csv file and trims is
     const path = '../data/DopingLab_dev/MSData/'+filename;
@@ -321,9 +321,21 @@ async function chartMS(filename) {
                         }
             }]
         },
+        tooltips: {
+            callbacks: {
+                title: function(tooltipItem, data) {
+                    var title = "Mass-to-Change Ratio: " + xValsMS[tooltipItem[0].index];
+                    return title;
+                },
+                label: function(tooltipItem, data) {
+                    var label = "Relative Abundance: " + tooltipItem.yLabel;
+                    return label;
+                }
+            }
+        }
     }
     })
-}*/
+}
 
 
 
