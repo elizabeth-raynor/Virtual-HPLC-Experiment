@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Caffeine</title>
+    <title>real time HOVER</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="add-solvent.css">
+    <script src="app.js"></script>
 </head>
 
 <body>
@@ -19,10 +20,10 @@
         <button class="Download"></button>
     </div>
     <h4 class="text" style="font-size: 80%; margin: .7%;">Tip: Hover over each peak to show its area and width of the base.</h4>
-    <h4 class = "text" id="Hover-Info", width="800", height="400", style="opacity: 0; margin: auto; text-align: center;" >Peak 1 Area = %%%</h4>
     <div class="chart-container">
         <canvas id="chrom" width="800" height="400" margin="auto" display="block"></canvas>
-    </div></body>
-<script src="index.js"></script>
-</html>
+        <div id="Hover-Info", class="flex-container", width="600", height="400", margin="auto", display="block", style="opacity: 0"></div>
+    </div>
 
+</body>
+</html>
