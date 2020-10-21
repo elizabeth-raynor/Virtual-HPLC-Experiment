@@ -6,7 +6,12 @@ const percentsB = ["0%", "15%", "25%", "45%", "70%"];
 const percentsA = ["100%", "85%", "75%", "55%", "30%"];
 var runStatus = [false, false, false, false, false];
 const areas = [[86674,99256,110955], [21250,141568, 6225], [15203,42560,10525], [2256, 9536, 25638]];
-var ratioNum = 4;
+const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]], 
+                [[.97, 1.5], [2.445, 4.47], [5.005, 6.82]],
+                [[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
+                [[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
+            ];
+var ratioNum = 3;
 var peakNum = 1;
 
 // Paths
@@ -91,7 +96,7 @@ function getMaxY() {
         realTimeYNum.push(Number(number));
     });
     var max = Math.max.apply(Math, realTimeYNum);
-    var roundedMax = Math.ceil(max/50)*50;
+    var roundedMax = Math.ceil(max/100)*100;
     return roundedMax; 
 }
 
@@ -170,6 +175,7 @@ async function chartChrom(path){
         addData(myChart,realTimeX[i],realTimeY[i]);
     }
     hoverMode = true;  
+    
 
     const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
     //console.log(title);
@@ -205,7 +211,7 @@ function getCursorPosition(event, ctx) {
     var yCoord = (((331-y))/(331))*maxY;
     //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-    if (yCoord < dict[xData]){
+    if (yCoord > 0 && yCoord < dict[xData]){
         //console.log('inside');
         //ctx.font = "30px Arial";
         //ctx.fillText('Area', 600,35);
@@ -326,10 +332,6 @@ function areaInfo() {
                 break;
     }
     return text;
-}
-
-function Case1AreaInfo() {
-    
 }
 
 

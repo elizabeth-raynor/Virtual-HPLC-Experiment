@@ -22,7 +22,10 @@
     <h4 class="text" style="font-size: 80%; margin: .7%; color: #A3D86C;">Tip: Hover over each peak to show its area.</h4>
     <div class="chart-container">
         <canvas id="chrom" width="800" height="400" margin="auto" display="block"></canvas>
-        <div id="hover-info", class="text" style="text-align: left; opacity: 0; color: #096073;" margin="auto", display="block">Area (1)= XXXXXXX</div>
+        <div id="hover-info", class="text flex-container" style="text-align: left; opacity: 0; color: #096073; flex-direction: column;" margin="auto", display="block">Area (1)= XXXXXXX
+            <a><button id= "next" class="GreenButton text" type= "submit" style= "width: 6vw; height: 3vw" onclick="MakeChroms()">Next</button>
+            <a><button id= "another" class="GreenButton text" type= "submit" style= "width: 6vw; height: 3vw" onclick="MakeChroms()">Try Another Ratio</button>
+        </div>
     </div>
 
 </body>
