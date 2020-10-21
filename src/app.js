@@ -209,6 +209,8 @@ function sleep(ms) {
 }
 
 function getCursorPosition(event, ctx) { 
+    // source: https://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
+
     const canvas = document.getElementById('chrom');
     let rect = canvas.getBoundingClientRect(); 
     let x = event.clientX - rect.left; 
