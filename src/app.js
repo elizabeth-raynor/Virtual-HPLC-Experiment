@@ -168,20 +168,32 @@ async function chartChrom(path){
             }
         }
 });
+
+    // Add the title of the graph to the page
+    const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
+    document.getElementById("chart-title").innerHTML = title; 
+    document.getElementById("chart-title").style.opacity = 1;
+   
+    // Add the data to the graph in real time
     hoverMode = false;
     var i;
     for(i=0; i < realTimeX.length; i++){
-        //await sleep(realTimeX[i]*10000);
+        //await sleep(realTimeX[i]* 1e-10000);
         addData(myChart,realTimeX[i],realTimeY[i]);
     }
     hoverMode = true;  
-    
 
-    const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
-    //console.log(title);
-    //console.log(document.getElementById("chart-title"));
-    document.getElementById("chart-title").innerHTML = title; 
-    document.getElementById("chart-title").style.opacity = 1;
+    // Enable all buttons on the graph
+    document.getElementById('hover-tip').style.opacity = 1;
+    document.getElementById('again').style.opacity = 1;
+    document.getElementById('again').disabled = false;
+    document.getElementById('next').style.opacity = 1;
+    document.getElementById('next').disabled = false;
+    document.getElementById('download').style.opacity = 1;
+    document.getElementById('download').disabled = false;
+
+
+   
 }
 
 function addData(chart, label, data) {
