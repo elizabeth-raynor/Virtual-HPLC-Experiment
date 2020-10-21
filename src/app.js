@@ -1,13 +1,12 @@
-
 // Global constant for case
-const caseNum = "Case1";
+const caseNum = 3;
 
 // Global constants for solvent ratios
 const percentsB = ["0%", "15%", "25%", "45%", "70%"];
 const percentsA = ["100%", "85%", "75%", "55%", "30%"];
 var runStatus = [false, false, false, false, false];
 const areas = [[86674,99256,110955], [21250,141568, 6225], [15203,42560,10525], [2256, 9536, 25638]];
-var ratioNum = 1;
+var ratioNum = 4;
 var peakNum = 1;
 
 // Paths
@@ -16,6 +15,7 @@ var MSPath = '../data/DopingLab_dev/MSData/';
 var calibPath = '../data/DopingLab_dev/Calibrations/';
 
 // Arrays of filenames
+const caseNames = ["Case1", "Case2", "Case3", "Case4"];
 const chromNames = ['Chrom1.csv', 'Chrom2.csv', 'Chrom3.csv', 'Chrom4.csv', 'Chrom5.csv'];
 const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
 
@@ -43,16 +43,17 @@ function changePercent(direction) {
 
 function MakeChroms() {
     runStatus[ratioNum] = true;
-    chromPath += caseNum + '/' + chromNames[ratioNum];
+    chromPath += caseNames[caseNum] + '/' + chromNames[ratioNum];
     console.log(chromPath);
     chartChrom(chromPath);
 }
 
 
 /****************************************************************************/
-// Real-time Graph -- uncomment when running real-time-final.html, comment out when not
-/*
-chartChrom('../data/DopingLab_dev/Case1/Chrom1.csv');
+// Real-time Graph Current-- uncomment when running real-time-final.html, comment out when not
+
+const path = '../data/DopingLab_dev/'+ caseNames[caseNum] + '/' + chromNames[ratioNum];
+chartChrom(path);
 var dict = {};
 const realTimeX = [];
 const realTimeY = [];
@@ -90,7 +91,7 @@ function getMaxY() {
         realTimeYNum.push(Number(number));
     });
     var max = Math.max.apply(Math, realTimeYNum);
-    var roundedMax = Math.ceil(max/1000)*1000;
+    var roundedMax = Math.ceil(max/50)*50;
     return roundedMax; 
 }
 
@@ -169,6 +170,12 @@ async function chartChrom(path){
         addData(myChart,realTimeX[i],realTimeY[i]);
     }
     hoverMode = true;  
+
+    const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
+    //console.log(title);
+    //console.log(document.getElementById("chart-title"));
+    document.getElementById("chart-title").innerHTML = title; 
+    document.getElementById("chart-title").style.opacity = 1;
 }
 
 function addData(chart, label, data) {
@@ -198,59 +205,137 @@ function getCursorPosition(event, ctx) {
     var yCoord = (((331-y))/(331))*maxY;
     //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-    ctx.save();
     if (yCoord < dict[xData]){
         //console.log('inside');
         //ctx.font = "30px Arial";
         //ctx.fillText('Area', 600,35);
-        document.getElementById("Hover-Info").innerHTML= areaInfo();
-        document.getElementById("Hover-Info").style.opacity="1";
+        document.getElementById("hover-info").innerHTML= areaInfo();
+        document.getElementById("hover-info").style.opacity="1";
     }
     else {
         //console.log("outside");
-        document.getElementById("Hover-Info").style.opacity="0";
+        document.getElementById("hover-info").style.opacity="0";
     }
 } 
 
 function areaInfo() {
     text = '';
-    switch (ratioNum) {
-        case 0:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum].reduce((a,b) => a + b, 0);
-            //console.log(areas[ratioNum].reduce((a,b) => a + b, 0));
+    switch (caseNum) {
+        case 0: 
+            switch (ratioNum) {
+            case 0:
+                text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                break;
+            case 1:
+                const sum = areas[caseNum][1]+areas[caseNum][2];
+                text += 'Area (1) = ' + areas[caseNum][0] + 
+                        '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2]) + '*';
+                break;
+            case 2:
+                text += 'Area (1) = ' + areas[caseNum][0] + 
+                        '<br>Area (2) = ' + areas[caseNum][1] + 
+                        '*<br>Area (3) = ' + areas[caseNum][2] + '*';
+                break;
+            case 3:
+                text += 'Area (1) = ' + areas[caseNum][0] + 
+                        '<br>Area (2) = ' + areas[caseNum][1] + 
+                        '<br>Area (3) = ' + areas[caseNum][2];
+                break;
+            case 4:
+
+                text += 'Area (1) = ' + areas[caseNum][0] + 
+                        '<br>Area (2) = ' + areas[caseNum][1] + 
+                        '<br>Area (3) = ' + (areas[caseNum][2]-20000) + '*';
+                break;
+            }
             break;
         case 1:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
-                    '<br>Peak 2 Area = ' + areas[ratioNum][1]+areas[ratioNum][2];
-            break;
+            switch (ratioNum) {
+                case 0:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    break;
+                case 1:
+                    text += 'Area (1) = ' + (areas[caseNum][0]-1050) + 
+                            '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2] + 1050) + '*';
+                    break;
+                case 2:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2] - 170) + '*';
+                    break;
+                case 3:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2) = ' + areas[caseNum][1] + 
+                            '<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 4:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2)= ' + areas[caseNum][1] + 
+                            '<br>Area (3)= ' + (areas[caseNum][2]-15) + '*';
+                    break;
+                }
+                break;
         case 2:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
-                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
-                    '<br>Peak 3 Area = ' + areas[ratioNum][2];
-            break;
-        case 3:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
-                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
-                    '<br>Peak 3 Area = ' + areas[ratioNum][2];
-            break;
-        case 4:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
-                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
-                    '<br>Peak 3 Area = ' + areas[ratioNum][2]-2000;
-            break;
+            switch (ratioNum) {
+                case 0:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    break;
+                case 1:
+                    text += 'Area (1) = ' + (areas[caseNum][0]-453) + 
+                            '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2]+453) + '*';
+                    break;
+                case 2:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '*<br>Area (2) = ' + areas[caseNum][1]+
+                            '*<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 3:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2) = ' + areas[caseNum][1] + 
+                            '<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 4:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2)= ' + areas[caseNum][1] + 
+                            '<br>Area (3)= ' + (areas[caseNum][2]-3000) + '*';
+                    break;
+                }
+                break;
+        case 3: 
+            switch (ratioNum) {
+                case 0:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    break;
+                case 1:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    break;
+                case 2:
+                    text += 'Area (1) = ' + (areas[caseNum][0]+areas[caseNum][1]) +
+                            '*<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 3:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2) = ' + areas[caseNum][1] + 
+                            '<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 4:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2)= ' + areas[caseNum][1] + 
+                            '<br>Area (3)= ' + (areas[caseNum][2]-16093) + '*';
+                    break;
+                }
+                break;
     }
     return text;
 }
-*/
+
+function Case1AreaInfo() {
+    
+}
+
 
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
-
+/*
 chartMS('Ethacrynic_acid_methylMS.csv');
 // arrays for x and y values
 const xValsMS = [];
@@ -336,7 +421,7 @@ async function chartMS(filename) {
     }
     })
 }
-
+*/
 
 
 
