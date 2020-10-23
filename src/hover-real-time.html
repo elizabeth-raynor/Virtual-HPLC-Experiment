@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>real time HOVER</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <link rel="stylesheet" href="add-solvent.css">
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <div class="topNav text">
+        <a style= "font-size: 130%; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%; margin-bottom: 0;" >
+        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 3vw; height: 3vw;"></button>
+        <h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;">Case 1 Chromatogram</h1>
+        <button class="Download"></button>
+    </div>
+    <h4 class="text" style="font-size: 80%; margin: .7%;">Tip: Hover over each peak to show its area.</h4>
+    <div class="chart-container">
+        <canvas id="chrom" width="800" height="400" margin="auto" display="block"></canvas>
+        <div id="Hover-Info", class="text" style="text-align: left; opacity: 0" margin="auto", display="block">Peak 1 Area = XXXXXXX</div>
+    </div>
+
+</body>
+</html>

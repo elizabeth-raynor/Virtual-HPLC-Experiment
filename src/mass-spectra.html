@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mass Spectra</title>
+    <link rel="stylesheet" href="add-solvent.css">
+    <!--source: https://www.chartjs.org/docs/latest/getting-started/-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
+    <!-- Source: https://stackoverflow.com/questions/41489790/how-do-i-import-a-csv-into-chart-js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datasource@0.1.0"></script>
+    <script src="app.js"></script>
+</head>
+<!-- source: https://www.chartjs.org/docs/latest/getting-started/-->
+
+<!--
+<script>
+    chartIt('Ethacrynic_acid_methylMS.csv');
+    
+    // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
+    async function getData(filename) {
+        // arrays for x and y values
+        const xVals = [];
+        const yVals = [];
+
+        // reads csv file and trims is
+        const path = '../data/DopingLab_dev/MSData/'+filename;
+        const response = await fetch(path);
+        var data = await response.text();
+        data = data.trim();
+
+        // populate the arrays with the data
+        const rows = data.split('\n');
+        console.log(rows);
+        rows.forEach(element => {
+            const row = element.split(',');
+            const ratio = parseFloat(row[0]);
+            xVals.push(ratio);
+            const abund = parseFloat(row[1]/10000);
+            yVals.push(abund);
+            console.log(ratio, abund);
+        });
+        return {xVals, yVals};
+    }
+    
+    async function chartIt(filename) {
+        const data = await getData(filename);
+        var ctx = document.getElementById('massSpectra');
+        var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
+
+        // The data for our dataset
+        data: {
+            labels: data.xVals,
+            datasets: [{
+                data: data.yVals,
+                backgroundColor: '#A3D86C',
+                borderColor: 'grey',
+                hoverBackgroundColor: '#56BF84', 
+                barPercentage: 1.0
+            }]
+        },
+
+        // Configuration options go here
+        options: {
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Relative Abundance',
+                    },
+                }],
+                xAxes: [{
+                    
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Mass-to-Change Ratio (m/z)',
+                    },
+                    ticks: {
+                            beginAtZero: false,
+                            }
+                }]
+            },
+        }
+        })
+    }
+
+</script>
+-->
+
+<body>
+    <div class="topNav text">
+        <a style= "font-size: 130%; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
+        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;"></button>
+        <h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;">Mass Spectra</h1>
+        <button class="Download"></button>
+    </div>
+
+    <div class="chart-container" style="width: 68vw;">
+        <canvas id="massSpectra" style="align-self: center;"></canvas>
+    </div>
+    
+    
+</body>
+</html>

@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="lab.css">
+</head>
+<script> 
+    var percentsB = ["15%", "35%", "50%", "65%", "85%"];
+    var percentsA = ["85%", "65%", "50%", "35%", "15%"];
+    var runStatus = [false, false, false, false, false];
+    var index = 2;
+
+    function changePercent(direction) {
+        if (direction == 1 && index != percentsB.length-1) {
+            index++;
+        }
+        if (direction == -1 && index != 0) {
+            index--;
+        }
+        if (runStatus[index]) {
+            document.getElementById("percentB").style.color = "#b1e0dc";
+            document.getElementById("runButton").style.cursor = "context-menu";
+            document.getElementById("runButton").disabled = true;
+        }       
+        else {
+            document.getElementById("percentB").style.color = "#08A696"; 
+            document.getElementById("runButton").style.cursor = "pointer";
+            document.getElementById("runButton").disabled = false;  
+        }
+        document.getElementById("percentB").innerHTML = percentsB[index];
+        document.getElementById("percentA").innerHTML = percentsA[index];
+    }
+
+    function MakeChroms() {
+        runStatus[index] = true;
+    }
+</script>
+<!-- https://stackoverflow.com/questions/3855854/my-website-have-a-horizontal-scrollbar-that-i-want-to-get-rid-of-->
+<!--<body scroll="no" style="overflow: hidden">-->
+<body></body>
+    <!--Button stuff-->
+    <!-- source: https://www.w3schools.com/tags/tag_button.asp -->
+    <!-- source: https://www.toptal.com/designers/htmlarrows/arrows/-->
+    <!-- source: https://stackoverflow.com/questions/38320878/circle-button-css-->
+<div class="topNav text">
+    <a style= "font-size: 150%; ">CHEM230L: Drug Doping Lab</a>
+</div>
+<div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
+    <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;"></button>
+    <button class="Download"></button>
+</div>
+
+<div class="flex-container" style="flex-direction: row;";>
+    <div>
+        <img src="/images/BlueBottle.png" width = 55%>
+    </div>
+    <div>
+        <div class="flex-container" style="flex-direction: column;">
+            <button class="Arrow" onclick="changePercent(1)"></button>
+            <p class="text" id="percentB" style="font-size: 5vw; color:#08A696;">50%</p>
+            <button class="Arrow" onclick="changePercent(-1)" style="transform: rotate(180deg);"></button> 
+        </div>
+    </div>
+    <div>
+        <div class="flex-container" style="flex-direction: column; ">
+            <div class="flex-container" style="flex-direction: row;">
+                <img src="/images/GreenBottle.png" width = "20%">
+                <p class="text" id="percentA" style="font-size: 3vw; color:#56BF84">50%</p>
+            </div>
+            <img src="/images/Column.png" width="35%">
+        </div>
+    </div>
+    <div class="flex-container" style=" flex-direction: column; align-self: flex-end;">
+        <button id= "runButton" class="GreenButton text" style= "width: 140%; height: 50%" onclick="MakeChroms()">Run</button>
+    </div>
+</div>
+</body>
+</html>
