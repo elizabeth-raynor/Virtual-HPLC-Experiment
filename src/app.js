@@ -15,9 +15,8 @@ var ratioNum = 3;
 var peakNum = 1;
 
 // Paths
-var chromPath = '../data/DopingLab_dev/';
-var MSPath = '../data/DopingLab_dev/MSData/';
-var calibPath = '../data/DopingLab_dev/Calibrations/';
+var caseStartPath = '../data/DopingLab_dev/';
+var calibStartPath = '../data/DopingLab_dev/Calibrations/';
 
 // Arrays of filenames
 const caseNames = ["Case1", "Case2", "Case3", "Case4"];
@@ -57,8 +56,8 @@ function MakeChroms() {
 /****************************************************************************/
 // Real-time Graph Current-- uncomment when running real-time-final.html, comment out when not
 
-const path = '../data/DopingLab_dev/'+ caseNames[caseNum] + '/' + chromNames[ratioNum];
-chartChrom(path);
+const chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
+chartChrom(chromPath);
 var dict = {};
 const realTimeX = [];
 const realTimeY = [];
@@ -103,10 +102,10 @@ function getMaxY() {
 async function chartChrom(path){
     await getChromData(path);
 
-    // Add the title of the graph to the page
+    // Add the title of the chromatogram to the page
     const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
-    document.getElementById("chart-title").innerHTML = title; 
-    document.getElementById("chart-title").style.opacity = 1;
+    document.getElementById("chrom-chart-title").innerHTML = title; 
+    document.getElementById("chrom-chart-title").style.opacity = 1;
 
     // Make the chart
     const ctx = document.getElementById('chrom').getContext('2d');    
@@ -256,16 +255,6 @@ function getCursorPosition(event, ctx) {
     //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
     return [yCoord, xData];
-    if (yCoord > 0 && yCoord < dict[xData]){
-        //console.log('inside');
-        //ctx.font = "30px Arial";
-        //ctx.fillText('Area', 600,35);
-        return true;
-    }
-    else {
-        //console.log("outside");
-        return false;
-    }
 } 
 
 function areaInfo() {
@@ -381,8 +370,10 @@ function areaInfo() {
 
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
-/*
-chartMS('Ethacrynic_acid_methylMS.csv');
+
+const MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[peakNum];
+console.log(MSPath);
+chartMS(MSPath);
 // arrays for x and y values
 const xValsMS = [];
 const yValsMS = [];
@@ -412,9 +403,17 @@ async function getMSData(filename) {
 
 async function chartMS(filename) {
     const data = await getMSData(filename);
+
+    // Add the title of the graph to the page
+    const title = caseNames[caseNum] + ': Peak ' + (peakNum + 1) + " Mass Spectra";
+    document.getElementById("MS-chart-title").innerHTML = title; 
+    document.getElementById("MS-chart-title").style.opacity = 1;
+
+    // Make MS graph
     var ctx = document.getElementById('massSpectra');
     var chart = new Chart(ctx, {
-    // The type of chart we want to create
+    
+        // The type of chart we want to create
     type: 'bar',
 
     // The data for our dataset
@@ -467,7 +466,7 @@ async function chartMS(filename) {
     }
     })
 }
-*/
+
 
 
 
