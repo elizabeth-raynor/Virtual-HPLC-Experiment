@@ -208,16 +208,22 @@ async function chartChrom(path){
             const coords = getCursorPosition(elements, ctx);
             const yCoord = coords[0];
             const xData = coords[1];
+            var MSPath = '';
             if ( yCoord > 0 && yCoord < dict[xData]) {
                 if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
-                    console.log('peak 1');
+                    //console.log('peak 1');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];   
                 }
                 else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
-                    console.log('peak 2');
+                    //console.log('peak 2');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[1];
                 }
                 else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
-                    console.log('peak 3');
+                    //console.log('peak 3');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[2];
                 }
+            window.location.href = "mass-spectra.html";
+            chartMS(MSPath);
             }
         }
     }
@@ -371,18 +377,14 @@ function areaInfo() {
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
 
-const MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[peakNum];
-console.log(MSPath);
-chartMS(MSPath);
 // arrays for x and y values
 const xValsMS = [];
 const yValsMS = [];
 
 // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
-async function getMSData(filename) {
+async function getMSData(path) {
 
     // reads csv file and trims is
-    const path = '../data/DopingLab_dev/MSData/'+filename;
     const response = await fetch(path);
     var data = await response.text();
     data = data.trim();
