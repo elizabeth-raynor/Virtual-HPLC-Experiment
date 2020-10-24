@@ -1,5 +1,5 @@
 // Global constant for case
-const caseNum = 3;
+const caseNum = 2;
 
 // Global constants for solvent ratios
 const percentsB = ["0%", "15%", "25%", "45%", "70%"];
@@ -102,6 +102,13 @@ function getMaxY() {
 
 async function chartChrom(path){
     await getChromData(path);
+
+    // Add the title of the graph to the page
+    const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
+    document.getElementById("chart-title").innerHTML = title; 
+    document.getElementById("chart-title").style.opacity = 1;
+
+    // Make the chart
     const ctx = document.getElementById('chrom').getContext('2d');    
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -147,7 +154,16 @@ async function chartChrom(path){
             },
             hover: {
                 onHover: function(elements) {
-                    getCursorPosition(elements, ctx);
+                    const coords = getCursorPosition(elements, ctx);
+                    const yCoord = coords[0];
+                    const xData = coords[1];
+                    if (yCoord > 0 && yCoord < dict[xData]) {
+                        document.getElementById("hover-info").innerHTML= areaInfo();
+                        document.getElementById("hover-info").style.opacity="1";
+                    }
+                    else {
+                        document.getElementById("hover-info").style.opacity="0";
+                    }
                 }
             },
             tooltips: {
@@ -168,11 +184,6 @@ async function chartChrom(path){
             }
         }
 });
-
-    // Add the title of the graph to the page
-    const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
-    document.getElementById("chart-title").innerHTML = title; 
-    document.getElementById("chart-title").style.opacity = 1;
    
     // Add the data to the graph in real time
     hoverMode = false;
@@ -183,7 +194,7 @@ async function chartChrom(path){
     }
     hoverMode = true;  
 
-    // Enable all buttons on the graph
+    // Enable all buttons on the graph after the graph is made
     document.getElementById('hover-tip').style.opacity = 1;
     document.getElementById('again').style.opacity = 1;
     document.getElementById('again').disabled = false;
@@ -192,6 +203,25 @@ async function chartChrom(path){
     document.getElementById('download').style.opacity = 1;
     document.getElementById('download').disabled = false;
 
+    // enable click function for MS
+    document.getElementById('chrom').onclick = function(elements) {
+        if (ratioNum == 3) {
+            const coords = getCursorPosition(elements, ctx);
+            const yCoord = coords[0];
+            const xData = coords[1];
+            if ( yCoord > 0 && yCoord < dict[xData]) {
+                if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
+                    console.log('peak 1');
+                }
+                else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
+                    console.log('peak 2');
+                }
+                else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
+                    console.log('peak 3');
+                }
+            }
+        }
+    }
 
    
 }
@@ -225,16 +255,16 @@ function getCursorPosition(event, ctx) {
     var yCoord = (((331-y))/(331))*maxY;
     //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
+    return [yCoord, xData];
     if (yCoord > 0 && yCoord < dict[xData]){
         //console.log('inside');
         //ctx.font = "30px Arial";
         //ctx.fillText('Area', 600,35);
-        document.getElementById("hover-info").innerHTML= areaInfo();
-        document.getElementById("hover-info").style.opacity="1";
+        return true;
     }
     else {
         //console.log("outside");
-        document.getElementById("hover-info").style.opacity="0";
+        return false;
     }
 } 
 
