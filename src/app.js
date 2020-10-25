@@ -12,7 +12,6 @@ const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
                 [[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
             ];
 var ratioNum = 3;
-localStorage.setItem("peakNum", 0);
 
 // Paths
 var caseStartPath = '../data/DopingLab_dev/';
@@ -358,7 +357,7 @@ const yValsMS = [];
 
 function enableMSClick(ctx) {
     document.getElementById('chrom').onclick = function(elements) {
-        console.log("peakNum before click: " + localStorage["peakNum"]);
+        console.log("peakNum before click: " + sessionStorage["peakNum"]);
         if (ratioNum == 3) {
             const coords = getCursorPosition(elements, ctx);
             const yCoord = coords[0];
@@ -368,29 +367,29 @@ function enableMSClick(ctx) {
                 if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
                     //console.log('peak 1');
                     MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];   
-                    localStorage["peakNum"] = 0;
+                    sessionStorage["peakNum"] = 0;
                 }
                 else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
                     //console.log('peak 2');
                     MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[1];
-                    localStorage["peakNum"] = 1;
+                    sessionStorage["peakNum"] = 1;
                 }
                 else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
                     //console.log('peak 3');
                     MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[2];
-                    localStorage["peakNum"] = 2;
+                    sessionStorage["peakNum"] = 2;
                 }
-                //console.log("peakNum after click: " + localStorage["peakNum"])
+                //console.log("peakNum after click: " + sessionStorage["peakNum"])
             window.location.href = "mass-spectra.html";
-            localStorage.setItem("path-to-MS", MSPath);
+            sessionStorage["path-to-MS"] = MSPath;
             }
         }
     }
 }
 
 function MakeMS() {
-    var MSPath = localStorage.getItem("path-to-MS");
-    console.log("peakNum after click: " + localStorage["peakNum"]);
+    var MSPath = sessionStorage.getItem("path-to-MS");
+    console.log("peakNum after click: " + sessionStorage["peakNum"]);
     //console.log(MSPath);
     chartMS(MSPath);
 }
@@ -422,7 +421,7 @@ async function chartMS(path) {
     const data = await getMSData(path);
 
     // Add the title of the graph to the page
-    const title = caseNames[caseNum] + ': Peak ' + (Number(localStorage["peakNum"]) + 1) + " Mass Spectra";
+    const title = caseNames[caseNum] + ': Peak ' + (Number(sessionStorage["peakNum"]) + 1) + " Mass Spectra";
     document.getElementById("MS-chart-title").innerHTML = title; 
     document.getElementById("MS-chart-title").style.opacity = 1;
 
