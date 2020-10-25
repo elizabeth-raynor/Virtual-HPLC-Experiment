@@ -12,7 +12,7 @@ const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
                 [[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
             ];
 var ratioNum = 3;
-var peakNum = 1;
+localStorage.setItem("peakNum", 0);
 
 // Paths
 var caseStartPath = '../data/DopingLab_dev/';
@@ -203,32 +203,7 @@ async function chartChrom(path){
     document.getElementById('download').disabled = false;
 
     // enable click function for MS
-    document.getElementById('chrom').onclick = function(elements) {
-        if (ratioNum == 3) {
-            const coords = getCursorPosition(elements, ctx);
-            const yCoord = coords[0];
-            const xData = coords[1];
-            var MSPath = '';
-            if ( yCoord > 0 && yCoord < dict[xData]) {
-                if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
-                    //console.log('peak 1');
-                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];   
-                }
-                else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
-                    //console.log('peak 2');
-                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[1];
-                }
-                else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
-                    //console.log('peak 3');
-                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[2];
-                }
-            window.location.href = "mass-spectra.html";
-            chartMS(MSPath);
-            }
-        }
-    }
-
-   
+    enableMSClick(ctx);   
 }
 
 function addData(chart, label, data) {
@@ -381,8 +356,48 @@ function areaInfo() {
 const xValsMS = [];
 const yValsMS = [];
 
+function enableMSClick(ctx) {
+    document.getElementById('chrom').onclick = function(elements) {
+        console.log("peakNum before click: " + localStorage["peakNum"]);
+        if (ratioNum == 3) {
+            const coords = getCursorPosition(elements, ctx);
+            const yCoord = coords[0];
+            const xData = coords[1];
+            var MSPath = '';
+            if ( yCoord > 0 && yCoord < dict[xData]) {
+                if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
+                    //console.log('peak 1');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];   
+                    localStorage["peakNum"] = 0;
+                }
+                else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
+                    //console.log('peak 2');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[1];
+                    localStorage["peakNum"] = 1;
+                }
+                else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
+                    //console.log('peak 3');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[2];
+                    localStorage["peakNum"] = 2;
+                }
+                //console.log("peakNum after click: " + localStorage["peakNum"])
+            window.location.href = "mass-spectra.html";
+            localStorage.setItem("path-to-MS", MSPath);
+            }
+        }
+    }
+}
+
+function MakeMS() {
+    var MSPath = localStorage.getItem("path-to-MS");
+    console.log("peakNum after click: " + localStorage["peakNum"]);
+    //console.log(MSPath);
+    chartMS(MSPath);
+}
+
 // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
 async function getMSData(path) {
+    
 
     // reads csv file and trims is
     const response = await fetch(path);
@@ -403,11 +418,11 @@ async function getMSData(path) {
     return {xVals: xValsMS, yVals: yValsMS};
 }
 
-async function chartMS(filename) {
-    const data = await getMSData(filename);
+async function chartMS(path) {
+    const data = await getMSData(path);
 
     // Add the title of the graph to the page
-    const title = caseNames[caseNum] + ': Peak ' + (peakNum + 1) + " Mass Spectra";
+    const title = caseNames[caseNum] + ': Peak ' + (Number(localStorage["peakNum"]) + 1) + " Mass Spectra";
     document.getElementById("MS-chart-title").innerHTML = title; 
     document.getElementById("MS-chart-title").style.opacity = 1;
 
