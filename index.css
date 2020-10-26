@@ -112,6 +112,12 @@ source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
     display: flex;
     margin: auto;
 }
+
+.charts-container {
+
+    margin: auto;
+}
+
 canvas {
     width: 100%;
     height: 100%;

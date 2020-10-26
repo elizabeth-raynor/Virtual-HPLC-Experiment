@@ -242,10 +242,10 @@ function areaInfo() {
 /****************************************************************************/
 // calibration 4 in 1 graphs -- uncomment when running calibration-real-time.html, comment out when not
 
-    var first = "https://raw.githubusercontent.com/jw4590/Virtual-Chem-Lab/data/data/DopingLab_dev/Calibrations/Caffeine1.csv";
-    var second = "https://raw.githubusercontent.com/jw4590/Virtual-Chem-Lab/data/data/DopingLab_dev/Calibrations/Caffeine2.csv";
-    var third = "https://raw.githubusercontent.com/jw4590/Virtual-Chem-Lab/data/data/DopingLab_dev/Calibrations/Caffeine3.csv";
-    var forth = "https://raw.githubusercontent.com/jw4590/Virtual-Chem-Lab/data/data/DopingLab_dev/Calibrations/Caffeine4.csv";
+    var first;
+    var second;
+    var third;
+    var forth;
     const x1 = [];
     const y1 = [];
     const x2 = [];
@@ -322,8 +322,8 @@ async function chart4in1(){
     maxY = getMaxY4in1();
     //console.log(maxY);
 
-    const ctx4in1 = document.getElementById('chrom').getContext('2d');
-    var Chart4in1 = new Chart(ctx4in1, {
+    const ctx1 = document.getElementById('chrom1').getContext('2d');
+    var Chart1 = new Chart(ctx1, {
         type: 'line',
         data: {
             // change this to make it draw a data set instead of just y value
@@ -333,24 +333,7 @@ async function chart4in1(){
                 data: [],
                 backgroundColor: 
                 'rgba(163, 216, 108, 1)',
-            },
-            {
-                label: 'caffeine 2',
-                data: [],
-                backgroundColor: 
-                'rgba(86, 191, 132, 1)',
-            },
-            {
-                label: 'caffeine 3',
-                data: [],
-                backgroundColor: 
-                'rgba(8, 166, 150, 1)',
-            },
-            {
-                label: 'caffeine 4',
-                data: [],
-                backgroundColor: 
-                'rgba(9, 96, 115, 1)',
+                display:false,
             },
             ]},
         options: {
@@ -372,7 +355,7 @@ async function chart4in1(){
                     ticks: {
                     max: maxY,
                     min: 0,
-                    maxTicksLimit: 5,
+                    stepSize:1000,
                     beginAtZero:true
                     },
                     scaleLabel: {
@@ -381,6 +364,11 @@ async function chart4in1(){
                     }
                 }],
             },
+            title: {
+                display: true,
+                text: 'Calibration Graph 1',},
+            legend: {
+                display: false},
                 //onClick:function (elements) {
                 //    console.log(elements);}
                 //onClick: getCursorPosition,
@@ -389,7 +377,193 @@ async function chart4in1(){
                 enabled: true,
                 //mode: 'dataset',
                 onHover: function(elements) {
-                    getCursorPosition4in1(elements);
+                    getCursorPosition1(elements);
+                }
+            }   
+        }
+    });
+
+    const ctx2 = document.getElementById('chrom2').getContext('2d');
+    var Chart2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            // change this to make it draw a data set instead of just y value
+            labels: [],
+            datasets: [
+            {
+                label: 'caffeine 2',
+                data: [],
+                backgroundColor: 
+                'rgba(86, 191, 132, 1)',
+                display:false,
+            },
+            ]},
+        options: {
+            responsive: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                    max: 10,
+                    min: 0,
+                    maxTicksLimit: 21,
+                    beginAtZero:true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Retention Time (min)'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                    max: maxY,
+                    min: 0,
+                    stepSize:1000,
+                    beginAtZero:true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Signal (arb. units)'
+                    }
+                }],
+            },
+            title: {
+                display: true,
+                text: 'Calibration Graph 2',},
+            legend: {
+                display: false},
+                //onClick:function (elements) {
+                //    console.log(elements);}
+                //onClick: getCursorPosition,
+            hover: {
+                // Overrides the global setting
+                enabled: true,
+                //mode: 'dataset',
+                onHover: function(elements) {
+                    getCursorPosition2(elements);
+                }
+            }   
+        }
+    });
+
+    const ctx3 = document.getElementById('chrom3').getContext('2d');
+    var Chart3 = new Chart(ctx3, {
+        type: 'line',
+        data: {
+            // change this to make it draw a data set instead of just y value
+            labels: [],
+            datasets: [
+            {
+                label: 'caffeine 3',
+                data: [],
+                backgroundColor: 
+                'rgba(8, 166, 150, 1)',
+                display:false,
+            },
+            ]},
+        options: {
+            responsive: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                    max: 10,
+                    min: 0,
+                    maxTicksLimit: 21,
+                    beginAtZero:true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Retention Time (min)'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                    max: maxY,
+                    min: 0,
+                    stepSize:1000,
+                    beginAtZero:true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Signal (arb. units)'
+                    }
+                }],
+            },
+            title: {
+                display: true,
+                text: 'Calibration Graph 3',},
+                legend: {
+                    display: false},
+                //onClick:function (elements) {
+                //    console.log(elements);}
+                //onClick: getCursorPosition,
+            hover: {
+                // Overrides the global setting
+                enabled: true,
+                //mode: 'dataset',
+                onHover: function(elements) {
+                    getCursorPosition3(elements);
+                }
+            }   
+        }
+    });
+
+    const ctx4 = document.getElementById('chrom4').getContext('2d');
+    var Chart4 = new Chart(ctx4, {
+        type: 'line',
+        data: {
+            // change this to make it draw a data set instead of just y value
+            labels: [],
+            datasets: [
+            {
+                label: 'caffeine 4',
+                data: [],
+                backgroundColor: 
+                'rgba(9, 96, 115, 1)',
+                display:false,
+            },
+            ]},
+        options: {
+            responsive: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                    max: 10,
+                    min: 0,
+                    maxTicksLimit: 21,
+                    beginAtZero:true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Retention Time (min)'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                    max: maxY,
+                    min: 0,
+                    stepSize:1000,
+                    beginAtZero:true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Signal (arb. units)',
+                    }
+                }],
+            },
+            title: {
+                display: true,
+                text: 'Calibration Graph 4',},
+                legend: {
+                    display: false},
+                //onClick:function (elements) {
+                //    console.log(elements);}
+                //onClick: getCursorPosition,
+            hover: {
+                // Overrides the global setting
+                enabled: true,
+                //mode: 'dataset',
+                onHover: function(elements) {
+                    getCursorPosition4(elements);
                 }
             }   
         }
@@ -397,20 +571,17 @@ async function chart4in1(){
     var i;
     for(i=0; i < x1.length; i++){
         await sleep(x1[i]*0.1);
-        addData4in1(Chart4in1,x1[i],y1[i],y2[i],y3[i],y4[i]);
+        addData4in1(Chart1,x1[i],y1[i]);
+        addData4in1(Chart2,x1[i],y2[i]);
+        addData4in1(Chart3,x1[i],y3[i]);
+        addData4in1(Chart4,x1[i],y4[i]);
     }
     hoverMode = true;  
 }
 
-function addData4in1(chart, label, data1,data2,data3,data4) {
+function addData4in1(chart, label, data) {
     chart.data.labels.push(label);
-    //chart.data.datasets.forEach((dataset) => {
-    //    dataset.data.push(data);
-    //});
-    chart.data.datasets[0].data.push(data1);
-    chart.data.datasets[1].data.push(data2);
-    chart.data.datasets[2].data.push(data3);
-    chart.data.datasets[3].data.push(data4);
+    chart.data.datasets[0].data.push(data);
     chart.update();
 }
 
@@ -420,9 +591,9 @@ function sleep(ms) {
 }
 */
 
-function getCursorPosition4in1(event) { 
+function getCursorPosition1(event) { 
     if(hoverMode){
-    const canvas = document.getElementById('chrom');
+    const canvas = document.getElementById('chrom1');
     let rect = canvas.getBoundingClientRect(); 
     let x = event.clientX - rect.left; 
     let y = event.clientY - rect.top; 
@@ -433,39 +604,204 @@ function getCursorPosition4in1(event) {
     var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
     
     // Convert y on canvas to y value on the graph
-    var yCoord = (((331-y))/(331))*maxY;
+    var yCoord = (((132-y))/(132))*maxY;
     //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
     //ctx.save();
     if (yCoord < dict1[xData] && yCoord > 0){
-        document.getElementById("Hover-Info").innerHTML= areaInfo4in1(1);
-        document.getElementById("Hover-Info").style.opacity="1";
-    }
-    else if(yCoord < dict2[xData] && yCoord > dict1[xData]){
-        document.getElementById("Hover-Info").innerHTML= areaInfo4in1(2);
-        document.getElementById("Hover-Info").style.opacity="1";
-    }
-    else if(yCoord < dict3[xData] && yCoord > dict2[xData]){
-        document.getElementById("Hover-Info").innerHTML= areaInfo4in1(3);
-        document.getElementById("Hover-Info").style.opacity="1";
-    }
-    else if(yCoord < dict4[xData] && yCoord > dict3[xData]){
-        document.getElementById("Hover-Info").innerHTML= areaInfo4in1(4);
-        document.getElementById("Hover-Info").style.opacity="1";
+        document.getElementById("Info1").innerHTML= areaInfo4in1(1);
+        document.getElementById("Info1").style.opacity="1";
     }
     else {
-        console.log("outside");
-        document.getElementById("Hover-Info").style.opacity="0";
+        //console.log("outside");
+        document.getElementById("Info1").style.opacity="0";
     }
 }
 } 
-const compounds = 0;//currently Caffeine is 0
-const area4in1 = [[3684,12718,46383,118860]];
 
+function getCursorPosition2(event) { 
+    if(hoverMode){
+    const canvas = document.getElementById('chrom2');
+    let rect = canvas.getBoundingClientRect(); 
+    let x = event.clientX - rect.left; 
+    let y = event.clientY - rect.top; 
+    
+    //Convert x on cavas to x value in the data set
+    var xCoord = ((x-57)/(795-57))*10
+
+    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
+    
+    // Convert y on canvas to y value on the graph
+    var yCoord = (((132-y))/(132))*maxY;
+    //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+
+    //ctx.save();
+    if(yCoord < dict2[xData] && yCoord > 0){
+        document.getElementById("Info2").innerHTML= areaInfo4in1(2);
+        document.getElementById("Info2").style.opacity="1";
+    }
+    else {
+        //console.log("outside");
+        document.getElementById("Info2").style.opacity="0";
+    }
+}
+} 
+
+function getCursorPosition3(event) { 
+    if(hoverMode){
+    const canvas = document.getElementById('chrom3');
+    let rect = canvas.getBoundingClientRect(); 
+    let x = event.clientX - rect.left; 
+    let y = event.clientY - rect.top; 
+    
+    //Convert x on cavas to x value in the data set
+    var xCoord = ((x-57)/(795-57))*10
+
+    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
+    
+    // Convert y on canvas to y value on the graph
+    var yCoord = (((132-y))/(132))*maxY;
+    //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+
+    //ctx.save();
+    
+    if(yCoord < dict3[xData] && yCoord > 0){
+        document.getElementById("Info3").innerHTML= areaInfo4in1(3);
+        document.getElementById("Info3").style.opacity="1";
+    }
+    
+    else {
+        //console.log("outside");
+        document.getElementById("Info3").style.opacity="0";
+    }
+}
+} 
+
+function getCursorPosition4(event) { 
+    if(hoverMode){
+    const canvas = document.getElementById('chrom4');
+    let rect = canvas.getBoundingClientRect(); 
+    let x = event.clientX - rect.left; 
+    let y = event.clientY - rect.top; 
+    
+    //Convert x on cavas to x value in the data set
+    var xCoord = ((x-57)/(795-57))*10
+
+    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
+    
+    // Convert y on canvas to y value on the graph
+    var yCoord = (((132-y))/(132))*maxY;
+    //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+
+    //ctx.save();
+    
+    if(yCoord < dict4[xData] && yCoord > 0){
+        document.getElementById("Info4").innerHTML= areaInfo4in1(4);
+        document.getElementById("Info4").style.opacity="1";
+    }
+    else {
+        //console.log("outside");
+        document.getElementById("Info4").style.opacity="0";
+    }
+}
+}
+
+
+// things below sets data for different compound choices
+// the selected compound from calibration select page
+var selectedcmpd = -1;
+const area4in1 = [[7370,23804,86891,150534],[9597,23319,91002,227054],[1072,18291,39363,55005],[1072,18291,39363,55005],[3684,12718,46383,118860],[3684,12718,46383,118860],[6574,23554,89508,233279],[13598,69753,127019,452253],[9597,23319,91002,227054],[2090,17676,41710,57836],[13598,69753,127019,452253],[9597,23319,91002,227054],[9597,23319,91002,227054],[13598,69753,127019,452253]];
+const calibrationFilePaths = [["Acetaminophen"],["AcetylsalicylicAcid"],["Amphetamine_Case4"],["Amphetamine_Case123"],["Caffeine"],["Chlorothiazide"],["Ephedrine"],["EthacrynicAcidMethylEster"],["Ibuprofen"],["Methamphetamine"],["Methylphenidate"],["Phenylephrine"],["Pseudoephedrine"],["THC"]];
+const downloadNames = [["Acetaminophen"],["Acetylsalicylic Acid"],["Amphetamine Case4"],["Amphetamine Case123"],["Caffeine"],["Chlorothiazide"],["Ephedrine"],["Ethacrynic Acid MethylEster"],["Ibuprofen"],["Methamphetamine"],["Methylphenidate"],["Phenylephrine"],["Pseudoephedrine"],["THC"]]
+
+// displays the area count when hover
 function areaInfo4in1(peakNum) {
     text = '';
-    text += 'Peak '+ peakNum + ' Area = ' + area4in1[compounds][peakNum-1];
+    text += 'Peak '+ peakNum + ' Area = ' + area4in1[selectedcmpd][peakNum-1];
     return text;
 }
 
-chart4in1();
+// the function that checks which compound is selected
+
+if(localStorage.getItem('select') == 0){
+    selectCmpd(0);
+}
+else if(localStorage.getItem('select') == 1){
+    //console.log("entered");
+    selectCmpd(1);
+    }
+else if(localStorage.getItem('select') == 2){
+    //console.log("entered");
+    selectCmpd(2);
+    }
+else if(localStorage.getItem('select') == 3){
+//console.log("entered");
+selectCmpd(3);
+}
+else if(localStorage.getItem('select') == 4){
+//console.log("entered");
+selectCmpd(4);
+}
+else if(localStorage.getItem('select') == 5){
+//console.log("entered");
+selectCmpd(5);
+}
+else if(localStorage.getItem('select') == 6){
+//console.log("entered");
+selectCmpd(6);
+}
+else if(localStorage.getItem('select') == 7){
+//console.log("entered");
+selectCmpd(7);
+}
+else if(localStorage.getItem('select') == 8){
+//console.log("entered");
+selectCmpd(8);
+}
+else if(localStorage.getItem('select') == 9){
+    //console.log("entered");
+selectCmpd(9);
+}
+else if(localStorage.getItem('select') == 10){
+//console.log("entered");
+selectCmpd(10);
+}
+else if(localStorage.getItem('select') == 11){
+//console.log("entered");
+selectCmpd(11);
+}
+else if(localStorage.getItem('select') == 12){
+//console.log("entered");
+selectCmpd(12);
+}
+else if(localStorage.getItem('select') == 13){
+//console.log("entered");
+selectCmpd(13);
+}
+else if(localStorage.getItem('select') == 14){
+//console.log("entered");
+selectCmpd(14);
+}
+else{
+//console.log(localStorage.getItem('select'));
+}
+
+function selectCmpd(num){
+    selectedcmpd = num;
+    var calibrationPath1 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"1.csv";
+    var calibrationPath2 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"2.csv";
+    var calibrationPath3 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"3.csv";
+    var calibrationPath4 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"4.csv";
+    var calibrationDownloadPath =  "../../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] +".png";
+    var calibrationDownloadName = downloadNames[num]+"_Calibration_Graphs";
+    var calibrationTitleText = downloadNames[num]+" Calibration Graphs";
+    first = calibrationPath1;
+    second = calibrationPath2;
+    third = calibrationPath3;
+    forth = calibrationPath4;
+    document.getElementById("calibrationDownload").href=calibrationDownloadPath;
+    document.getElementById("calibrationDownload").download=calibrationDownloadName;
+    document.getElementById("calibrationTitle").innerText=calibrationTitleText;
+
+    chart4in1();
+}
