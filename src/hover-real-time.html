@@ -12,17 +12,22 @@
 
 <body>
     <div class="topNav text">
-        <a style= "font-size: 130%; ">CHEM230L: Drug Doping Lab</a>
+        <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
     </div>
-    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%; margin-bottom: 0;" >
-        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 3vw; height: 3vw;"></button>
-        <h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;">Case 1 Chromatogram</h1>
-        <button class="Download"></button>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1vw; margin-bottom: 0;" >
+        <h1 id="chrom-chart-title" class="header text" style="font-weight: bold; color: #096073; font-size: 2vw; margin-left: 5vw;">Chromatogram</h1>
+        <button id='download' class="Download" style="opacity: 0; align-self: flex-end;" disabled></button>
     </div>
-    <h4 class="text" style="font-size: 80%; margin: .7%;">Tip: Hover over each peak to show its area.</h4>
-    <div class="chart-container">
+    <h4 id="hover-tip" class="text" style=" text-align: left; font-size: 80%; margin: .7%; color: #A3D86C; opacity: 0; margin-left: 7vw;">Tip: Hover over each peak to show its area.</h4>
+    <div class="chart-container" style="margin:1vw;">
         <canvas id="chrom" width="800" height="400" margin="auto" display="block"></canvas>
-        <div id="Hover-Info", class="text" style="text-align: left; opacity: 0" margin="auto", display="block">Peak 1 Area = XXXXXXX</div>
+        <div class="flex-container text" style="flex-direction: column; justify-content: space-between;">
+            <p id="hover-info" style=" text-align: left; opacity: 0; color: #096073;" margin="auto", display="block">Area (1)= XXXXXXX</p>
+        </div>
+    </div>
+    <div class="afterrun" style="text-align: right;">
+        <button class = "GreenButton" id="trybut" style ="background-color: #08A696;height: 3vw;  margin-right: 3vw; display: none;"onclick = "location='add-solvent.html'">Try another ratio</button>
+        <button class = "GreenButton" id="next" style ="background-color: #08A696;height: 3vw;  margin-right: 3vw; display: none;" onclick = "location='select-ratio.html'">Next</button>
     </div>
 
 </body>

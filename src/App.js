@@ -1,27 +1,31 @@
-
 // Global constant for case
-const caseNum = "Case1";
+const caseNum = 2;
 
 // Global constants for solvent ratios
 const percentsB = ["0%", "15%", "25%", "45%", "70%"];
 const percentsA = ["100%", "85%", "75%", "55%", "30%"];
 var runStatus = [false, false, false, false, false];
+runStatus = JSON.parse(localStorage["runStat"]);
 const areas = [[86674,99256,110955], [21250,141568, 6225], [15203,42560,10525], [2256, 9536, 25638]];
-var ratioNum = 1;
-var peakNum = 1;
-let rungraph = [];
+const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]], 
+                [[.97, 1.5], [2.445, 4.47], [5.005, 6.82]],
+                [[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
+                [[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
+            ];
+var ratioNum = 3;
 
 // Paths
-var chromPath = '../data/DopingLab_dev/';
-var MSPath = '../data/DopingLab_dev/MSData/';
-var calibPath = '../data/DopingLab_dev/Calibrations/';
+var caseStartPath = '../data/DopingLab_dev/';
+var calibStartPath = '../data/DopingLab_dev/Calibrations/';
 
 // Arrays of filenames
+const caseNames = ["Case1", "Case2", "Case3", "Case4"];
 const chromNames = ['Chrom1.csv', 'Chrom2.csv', 'Chrom3.csv', 'Chrom4.csv', 'Chrom5.csv'];
 const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
 
 
 function changePercent(direction) {
+    
     if (direction == 1 && ratioNum != percentsB.length-1) {
         ratioNum++;
     }
@@ -40,16 +44,22 @@ function changePercent(direction) {
     }
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
-    //store the current ratio
-    localStorage["percnum"] = JSON.stringify(ratioNum);
+      //store the current ratio
+      localStorage["percnum"] = JSON.stringify(ratioNum);
+      
+      
 }
 
 function MakeChroms() {
+    ratioNum = JSON.parse(localStorage["percnum"]);
+
     runStatus[ratioNum] = true;
-    chromPath += caseNum + '/' + chromNames[ratioNum];
+    localStorage["runStat"] = JSON.stringify(runStatus);
+    var chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
     console.log(chromPath);
     chartChrom(chromPath);
 }
+
 //get stored ratio info
 function getPerc() {
     
@@ -57,15 +67,40 @@ function getPerc() {
     document.getElementById("percentsA").innerHTML = percentsA[ratioNum];
     document.getElementById("percentsB").innerHTML = percentsB[ratioNum];
 }
-
 //show the buttons after graph is done.
 function showButtons(){
     document.getElementById("trybut").style.display = "inline-block";
     document.getElementById("next").style.display = "inline-block";
-    console.log("buttons have been summoned but why not showing?");
+   // console.log("buttons have been summoned but why not showing?");
 }
+//show the selection page
+function selectOption(){
+    var selectra = document.getElementById("selectRatio");
+    
+    console.log(runStatus);
+    for (var i = 0; i<=runStatus.length;i++){
+        if (runStatus[i]){
+            var c = document.createElement("option");
+            c.text = "Case" + i;
+            selectra.options.add(c, i);
+        }
+    }
+    if (document.getElementById("selectRatio").length <3){
+        console.log("please go back and finish at least three trials.")
+    }
+    
+}
+//Reset the stored value
+function ratioReset(){
+    runStatus = [false, false, false, false, false];
+    localStorage["runStat"] = JSON.stringify(runStatus);
+}
+/****************************************************************************/
+// Real-time Graph Current-- uncomment when running real-time-final.html, comment out when not
 
-chartChrom('../data/DopingLab_dev/Case1/Chrom1.csv');
+
+MakeChroms();
+//ratioReset();
 var dict = {};
 const realTimeX = [];
 const realTimeY = [];
@@ -103,12 +138,20 @@ function getMaxY() {
         realTimeYNum.push(Number(number));
     });
     var max = Math.max.apply(Math, realTimeYNum);
-    var roundedMax = Math.ceil(max/1000)*1000;
+    var roundedMax = Math.ceil(max/100)*100;
     return roundedMax; 
 }
 
 async function chartChrom(path){
+    ratioNum = JSON.parse(localStorage["percnum"]);
     await getChromData(path);
+
+    // Add the title of the chromatogram to the page
+    const title = caseNames[ratioNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
+    document.getElementById("chrom-chart-title").innerHTML = title; 
+    document.getElementById("chrom-chart-title").style.opacity = 1;
+
+    // Make the chart
     const ctx = document.getElementById('chrom').getContext('2d');    
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -154,7 +197,16 @@ async function chartChrom(path){
             },
             hover: {
                 onHover: function(elements) {
-                    getCursorPosition(elements, ctx);
+                    const coords = getCursorPosition(elements, ctx);
+                    const yCoord = coords[0];
+                    const xData = coords[1];
+                    if (yCoord > 0 && yCoord < dict[xData]) {
+                        document.getElementById("hover-info").innerHTML= areaInfo();
+                        document.getElementById("hover-info").style.opacity="1";
+                    }
+                    else {
+                        document.getElementById("hover-info").style.opacity="0";
+                    }
                 }
             },
             tooltips: {
@@ -175,14 +227,28 @@ async function chartChrom(path){
             }
         }
 });
+   
+    // Add the data to the graph in real time
     hoverMode = false;
     var i;
     for(i=0; i < realTimeX.length; i++){
-        //await sleep(realTimeX[i]*10000);
+        //await sleep(realTimeX[i]* 1e-10000);
         addData(myChart,realTimeX[i],realTimeY[i]);
     }
     hoverMode = true;  
+
+    // // Enable all buttons on the graph after the graph is made
+    document.getElementById('hover-tip').style.opacity = 1;
+    // document.getElementById('again').style.opacity = 1;
+    // document.getElementById('again').disabled = false;
+    // document.getElementById('next').style.opacity = 1;
+    // document.getElementById('next').disabled = false;
+    document.getElementById('download').style.opacity = 1;
+    document.getElementById('download').disabled = false;
     showButtons();
+    // enable click function for MS
+    enableMSClick(ctx);   
+    
 }
 
 function addData(chart, label, data) {
@@ -198,6 +264,8 @@ function sleep(ms) {
 }
 
 function getCursorPosition(event, ctx) { 
+    // source: https://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
+
     const canvas = document.getElementById('chrom');
     let rect = canvas.getBoundingClientRect(); 
     let x = event.clientX - rect.left; 
@@ -212,68 +280,171 @@ function getCursorPosition(event, ctx) {
     var yCoord = (((331-y))/(331))*maxY;
     //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-    ctx.save();
-    if (yCoord < dict[xData]){
-        //console.log('inside');
-        //ctx.font = "30px Arial";
-        //ctx.fillText('Area', 600,35);
-        document.getElementById("Hover-Info").innerHTML= areaInfo();
-        document.getElementById("Hover-Info").style.opacity="1";
-    }
-    else {
-        //console.log("outside");
-        document.getElementById("Hover-Info").style.opacity="0";
-    }
+    return [yCoord, xData];
 } 
 
 function areaInfo() {
     text = '';
-    switch (ratioNum) {
-        case 0:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum].reduce((a,b) => a + b, 0);
-            //console.log(areas[ratioNum].reduce((a,b) => a + b, 0));
+    switch (caseNum) {
+        case 0: 
+            switch (ratioNum) {
+            case 0:
+                text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                break;
+            case 1:
+                const sum = areas[caseNum][1]+areas[caseNum][2];
+                text += 'Area (1) = ' + areas[caseNum][0] + 
+                        '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2]) + '*';
+                break;
+            case 2:
+                text += 'Area (1) = ' + areas[caseNum][0] + 
+                        '<br>Area (2) = ' + areas[caseNum][1] + 
+                        '*<br>Area (3) = ' + areas[caseNum][2] + '*';
+                break;
+            case 3:
+                text += 'Area (1) = ' + areas[caseNum][0] + 
+                        '<br>Area (2) = ' + areas[caseNum][1] + 
+                        '<br>Area (3) = ' + areas[caseNum][2];
+                break;
+            case 4:
+
+                text += 'Area (1) = ' + areas[caseNum][0] + 
+                        '<br>Area (2) = ' + areas[caseNum][1] + 
+                        '<br>Area (3) = ' + (areas[caseNum][2]-20000) + '*';
+                break;
+            }
             break;
         case 1:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
-                    '<br>Peak 2 Area = ' + areas[ratioNum][1]+areas[ratioNum][2];
-            break;
+            switch (ratioNum) {
+                case 0:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    break;
+                case 1:
+                    text += 'Area (1) = ' + (areas[caseNum][0]-1050) + 
+                            '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2] + 1050) + '*';
+                    break;
+                case 2:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2] - 170) + '*';
+                    break;
+                case 3:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2) = ' + areas[caseNum][1] + 
+                            '<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 4:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2)= ' + areas[caseNum][1] + 
+                            '<br>Area (3)= ' + (areas[caseNum][2]-15) + '*';
+                    break;
+                }
+                break;
         case 2:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
-                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
-                    '<br>Peak 3 Area = ' + areas[ratioNum][2];
-            break;
-        case 3:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
-                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
-                    '<br>Peak 3 Area = ' + areas[ratioNum][2];
-            break;
-        case 4:
-            console.log("Case " + (ratioNum+1));
-            text += 'Peak 1 Area = ' + areas[ratioNum][0] + 
-                    '<br>Peak 2 Area = ' + areas[ratioNum][1] + 
-                    '<br>Peak 3 Area = ' + areas[ratioNum][2]-2000;
-            break;
+            switch (ratioNum) {
+                case 0:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    break;
+                case 1:
+                    text += 'Area (1) = ' + (areas[caseNum][0]-453) + 
+                            '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2]+453) + '*';
+                    break;
+                case 2:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '*<br>Area (2) = ' + areas[caseNum][1]+
+                            '*<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 3:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2) = ' + areas[caseNum][1] + 
+                            '<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 4:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2)= ' + areas[caseNum][1] + 
+                            '<br>Area (3)= ' + (areas[caseNum][2]-3000) + '*';
+                    break;
+                }
+                break;
+        case 3: 
+            switch (ratioNum) {
+                case 0:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    break;
+                case 1:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    break;
+                case 2:
+                    text += 'Area (1) = ' + (areas[caseNum][0]+areas[caseNum][1]) +
+                            '*<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 3:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2) = ' + areas[caseNum][1] + 
+                            '<br>Area (3) = ' + areas[caseNum][2];
+                    break;
+                case 4:
+                    text += 'Area (1) = ' + areas[caseNum][0] + 
+                            '<br>Area (2)= ' + areas[caseNum][1] + 
+                            '<br>Area (3)= ' + (areas[caseNum][2]-16093) + '*';
+                    break;
+                }
+                break;
     }
     return text;
 }
 
+
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
 
-chartMS('Ethacrynic_acid_methylMS.csv');
 // arrays for x and y values
 const xValsMS = [];
 const yValsMS = [];
 
+function enableMSClick(ctx) {
+    document.getElementById('chrom').onclick = function(elements) {
+        console.log("peakNum before click: " + sessionStorage["peakNum"]);
+        if (ratioNum == 3) {
+            const coords = getCursorPosition(elements, ctx);
+            const yCoord = coords[0];
+            const xData = coords[1];
+            var MSPath = '';
+            if ( yCoord > 0 && yCoord < dict[xData]) {
+                if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
+                    //console.log('peak 1');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];   
+                    sessionStorage["peakNum"] = 0;
+                }
+                else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
+                    //console.log('peak 2');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[1];
+                    sessionStorage["peakNum"] = 1;
+                }
+                else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
+                    //console.log('peak 3');
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[2];
+                    sessionStorage["peakNum"] = 2;
+                }
+                //console.log("peakNum after click: " + sessionStorage["peakNum"])
+            window.location.href = "mass-spectra.html";
+            sessionStorage["path-to-MS"] = MSPath;
+            }
+        }
+    }
+}
+
+function MakeMS() {
+    var MSPath = sessionStorage.getItem("path-to-MS");
+    console.log("peakNum after click: " + sessionStorage["peakNum"]);
+    //console.log(MSPath);
+    chartMS(MSPath);
+}
+
 // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
-async function getMSData(filename) {
+async function getMSData(path) {
+    
 
     // reads csv file and trims is
-    const path = '../data/DopingLab_dev/MSData/'+filename;
     const response = await fetch(path);
     var data = await response.text();
     data = data.trim();
@@ -292,11 +463,19 @@ async function getMSData(filename) {
     return {xVals: xValsMS, yVals: yValsMS};
 }
 
-async function chartMS(filename) {
-    const data = await getMSData(filename);
+async function chartMS(path) {
+    const data = await getMSData(path);
+
+    // Add the title of the graph to the page
+    const title = caseNames[caseNum] + ': Peak ' + (Number(sessionStorage["peakNum"]) + 1) + " Mass Spectra";
+    document.getElementById("MS-chart-title").innerHTML = title; 
+    document.getElementById("MS-chart-title").style.opacity = 1;
+
+    // Make MS graph
     var ctx = document.getElementById('massSpectra');
     var chart = new Chart(ctx, {
-    // The type of chart we want to create
+    
+        // The type of chart we want to create
     type: 'bar',
 
     // The data for our dataset
@@ -349,3 +528,5 @@ async function chartMS(filename) {
     }
     })
 }
+
+

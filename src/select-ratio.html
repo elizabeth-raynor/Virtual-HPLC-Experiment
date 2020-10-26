@@ -10,23 +10,27 @@
 </head>
 
 
-<body  onload="getPerc()">
+<body  onload="selectOption()">
 <div class="topNav text">
     <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
 </div>
 <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
-    <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;"></button>
+    <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;" onclick="location='add-solvent.html'"></button>
     <div>
-        <h2 class="text" style="font-weight: bold; color: #096073; font-size: 180%;">Click to select the most desirable result</h2>
+        <h2 class="text" style="font-weight: bold; color: #096073; font-size: 180%;">Select the most desirable result</h2>
+        <select name="ratio" id="selectRatio"></select>
+        <input type="button" onclick="submitChoice()" value="Submit" style = "background-color: #08A696;">
     </div>
+
     <button class="Download"></button>
 </div>
 
-<div class="content" style="flex-direction: row; justify-content: space-between; margin-left: 7vw;";>
+<div class="content" style="flex-direction: row; justify-content: space-between; margin-left: 7vw; display: inline-block;";>
     
     <div>
         <img src="../images/BlueBottle.png" width = 240vw>
     </div>
+    
 </div>
 <div class = "graphs"></div>
 
