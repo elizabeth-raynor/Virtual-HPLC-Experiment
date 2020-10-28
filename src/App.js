@@ -34,6 +34,16 @@ function changePercent(direction) {
     if (direction == -1 && ratioNum != 0) {
         ratioNum--;
     }
+    if (runStatus[ratioNum]) {
+        document.getElementById("percentB").style.color = "#b1e0dc";
+        document.getElementById("runButton").style.cursor = "context-menu";
+        document.getElementById("runButton").disabled = true;
+    }       
+    else {
+        document.getElementById("percentB").style.color = "#08A696"; 
+        document.getElementById("runButton").style.cursor = "pointer";
+        document.getElementById("runButton").disabled = false;  
+    }
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
     //store the current ratio
@@ -51,7 +61,14 @@ function MakeChroms() {
     console.log(chromPath);
     chartChrom(chromPath);
 }
-
+//StatusCheck if done running
+function statusCheck(){
+    if (runStatus[ratioNum]) {
+        document.getElementById("percentB").style.color = "#b1e0dc";
+        document.getElementById("runButton").style.cursor = "context-menu";
+        document.getElementById("runButton").disabled = true;
+    }  
+}
 //get stored ratio info
 function getPerc() {
     
@@ -92,9 +109,6 @@ function ratioReset(){
 }
 /****************************************************************************/
 // Real-time Graph Current-- uncomment when running real-time-final.html, comment out when not
-
-
-
 //ratioReset();
 var dict = {};
 const realTimeX = [];
