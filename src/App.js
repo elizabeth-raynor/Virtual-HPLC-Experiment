@@ -1,5 +1,7 @@
 // Global constant for case
 const caseNum = 2;
+//checker for all false case
+let checker = arr => arr.every(v => v === false);
 
 // Global constants for solvent ratios
 const percentsB = ["0%", "15%", "25%", "45%", "70%"];
@@ -32,20 +34,10 @@ function changePercent(direction) {
     if (direction == -1 && ratioNum != 0) {
         ratioNum--;
     }
-    if (runStatus[ratioNum]) {
-        document.getElementById("percentB").style.color = "#b1e0dc";
-        document.getElementById("runButton").style.cursor = "context-menu";
-        document.getElementById("runButton").disabled = true;
-    }       
-    else {
-        document.getElementById("percentB").style.color = "#08A696"; 
-        document.getElementById("runButton").style.cursor = "pointer";
-        document.getElementById("runButton").disabled = false;  
-    }
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
-      //store the current ratio
-      localStorage["percnum"] = JSON.stringify(ratioNum);
+    //store the current ratio
+    localStorage["percnum"] = JSON.stringify(ratioNum);
       
       
 }
@@ -76,20 +68,23 @@ function showButtons(){
 //show the selection page
 function selectOption(){
     var selectra = document.getElementById("selectRatio");
+    if (checker(runStatus)){
+        var d = document.createElement("option");
+        d.text = "Run a trial first!";
+        selectra.options.add(d, 1);
+    }
     
-    console.log(runStatus);
     for (var i = 0; i<=runStatus.length;i++){
         if (runStatus[i]){
+            ratioNum = JSON.parse(localStorage["percnum"]);
             var c = document.createElement("option");
-            c.text = "Case" + i;
+            c.text = percentsA[i] + ' Solvent A, ' + percentsB[i] + ' Solvent B ';
             selectra.options.add(c, i);
         }
     }
-    if (document.getElementById("selectRatio").length <3){
-        console.log("please go back and finish at least three trials.")
-    }
-    
+
 }
+
 //Reset the stored value
 function ratioReset(){
     runStatus = [false, false, false, false, false];
@@ -99,7 +94,7 @@ function ratioReset(){
 // Real-time Graph Current-- uncomment when running real-time-final.html, comment out when not
 
 
-MakeChroms();
+
 //ratioReset();
 var dict = {};
 const realTimeX = [];
@@ -147,7 +142,7 @@ async function chartChrom(path){
     await getChromData(path);
 
     // Add the title of the chromatogram to the page
-    const title = caseNames[ratioNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
+    const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
     document.getElementById("chrom-chart-title").innerHTML = title; 
     document.getElementById("chrom-chart-title").style.opacity = 1;
 

@@ -11,7 +11,7 @@
 </head>
 <!-- https://stackoverflow.com/questions/3855854/my-website-have-a-horizontal-scrollbar-that-i-want-to-get-rid-of-->
 <!--<body scroll="no" style="overflow: hidden">-->
-<body  onload="getPerc()">
+<body  onload="getPerc();statusCheck();">
     <!--Button stuff-->
     <!-- source: https://www.w3schools.com/tags/tag_button.asp -->
     <!-- source: https://www.toptal.com/designers/htmlarrows/arrows/-->
@@ -20,7 +20,7 @@
     <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
 </div>
 <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
-    <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;"></button>
+    <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;" onclick="location='../index.html'"></button>
     <button class="Download"></button>
 </div>
 
