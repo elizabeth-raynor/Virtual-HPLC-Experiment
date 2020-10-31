@@ -22,6 +22,8 @@ const caseNames = ["Case1", "Case2", "Case3", "Case4"];
 const chromNames = ['Chrom1.csv', 'Chrom2.csv', 'Chrom3.csv', 'Chrom4.csv', 'Chrom5.csv'];
 const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
 
+/************************************************************** */
+// Add solvent
 
 function changePercent(direction) {
     if (direction == 1 && ratioNum != percentsB.length-1) {
@@ -44,16 +46,18 @@ function changePercent(direction) {
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
 }
 
+
+
+
+/****************************************************************************/
+// Real-time Graph Current
+
 function MakeChroms() {
     runStatus[ratioNum] = true;
     chromPath += caseNames[caseNum] + '/' + chromNames[ratioNum];
     console.log(chromPath);
     chartChrom(chromPath);
 }
-
-
-/****************************************************************************/
-// Real-time Graph Current-- uncomment when running real-time-final.html, comment out when not
 
 const chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
 chartChrom(chromPath);
@@ -351,6 +355,13 @@ function areaInfo() {
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
 
+function MakeMS() {
+    var MSPath = sessionStorage.getItem("path-to-MS");
+    console.log("peakNum after click: " + sessionStorage["peakNum"]);
+    //console.log(MSPath);
+    chartMS(MSPath);
+}
+
 // arrays for x and y values
 const xValsMS = [];
 const yValsMS = [];
@@ -385,13 +396,6 @@ function enableMSClick(ctx) {
             }
         }
     }
-}
-
-function MakeMS() {
-    var MSPath = sessionStorage.getItem("path-to-MS");
-    console.log("peakNum after click: " + sessionStorage["peakNum"]);
-    //console.log(MSPath);
-    chartMS(MSPath);
 }
 
 // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
@@ -482,8 +486,6 @@ async function chartMS(path) {
     }
     })
 }
-
-
 
 
 /********************************************************** */
