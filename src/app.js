@@ -1,5 +1,5 @@
 // Global constant for case
-const caseNum = 2;
+const caseNum = 0;
 
 // Global constants for solvent ratios
 const percentsB = ["0%", "15%", "25%", "45%", "70%"];
