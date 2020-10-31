@@ -528,6 +528,7 @@ async function getData(fileSource,x,y){
 }
 */
 async function getChromData4in1(path,dict,x,y){
+    console.log(path);
     const response = await fetch(path);
     var data = await response.text();
     data = data.trim();
@@ -1036,10 +1037,10 @@ else{
 
 function selectCmpd(num){
     selectedcmpd = num;
-    var calibrationPath1 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"1.csv";
-    var calibrationPath2 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"2.csv";
-    var calibrationPath3 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"3.csv";
-    var calibrationPath4 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"4.csv";
+    var calibrationPath1 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"1.csv";
+    var calibrationPath2 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"2.csv";
+    var calibrationPath3 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"3.csv";
+    var calibrationPath4 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"4.csv";
     var calibrationDownloadPath =  "../../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] +".png";
     var calibrationDownloadName = downloadNames[num]+"_Calibration_Graphs";
     var calibrationTitleText = downloadNames[num]+" Calibration Graphs";
@@ -1047,6 +1048,7 @@ function selectCmpd(num){
     second = calibrationPath2;
     third = calibrationPath3;
     forth = calibrationPath4;
+    //console.log(first, second, third, forth);
     document.getElementById("calibrationDownload").href=calibrationDownloadPath;
     document.getElementById("calibrationDownload").download=calibrationDownloadName;
     document.getElementById("calibrationTitle").innerText=calibrationTitleText;
