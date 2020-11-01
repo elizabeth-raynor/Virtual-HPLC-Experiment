@@ -329,7 +329,7 @@ async function chart4in1(){
             // change this to make it draw a data set instead of just y value
             labels: [],
             datasets: [{
-                label: 'caffeine 1',
+                label: 'Calibration Graph 1',
                 data: [],
                 backgroundColor: 
                 'rgba(163, 216, 108, 1)',
@@ -391,7 +391,7 @@ async function chart4in1(){
             labels: [],
             datasets: [
             {
-                label: 'caffeine 2',
+                label: 'Calibration Graph 2',
                 data: [],
                 backgroundColor: 
                 'rgba(86, 191, 132, 1)',
@@ -453,7 +453,7 @@ async function chart4in1(){
             labels: [],
             datasets: [
             {
-                label: 'caffeine 3',
+                label: 'Calibration Graph 3',
                 data: [],
                 backgroundColor: 
                 'rgba(8, 166, 150, 1)',
@@ -515,7 +515,7 @@ async function chart4in1(){
             labels: [],
             datasets: [
             {
-                label: 'caffeine 4',
+                label: 'Calibration Graph 4',
                 data: [],
                 backgroundColor: 
                 'rgba(9, 96, 115, 1)',
@@ -577,6 +577,7 @@ async function chart4in1(){
         addData4in1(Chart4,x1[i],y4[i]);
     }
     hoverMode = true;  
+    document.getElementById("next").style.opacity=1;
 }
 
 function addData4in1(chart, label, data) {
@@ -788,10 +789,10 @@ else{
 
 function selectCmpd(num){
     selectedcmpd = num;
-    var calibrationPath1 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"1.csv";
-    var calibrationPath2 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"2.csv";
-    var calibrationPath3 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"3.csv";
-    var calibrationPath4 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"4.csv";
+    var calibrationPath1 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"_1.csv";
+    var calibrationPath2 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"_2.csv";
+    var calibrationPath3 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"_3.csv";
+    var calibrationPath4 = "../../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"_4.csv";
     var calibrationDownloadPath =  "../../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] +".png";
     var calibrationDownloadName = downloadNames[num]+"_Calibration_Graphs";
     var calibrationTitleText = downloadNames[num]+" Calibration Graphs";
@@ -799,9 +800,89 @@ function selectCmpd(num){
     second = calibrationPath2;
     third = calibrationPath3;
     forth = calibrationPath4;
+    
     document.getElementById("calibrationDownload").href=calibrationDownloadPath;
     document.getElementById("calibrationDownload").download=calibrationDownloadName;
     document.getElementById("calibrationTitle").innerText=calibrationTitleText;
 
     chart4in1();
+    chartOverlay();
+}
+
+//below are for calibration-overlay.html
+async function chartOverlay(){
+    var chromPathOverlay = '../../data/DopingLab_dev/';
+    chromPathOverlay += caseNum + '/' + chromNames[3];
+    //console.log(chromPath);
+    await getChromData4in1(forth,dict4,x4,y4);
+    await getChromData(chromPathOverlay);
+    maxY = getMaxY4in1();
+    //console.log(maxY);
+    if(getMaxY()>getMaxY4in1()){
+        maxY = getMaxY();
+    }
+    
+    const ctx = document.getElementById('chromOverlay').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                // change this to make it draw a data set instead of just y value
+                labels: realTimeX,
+                datasets: [{
+                    label: 'solvent',
+                    data: realTimeY,
+                    backgroundColor: 
+                  'rgba(163, 216, 108, 1)',
+                },
+                {
+                    label: 'calibration',
+                    data: y4,
+                    backgroundColor: 
+                  'rgba(9, 96, 115, 1)',
+                },
+                ]},
+            options: {
+                responsive: false,
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                        max: 10,
+                        min: 0,
+                        maxTicksLimit: 21,
+                        beginAtZero:true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Retention Time (min)'
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                        max: maxY,
+                        min: 0,
+                        stepSize:1000,
+                        beginAtZero:true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Signal (arb. units)'
+                        }
+                    }],
+                },
+                    //onClick:function (elements) {
+                    //    console.log(elements);}
+                    //onClick: getCursorPosition,
+                    /*
+                hover: {
+                    // Overrides the global setting
+                    enabled: true,
+                    //mode: 'dataset',
+                    onHover: function(elements) {
+                        getCursorPosition(elements);
+                    }
+                }   
+                */
+            }
+        });
+        document.getElementById("finish").style.opacity=1;
 }

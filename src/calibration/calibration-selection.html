@@ -14,7 +14,7 @@
     <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
         <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 3vw; height: 3vw;"></button>
         <!--<h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;">Calibration Compound Selection</h1>-->
-        <button class="Download" onclick="compoundPageDownload()"></button>
+        
     </div>
     <div>
         <p class="text" style= "color: #096073; font-size: 230%;">Choose a compound from the dropdown <br> menu and click Run</p>
@@ -52,7 +52,7 @@
         function select(){
         var select = document.getElementById("compoundList");
             if(select.options.length > 0 && select.options[select.selectedIndex].text != "Compound") {
-                window.alert("Text: " + select.options[select.selectedIndex].text + "\nValue: " + select.options[select.selectedIndex].value);
+                //window.alert("Text: " + select.options[select.selectedIndex].text + "\nValue: " + select.options[select.selectedIndex].value);
                 localStorage.setItem('select',select.options[select.selectedIndex].value);
                 window.location.replace("calibration-real-time.html");
             }
