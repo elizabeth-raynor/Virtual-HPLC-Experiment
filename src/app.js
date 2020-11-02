@@ -1,17 +1,21 @@
 // Global constant for case
-const caseNum = 0;
+//var caseNum = 0;
 
 // Global constants for solvent ratios
 const percentsB = ["0%", "15%", "25%", "45%", "70%"];
 const percentsA = ["100%", "85%", "75%", "55%", "30%"];
-var runStatus = [false, false, false, false, false];
+
 const areas = [[86674, 99256, 110955], [21250, 141568, 6225], [15203, 42560, 10525], [2256, 9536, 25638]];
 const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
 [[.97, 1.5], [2.445, 4.47], [5.005, 6.82]],
 [[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
 [[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
 ];
-var ratioNum = 1;
+//var ratioNum = 1;
+
+var ratioNum = JSON.parse(sessionStorage["ratioNum"]);
+var caseNum = JSON.parse(sessionStorage['caseNum']);
+var runStatus = JSON.parse(sessionStorage['runStatus']);
 
 var bestChrom = true;
 
@@ -28,22 +32,24 @@ const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
 // Add solvent
 
 function changePercent(direction) {
+    runStatus = JSON.parse(sessionStorage['runStatus'])
+
     if (direction == 1 && ratioNum != percentsB.length-1) {
         ratioNum++;
     }
     if (direction == -1 && ratioNum != 0) {
         ratioNum--;
     }
-    if (runStatus[ratioNum]) {
-        document.getElementById("percentB").style.color = "#b1e0dc";
-        document.getElementById("runButton").style.cursor = "context-menu";
-        document.getElementById("runButton").disabled = true;
-    }       
-    else {
-        document.getElementById("percentB").style.color = "#08A696"; 
-        document.getElementById("runButton").style.cursor = "pointer";
-        document.getElementById("runButton").disabled = false;  
-    }
+    // if (runStatus[ratioNum]) {
+    //     document.getElementById("percentB").style.color = "#b1e0dc";
+    //     document.getElementById("runButton").style.cursor = "context-menu";
+    //     document.getElementById("runButton").disabled = true;
+    // }       
+    // else {
+    //     document.getElementById("percentB").style.color = "#08A696"; 
+    //     document.getElementById("runButton").style.cursor = "pointer";
+    //     document.getElementById("runButton").disabled = false;  
+    // }
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
 
@@ -60,13 +66,12 @@ function changePercent(direction) {
 
 function MakeChroms() {
     //ratioNum = JSON.parse(localStorage["percnum"]);
-    ratioNum = JSON.parse(sessionStorage["ratioNum"]);
     runStatus[ratioNum] = true;
     sessionStorage["runStatus"] = JSON.stringify(runStatus);
     var chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
     chartChrom(chromPath);
 }
-/*
+
 //StatusCheck if done running
 function statusCheck(){
     if (runStatus[ratioNum]) {
@@ -79,15 +84,18 @@ function statusCheck(){
 function getPerc() {
     
     ratioNum = JSON.parse(localStorage["percnum"]);
-    document.getElementById("percentsA").innerHTML = percentsA[ratioNum];
-    document.getElementById("percentsB").innerHTML = percentsB[ratioNum];
+    document.getElementById("percentA").innerHTML = percentsA[ratioNum];
+    document.getElementById("percentB").innerHTML = percentsB[ratioNum];
 }
+
+
 //show the buttons after graph is done.
 function showButtons(){
     document.getElementById("trybut").style.display = "inline-block";
     document.getElementById("next").style.display = "inline-block";
    // console.log("buttons have been summoned but why not showing?");
 }
+
 //show the selection page
 function selectOption(){
     var selectra = document.getElementById("selectRatio");
@@ -113,7 +121,7 @@ function ratioReset(){
     runStatus = [false, false, false, false, false];
     localStorage["runStat"] = JSON.stringify(runStatus);
 }
-*/
+
 
 //const chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
 //chartChrom(chromPath);
@@ -129,7 +137,8 @@ async function chartChrom(path) {
     await getChromData(path);
 
     // Add the title of the chromatogram to the page
-    const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
+    var caseName = caseNames[caseNum].substring(0,caseNames[caseNum].length-1) + ' ' + caseNames[caseNum].substring(caseNames[caseNum].length-1);
+    const title =  caseName + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
     document.getElementById("chrom-chart-title").innerHTML = title;
     document.getElementById("chrom-chart-title").style.opacity = 1;
 
@@ -225,7 +234,7 @@ async function chartChrom(path) {
     var i;
     for (i = 0; i < realTimeX.length; i++) {
         if (!bestChrom) {
-            await sleep(realTimeX[i]* 1e-10000);
+            //await sleep(realTimeX[i]* 1e-10000);
         }
         addData(myChart, realTimeX[i], realTimeY[i]);
     }
@@ -233,12 +242,13 @@ async function chartChrom(path) {
 
     // Enable all buttons on the graph after the graph is made
     if (!bestChrom) {
-        document.getElementById('hover-tip').style.opacity = 1;
+        
         document.getElementById('again').style.opacity = 1;
         document.getElementById('again').disabled = false;
         document.getElementById('download').style.opacity = 1;
         document.getElementById('download').disabled = false;
     }
+    document.getElementById('hover-tip').style.opacity = 1;
     document.getElementById('next').style.opacity = 1;
     document.getElementById('next').disabled = false;
 
@@ -429,6 +439,7 @@ function areaInfo() {
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
 function enableMSClick(ctx) {
+    ratioNum = sessionStorage['ratioNum'];
     const canvas = document.getElementById('bestChrom');
     canvas.onclick = function (elements) {
         //console.log("peakNum before click: " + sessionStorage["peakNum"]);
@@ -438,6 +449,7 @@ function enableMSClick(ctx) {
             const xData = coords[1];
             var MSPath = '';
             if (yCoord > 0 && yCoord < dict[xData]) {
+                //document.getElementById['bestChromContainer'].style.cursor = 'pointer';
                 if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
                     //console.log('peak 1');
                     MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];

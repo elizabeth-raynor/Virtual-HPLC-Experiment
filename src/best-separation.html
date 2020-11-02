@@ -10,7 +10,7 @@
     <script src="app.js"></script>
 </head>
 
-<body>
+<body onload="MakeChroms();">
     <div class="topNav text">
         <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
     </div>
@@ -19,7 +19,7 @@
         <button id='download' class="Download" style="opacity: 0; align-self: flex-end;" disabled></button>
     </div>
     <h4 id="hover-tip" class="text" style=" text-align: left; font-size: 80%; margin: .7%; color: #A3D86C; opacity: 0; margin-left: 7vw;">Tip: Click on each peak to show its mass spectra.</h4>
-    <div class="chart-container" style="margin:1vw;">
+    <div id="bestChromContainer" class="chart-container" style="margin:1vw;">
         <canvas id="bestChrom" width="800" height="400" margin="auto" display="block"></canvas>
         <div class="flex-container text" style="flex-direction: column; justify-content: space-between;">
             <p id="hover-info" style=" text-align: left; opacity: 0; color: #096073;" margin="auto", display="block">Area (1)= XXXXXXX</p>
@@ -31,8 +31,7 @@
     </div>
 <script>
     bestChrom = true;
-    ratioNum = 3;
-    MakeChroms();
+    sessionStorage['ratioNum'] = 3;
 </script>
 
 </body>
