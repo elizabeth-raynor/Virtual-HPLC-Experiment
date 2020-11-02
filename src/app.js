@@ -28,7 +28,7 @@ const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
 // Add solvent
 
 function changePercent(direction) {
-    if (direction == 1 && ratioNum != percentsB.length - 1) {
+    if (direction == 1 && ratioNum != percentsB.length-1) {
         ratioNum++;
     }
     if (direction == -1 && ratioNum != 0) {
@@ -38,14 +38,18 @@ function changePercent(direction) {
         document.getElementById("percentB").style.color = "#b1e0dc";
         document.getElementById("runButton").style.cursor = "context-menu";
         document.getElementById("runButton").disabled = true;
-    }
+    }       
     else {
-        document.getElementById("percentB").style.color = "#08A696";
+        document.getElementById("percentB").style.color = "#08A696"; 
         document.getElementById("runButton").style.cursor = "pointer";
-        document.getElementById("runButton").disabled = false;
+        document.getElementById("runButton").disabled = false;  
     }
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
+
+    
+    //store the current ratio
+    sessionStorage["ratioNum"] = JSON.stringify(ratioNum);
 }
 
 
@@ -55,56 +59,72 @@ function changePercent(direction) {
 // Real-time Graph Current
 
 function MakeChroms() {
+    //ratioNum = JSON.parse(localStorage["percnum"]);
+    ratioNum = JSON.parse(sessionStorage["ratioNum"]);
     runStatus[ratioNum] = true;
-    chromPath += caseNames[caseNum] + '/' + chromNames[ratioNum];
-    console.log(chromPath);
+    sessionStorage["runStatus"] = JSON.stringify(runStatus);
+    var chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
     chartChrom(chromPath);
 }
+/*
+//StatusCheck if done running
+function statusCheck(){
+    if (runStatus[ratioNum]) {
+        document.getElementById("percentB").style.color = "#b1e0dc";
+        document.getElementById("runButton").style.cursor = "context-menu";
+        document.getElementById("runButton").disabled = true;
+    }  
+}
+//get stored ratio info
+function getPerc() {
+    
+    ratioNum = JSON.parse(localStorage["percnum"]);
+    document.getElementById("percentsA").innerHTML = percentsA[ratioNum];
+    document.getElementById("percentsB").innerHTML = percentsB[ratioNum];
+}
+//show the buttons after graph is done.
+function showButtons(){
+    document.getElementById("trybut").style.display = "inline-block";
+    document.getElementById("next").style.display = "inline-block";
+   // console.log("buttons have been summoned but why not showing?");
+}
+//show the selection page
+function selectOption(){
+    var selectra = document.getElementById("selectRatio");
+    if (checker(runStatus)){
+        var d = document.createElement("option");
+        d.text = "Run a trial first!";
+        selectra.options.add(d, 1);
+    }
+    
+    for (var i = 0; i<=runStatus.length;i++){
+        if (runStatus[i]){
+            ratioNum = JSON.parse(localStorage["percnum"]);
+            var c = document.createElement("option");
+            c.text = percentsA[i] + ' Solvent A, ' + percentsB[i] + ' Solvent B ';
+            selectra.options.add(c, i);
+        }
+    }
 
-const chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
-chartChrom(chromPath);
+}
+
+//Reset the stored value
+function ratioReset(){
+    runStatus = [false, false, false, false, false];
+    localStorage["runStat"] = JSON.stringify(runStatus);
+}
+*/
+
+//const chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
+//chartChrom(chromPath);
 var dict = {};
 const realTimeX = [];
 const realTimeY = [];
 var hoverMode = false;
 var maxY = 0;
 
-async function getChromData(path) {
-    const response = await fetch(path);
-    var data = await response.text();
-    data = data.trim();
-
-    const rows = data.split('\n');
-    rows.forEach(elt => {
-        const row = elt.split(',');
-        dict[row[0]] = row[1];
-        const time = parseFloat(row[0]);
-
-        // Add times to x-axis array if they are a number
-        if (!isNaN(Number(time))) {
-            realTimeX.push(time);
-        }
-
-        // Add signals to y-axis array if they are a number
-        const signal = parseFloat(row[1]);
-        if (!isNaN(Number(signal))) {
-            realTimeY.push(signal);
-        }
-    });
-    maxY = getMaxY();
-}
-
-function getMaxY() {
-    realTimeYNum = [];
-    realTimeY.forEach(number => {
-        realTimeYNum.push(Number(number));
-    });
-    var max = Math.max.apply(Math, realTimeYNum);
-    var roundedMax = Math.ceil(max / 100) * 100;
-    return roundedMax;
-}
-
 async function chartChrom(path) {
+    console.log("bestChrom: " + bestChrom);
 
     await getChromData(path);
 
@@ -171,6 +191,7 @@ async function chartChrom(path) {
                     const coords = getCursorPosition(elements, ctx,canvas);
                     const yCoord = coords[0];
                     const xData = coords[1];
+                    //console.log('xCoord:' + xData, 'yCoord: ' + yCoord);
                     if (yCoord > 0 && yCoord < dict[xData]) {
                         document.getElementById("hover-info").innerHTML = areaInfo();
                         document.getElementById("hover-info").style.opacity = "1";
@@ -204,26 +225,62 @@ async function chartChrom(path) {
     var i;
     for (i = 0; i < realTimeX.length; i++) {
         if (!bestChrom) {
-            //await sleep(realTimeX[i]* 1e-10000);
+            await sleep(realTimeX[i]* 1e-10000);
         }
         addData(myChart, realTimeX[i], realTimeY[i]);
     }
     hoverMode = true;
 
     // Enable all buttons on the graph after the graph is made
-    document.getElementById('hover-tip').style.opacity = 1;
-    document.getElementById('again').style.opacity = 1;
-    document.getElementById('again').disabled = false;
+    if (!bestChrom) {
+        document.getElementById('hover-tip').style.opacity = 1;
+        document.getElementById('again').style.opacity = 1;
+        document.getElementById('again').disabled = false;
+        document.getElementById('download').style.opacity = 1;
+        document.getElementById('download').disabled = false;
+    }
     document.getElementById('next').style.opacity = 1;
     document.getElementById('next').disabled = false;
-    document.getElementById('download').style.opacity = 1;
-    document.getElementById('download').disabled = false;
 
     // enable click function for MS
     if (bestChrom) {
-        console.log('best chrom true');
         enableMSClick(ctx);
     }
+}
+
+async function getChromData(path) {
+    const response = await fetch(path);
+    var data = await response.text();
+    data = data.trim();
+
+    const rows = data.split('\n');
+    rows.forEach(elt => {
+        const row = elt.split(',');
+        dict[row[0]] = row[1];
+        const time = parseFloat(row[0]);
+
+        // Add times to x-axis array if they are a number
+        if (!isNaN(Number(time))) {
+            realTimeX.push(time);
+        }
+
+        // Add signals to y-axis array if they are a number
+        const signal = parseFloat(row[1]);
+        if (!isNaN(Number(signal))) {
+            realTimeY.push(signal);
+        }
+    });
+    maxY = getMaxY();
+}
+
+function getMaxY() {
+    realTimeYNum = [];
+    realTimeY.forEach(number => {
+        realTimeYNum.push(Number(number));
+    });
+    var max = Math.max.apply(Math, realTimeYNum);
+    var roundedMax = Math.ceil(max / 100) * 100;
+    return roundedMax;
 }
 
 function addData(chart, label, data) {
@@ -259,6 +316,7 @@ function getCursorPosition(event, ctx, canvas) {
 
 function areaInfo() {
     text = '';
+    ratioNum = JSON.parse(sessionStorage['ratioNum']);
     switch (caseNum) {
         case 0:
             switch (ratioNum) {
@@ -371,7 +429,6 @@ function areaInfo() {
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
 function enableMSClick(ctx) {
-    console.log("in enable MS click");
     const canvas = document.getElementById('bestChrom');
     canvas.onclick = function (elements) {
         //console.log("peakNum before click: " + sessionStorage["peakNum"]);
