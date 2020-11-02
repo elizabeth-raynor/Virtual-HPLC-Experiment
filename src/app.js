@@ -5,13 +5,15 @@ const caseNum = 0;
 const percentsB = ["0%", "15%", "25%", "45%", "70%"];
 const percentsA = ["100%", "85%", "75%", "55%", "30%"];
 var runStatus = [false, false, false, false, false];
-const areas = [[86674,99256,110955], [21250,141568, 6225], [15203,42560,10525], [2256, 9536, 25638]];
-const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]], 
-                [[.97, 1.5], [2.445, 4.47], [5.005, 6.82]],
-                [[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
-                [[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
-            ];
-var ratioNum = 3;
+const areas = [[86674, 99256, 110955], [21250, 141568, 6225], [15203, 42560, 10525], [2256, 9536, 25638]];
+const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
+[[.97, 1.5], [2.445, 4.47], [5.005, 6.82]],
+[[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
+[[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
+];
+var ratioNum = 1;
+
+var bestChrom = true;
 
 // Paths
 var caseStartPath = '../data/DopingLab_dev/';
@@ -26,7 +28,7 @@ const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
 // Add solvent
 
 function changePercent(direction) {
-    if (direction == 1 && ratioNum != percentsB.length-1) {
+    if (direction == 1 && ratioNum != percentsB.length - 1) {
         ratioNum++;
     }
     if (direction == -1 && ratioNum != 0) {
@@ -36,11 +38,11 @@ function changePercent(direction) {
         document.getElementById("percentB").style.color = "#b1e0dc";
         document.getElementById("runButton").style.cursor = "context-menu";
         document.getElementById("runButton").disabled = true;
-    }       
+    }
     else {
-        document.getElementById("percentB").style.color = "#08A696"; 
+        document.getElementById("percentB").style.color = "#08A696";
         document.getElementById("runButton").style.cursor = "pointer";
-        document.getElementById("runButton").disabled = false;  
+        document.getElementById("runButton").disabled = false;
     }
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
@@ -67,7 +69,7 @@ const realTimeY = [];
 var hoverMode = false;
 var maxY = 0;
 
-async function getChromData(path){
+async function getChromData(path) {
     const response = await fetch(path);
     var data = await response.text();
     data = data.trim();
@@ -77,17 +79,17 @@ async function getChromData(path){
         const row = elt.split(',');
         dict[row[0]] = row[1];
         const time = parseFloat(row[0]);
-        
+
         // Add times to x-axis array if they are a number
         if (!isNaN(Number(time))) {
             realTimeX.push(time);
         }
-        
+
         // Add signals to y-axis array if they are a number
         const signal = parseFloat(row[1]);
         if (!isNaN(Number(signal))) {
             realTimeY.push(signal);
-        }  
+        }
     });
     maxY = getMaxY();
 }
@@ -98,20 +100,30 @@ function getMaxY() {
         realTimeYNum.push(Number(number));
     });
     var max = Math.max.apply(Math, realTimeYNum);
-    var roundedMax = Math.ceil(max/100)*100;
-    return roundedMax; 
+    var roundedMax = Math.ceil(max / 100) * 100;
+    return roundedMax;
 }
 
-async function chartChrom(path){
+async function chartChrom(path) {
+
     await getChromData(path);
 
     // Add the title of the chromatogram to the page
     const title = caseNames[caseNum] + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
-    document.getElementById("chrom-chart-title").innerHTML = title; 
+    document.getElementById("chrom-chart-title").innerHTML = title;
     document.getElementById("chrom-chart-title").style.opacity = 1;
 
     // Make the chart
-    const ctx = document.getElementById('chrom').getContext('2d');    
+    var ctx = '';
+    if (bestChrom) {
+        ctx = document.getElementById('bestChrom').getContext('2d');
+        canvas = document.getElementById('bestChrom');
+    }
+    else {
+        ctx = document.getElementById('chrom').getContext('2d');
+        canvas = document.getElementById('chrom');
+    }
+
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -120,8 +132,8 @@ async function chartChrom(path){
             datasets: [{
                 label: 'Signal(arb. units)',
                 data: [],
-                backgroundColor: 
-                'rgba(163, 216, 108, 0.5)',
+                backgroundColor:
+                    'rgba(163, 216, 108, 0.5)',
                 radius: 2
             }],
         },
@@ -133,9 +145,9 @@ async function chartChrom(path){
             scales: {
                 xAxes: [{
                     ticks: {
-                    max: 10,
-                    min: 0,
-                    maxTicksLimit: 40,
+                        max: 10,
+                        min: 0,
+                        maxTicksLimit: 40,
                     },
                     scaleLabel: {
                         display: true,
@@ -144,9 +156,9 @@ async function chartChrom(path){
                 }],
                 yAxes: [{
                     ticks: {
-                    max: maxY,
-                    min: 0,
-                    maxTicksLimit: 11,
+                        max: maxY,
+                        min: 0,
+                        maxTicksLimit: 11,
                     },
                     scaleLabel: {
                         display: true,
@@ -155,26 +167,26 @@ async function chartChrom(path){
                 }],
             },
             hover: {
-                onHover: function(elements) {
-                    const coords = getCursorPosition(elements, ctx);
+                onHover: function (elements) {
+                    const coords = getCursorPosition(elements, ctx,canvas);
                     const yCoord = coords[0];
                     const xData = coords[1];
                     if (yCoord > 0 && yCoord < dict[xData]) {
-                        document.getElementById("hover-info").innerHTML= areaInfo();
-                        document.getElementById("hover-info").style.opacity="1";
+                        document.getElementById("hover-info").innerHTML = areaInfo();
+                        document.getElementById("hover-info").style.opacity = "1";
                     }
                     else {
-                        document.getElementById("hover-info").style.opacity="0";
+                        document.getElementById("hover-info").style.opacity = "0";
                     }
                 }
             },
             tooltips: {
                 callbacks: {
-                    title: function(tooltipItem, data) {
+                    title: function (tooltipItem, data) {
                         var title = "Retention Time (min): " + realTimeX[tooltipItem[0].index];
                         return title;
                     },
-                    label: function(tooltipItem, data) {
+                    label: function (tooltipItem, data) {
                         var label = data.datasets[tooltipItem.datasetIndex].label || '';
                         if (label) {
                             label += ': ';
@@ -185,16 +197,18 @@ async function chartChrom(path){
                 }
             }
         }
-});
-   
+    });
+
     // Add the data to the graph in real time
     hoverMode = false;
     var i;
-    for(i=0; i < realTimeX.length; i++){
-        //await sleep(realTimeX[i]* 1e-10000);
-        addData(myChart,realTimeX[i],realTimeY[i]);
+    for (i = 0; i < realTimeX.length; i++) {
+        if (!bestChrom) {
+            //await sleep(realTimeX[i]* 1e-10000);
+        }
+        addData(myChart, realTimeX[i], realTimeY[i]);
     }
-    hoverMode = true;  
+    hoverMode = true;
 
     // Enable all buttons on the graph after the graph is made
     document.getElementById('hover-tip').style.opacity = 1;
@@ -206,7 +220,10 @@ async function chartChrom(path){
     document.getElementById('download').disabled = false;
 
     // enable click function for MS
-    enableMSClick(ctx);   
+    if (bestChrom) {
+        console.log('best chrom true');
+        enableMSClick(ctx);
+    }
 }
 
 function addData(chart, label, data) {
@@ -221,132 +238,131 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function getCursorPosition(event, ctx) { 
+function getCursorPosition(event, ctx, canvas) {
     // source: https://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
 
-    const canvas = document.getElementById('chrom');
-    let rect = canvas.getBoundingClientRect(); 
-    let x = event.clientX - rect.left; 
-    let y = event.clientY - rect.top; 
-    
-    //Convert x on cavas to x value in the data set
-    var xCoord = ((x-57)/(795-57))*10
+    let rect = canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
 
-    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
-    
+    //Convert x on cavas to x value in the data set
+    var xCoord = ((x - 57) / (795 - 57)) * 10
+
+    var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
+
     // Convert y on canvas to y value on the graph
-    var yCoord = (((331-y))/(331))*maxY;
+    var yCoord = (((331 - y)) / (331)) * maxY;
     //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
     return [yCoord, xData];
-} 
+}
 
 function areaInfo() {
     text = '';
     switch (caseNum) {
-        case 0: 
+        case 0:
             switch (ratioNum) {
-            case 0:
-                text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
-                break;
-            case 1:
-                const sum = areas[caseNum][1]+areas[caseNum][2];
-                text += 'Area (1) = ' + areas[caseNum][0] + 
-                        '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2]) + '*';
-                break;
-            case 2:
-                text += 'Area (1) = ' + areas[caseNum][0] + 
-                        '<br>Area (2) = ' + areas[caseNum][1] + 
+                case 0:
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a, b) => a + b, 0) + '*';
+                    break;
+                case 1:
+                    const sum = areas[caseNum][1] + areas[caseNum][2];
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '*<br>Area (2) = ' + (areas[caseNum][1] + areas[caseNum][2]) + '*';
+                    break;
+                case 2:
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2) = ' + areas[caseNum][1] +
                         '*<br>Area (3) = ' + areas[caseNum][2] + '*';
-                break;
-            case 3:
-                text += 'Area (1) = ' + areas[caseNum][0] + 
-                        '<br>Area (2) = ' + areas[caseNum][1] + 
+                    break;
+                case 3:
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2) = ' + areas[caseNum][1] +
                         '<br>Area (3) = ' + areas[caseNum][2];
-                break;
-            case 4:
+                    break;
+                case 4:
 
-                text += 'Area (1) = ' + areas[caseNum][0] + 
-                        '<br>Area (2) = ' + areas[caseNum][1] + 
-                        '<br>Area (3) = ' + (areas[caseNum][2]-20000) + '*';
-                break;
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2) = ' + areas[caseNum][1] +
+                        '<br>Area (3) = ' + (areas[caseNum][2] - 20000) + '*';
+                    break;
             }
             break;
         case 1:
             switch (ratioNum) {
                 case 0:
-                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a, b) => a + b, 0) + '*';
                     break;
                 case 1:
-                    text += 'Area (1) = ' + (areas[caseNum][0]-1050) + 
-                            '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2] + 1050) + '*';
+                    text += 'Area (1) = ' + (areas[caseNum][0] - 1050) +
+                        '*<br>Area (2) = ' + (areas[caseNum][1] + areas[caseNum][2] + 1050) + '*';
                     break;
                 case 2:
-                    text += 'Area (1) = ' + areas[caseNum][0] + 
-                            '<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2] - 170) + '*';
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2) = ' + (areas[caseNum][1] + areas[caseNum][2] - 170) + '*';
                     break;
                 case 3:
-                    text += 'Area (1) = ' + areas[caseNum][0] + 
-                            '<br>Area (2) = ' + areas[caseNum][1] + 
-                            '<br>Area (3) = ' + areas[caseNum][2];
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2) = ' + areas[caseNum][1] +
+                        '<br>Area (3) = ' + areas[caseNum][2];
                     break;
                 case 4:
-                    text += 'Area (1) = ' + areas[caseNum][0] + 
-                            '<br>Area (2)= ' + areas[caseNum][1] + 
-                            '<br>Area (3)= ' + (areas[caseNum][2]-15) + '*';
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2)= ' + areas[caseNum][1] +
+                        '<br>Area (3)= ' + (areas[caseNum][2] - 15) + '*';
                     break;
-                }
-                break;
+            }
+            break;
         case 2:
             switch (ratioNum) {
                 case 0:
-                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a, b) => a + b, 0) + '*';
                     break;
                 case 1:
-                    text += 'Area (1) = ' + (areas[caseNum][0]-453) + 
-                            '*<br>Area (2) = ' + (areas[caseNum][1]+areas[caseNum][2]+453) + '*';
+                    text += 'Area (1) = ' + (areas[caseNum][0] - 453) +
+                        '*<br>Area (2) = ' + (areas[caseNum][1] + areas[caseNum][2] + 453) + '*';
                     break;
                 case 2:
-                    text += 'Area (1) = ' + areas[caseNum][0] + 
-                            '*<br>Area (2) = ' + areas[caseNum][1]+
-                            '*<br>Area (3) = ' + areas[caseNum][2];
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '*<br>Area (2) = ' + areas[caseNum][1] +
+                        '*<br>Area (3) = ' + areas[caseNum][2];
                     break;
                 case 3:
-                    text += 'Area (1) = ' + areas[caseNum][0] + 
-                            '<br>Area (2) = ' + areas[caseNum][1] + 
-                            '<br>Area (3) = ' + areas[caseNum][2];
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2) = ' + areas[caseNum][1] +
+                        '<br>Area (3) = ' + areas[caseNum][2];
                     break;
                 case 4:
-                    text += 'Area (1) = ' + areas[caseNum][0] + 
-                            '<br>Area (2)= ' + areas[caseNum][1] + 
-                            '<br>Area (3)= ' + (areas[caseNum][2]-3000) + '*';
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2)= ' + areas[caseNum][1] +
+                        '<br>Area (3)= ' + (areas[caseNum][2] - 3000) + '*';
                     break;
-                }
-                break;
-        case 3: 
+            }
+            break;
+        case 3:
             switch (ratioNum) {
                 case 0:
-                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a, b) => a + b, 0) + '*';
                     break;
                 case 1:
-                    text += 'Area (1)= ' + areas[caseNum].reduce((a,b) => a + b, 0) + '*';
+                    text += 'Area (1)= ' + areas[caseNum].reduce((a, b) => a + b, 0) + '*';
                     break;
                 case 2:
-                    text += 'Area (1) = ' + (areas[caseNum][0]+areas[caseNum][1]) +
-                            '*<br>Area (3) = ' + areas[caseNum][2];
+                    text += 'Area (1) = ' + (areas[caseNum][0] + areas[caseNum][1]) +
+                        '*<br>Area (3) = ' + areas[caseNum][2];
                     break;
                 case 3:
-                    text += 'Area (1) = ' + areas[caseNum][0] + 
-                            '<br>Area (2) = ' + areas[caseNum][1] + 
-                            '<br>Area (3) = ' + areas[caseNum][2];
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2) = ' + areas[caseNum][1] +
+                        '<br>Area (3) = ' + areas[caseNum][2];
                     break;
                 case 4:
-                    text += 'Area (1) = ' + areas[caseNum][0] + 
-                            '<br>Area (2)= ' + areas[caseNum][1] + 
-                            '<br>Area (3)= ' + (areas[caseNum][2]-16093) + '*';
+                    text += 'Area (1) = ' + areas[caseNum][0] +
+                        '<br>Area (2)= ' + areas[caseNum][1] +
+                        '<br>Area (3)= ' + (areas[caseNum][2] - 16093) + '*';
                     break;
-                }
-                break;
+            }
+            break;
     }
     return text;
 }
@@ -354,30 +370,20 @@ function areaInfo() {
 
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
-
-function MakeMS() {
-    var MSPath = sessionStorage.getItem("path-to-MS");
-    console.log("peakNum after click: " + sessionStorage["peakNum"]);
-    //console.log(MSPath);
-    chartMS(MSPath);
-}
-
-// arrays for x and y values
-const xValsMS = [];
-const yValsMS = [];
-
 function enableMSClick(ctx) {
-    document.getElementById('chrom').onclick = function(elements) {
-        console.log("peakNum before click: " + sessionStorage["peakNum"]);
+    console.log("in enable MS click");
+    const canvas = document.getElementById('bestChrom');
+    canvas.onclick = function (elements) {
+        //console.log("peakNum before click: " + sessionStorage["peakNum"]);
         if (ratioNum == 3) {
-            const coords = getCursorPosition(elements, ctx);
+            const coords = getCursorPosition(elements, ctx, canvas);
             const yCoord = coords[0];
             const xData = coords[1];
             var MSPath = '';
-            if ( yCoord > 0 && yCoord < dict[xData]) {
+            if (yCoord > 0 && yCoord < dict[xData]) {
                 if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
                     //console.log('peak 1');
-                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];   
+                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];
                     sessionStorage["peakNum"] = 0;
                 }
                 else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
@@ -391,122 +397,135 @@ function enableMSClick(ctx) {
                     sessionStorage["peakNum"] = 2;
                 }
                 //console.log("peakNum after click: " + sessionStorage["peakNum"])
-            window.location.href = "mass-spectra.html";
-            sessionStorage["path-to-MS"] = MSPath;
+                window.location.href = "mass-spectra.html";
+                sessionStorage["path-to-MS"] = MSPath;
             }
         }
     }
 }
 
-// source: https://www.youtube.com/watch?v=RfMkdvN-23o 
-async function getMSData(path) {
-    
+function runMS() {
+    var MSPath = sessionStorage.getItem("path-to-MS");
+    //console.log("peakNum after click: " + sessionStorage["peakNum"]);
+    //console.log(MSPath);
+    chartMS(MSPath);
 
-    // reads csv file and trims is
-    const response = await fetch(path);
-    var data = await response.text();
-    data = data.trim();
 
-    // populate the arrays with the data
-    const rows = data.split('\n');
-    //console.log(rows);
-    rows.forEach(element => {
-        const row = element.split(',');
-        const ratio = parseFloat(row[0]);
-        xValsMS.push(ratio);
-        const abund = parseFloat(row[1]/10000);
-        yValsMS.push(abund);
-        //console.log(ratio, abund);
-    });
-    return {xVals: xValsMS, yVals: yValsMS};
-}
+    // arrays for x and y values
+    const xValsMS = [];
+    const yValsMS = [];
 
-async function chartMS(path) {
-    const data = await getMSData(path);
 
-    // Add the title of the graph to the page
-    const title = caseNames[caseNum] + ': Peak ' + (Number(sessionStorage["peakNum"]) + 1) + " Mass Spectra";
-    document.getElementById("MS-chart-title").innerHTML = title; 
-    document.getElementById("MS-chart-title").style.opacity = 1;
+    // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
+    async function getMSData(path) {
 
-    // Make MS graph
-    var ctx = document.getElementById('massSpectra');
-    var chart = new Chart(ctx, {
-    
-        // The type of chart we want to create
-    type: 'bar',
 
-    // The data for our dataset
-    data: {
-        labels: data.xVals,
-        datasets: [{
-            data: data.yVals,
-            backgroundColor: '#A3D86C',
-            borderColor: 'grey',
-            hoverBackgroundColor: '#56BF84', 
-            barPercentage: 1.0
-        }]
-    },
+        // reads csv file and trims is
+        const response = await fetch(path);
+        var data = await response.text();
+        data = data.trim();
 
-    // Configuration options go here
-    options: {
-        legend: {
-            display: false
-        },
-        scales: {
-            yAxes: [{
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Relative Abundance',
+        // populate the arrays with the data
+        const rows = data.split('\n');
+        //console.log(rows);
+        rows.forEach(element => {
+            const row = element.split(',');
+            const ratio = parseFloat(row[0]);
+            xValsMS.push(ratio);
+            const abund = parseFloat(row[1] / 10000);
+            yValsMS.push(abund);
+            //console.log(ratio, abund);
+        });
+        return { xVals: xValsMS, yVals: yValsMS };
+    }
+
+    async function chartMS(path) {
+        const data = await getMSData(path);
+
+        // Add the title of the graph to the page
+        const title = caseNames[caseNum] + ': Peak ' + (Number(sessionStorage["peakNum"]) + 1) + " Mass Spectra";
+        document.getElementById("MS-chart-title").innerHTML = title;
+        document.getElementById("MS-chart-title").style.opacity = 1;
+
+        // Make MS graph
+        var ctx = document.getElementById('massSpectra');
+        var chart = new Chart(ctx, {
+
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: data.xVals,
+                datasets: [{
+                    data: data.yVals,
+                    backgroundColor: '#A3D86C',
+                    borderColor: 'grey',
+                    hoverBackgroundColor: '#56BF84',
+                    barPercentage: 1.0
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                legend: {
+                    display: false
                 },
-            }],
-            xAxes: [{
-                
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Mass-to-Change Ratio (m/z)',
-                },
-                ticks: {
-                        beginAtZero: false,
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Relative Abundance',
+                        },
+                    }],
+                    xAxes: [{
+
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Mass-to-Change Ratio (m/z)',
+                        },
+                        ticks: {
+                            beginAtZero: false,
                         }
-            }]
-        },
-        tooltips: {
-            callbacks: {
-                title: function(tooltipItem, data) {
-                    var title = "Mass-to-Change Ratio: " + xValsMS[tooltipItem[0].index];
-                    return title;
+                    }]
                 },
-                label: function(tooltipItem, data) {
-                    var label = "Relative Abundance: " + tooltipItem.yLabel;
-                    return label;
+                tooltips: {
+                    callbacks: {
+                        title: function (tooltipItem, data) {
+                            var title = "Mass-to-Change Ratio: " + xValsMS[tooltipItem[0].index];
+                            return title;
+                        },
+                        label: function (tooltipItem, data) {
+                            var label = "Relative Abundance: " + tooltipItem.yLabel;
+                            return label;
+                        }
+                    }
                 }
             }
-        }
+        })
     }
-    })
 }
 
 /****************************************************************************/
 // calibration 4 in 1 graphs -- uncomment when running calibration-real-time.html, comment out when not
 
-    var first;
-    var second;
-    var third;
-    var forth;
-    const x1 = [];
-    const y1 = [];
-    const x2 = [];
-    const y2 = [];
-    const x3 = [];
-    const y3 = [];
-    const x4 = [];
-    const y4 = [];
+var first;
+var second;
+var third;
+var forth;
+const x1 = [];
+const y1 = [];
+const x2 = [];
+const y2 = [];
+const x3 = [];
+const y3 = [];
+const x4 = [];
+const y4 = [];
 
-    var dict1 = {};
-    var dict2 = {};
-    var dict3 = {};
-    var dict4 = {};
+var dict1 = {};
+var dict2 = {};
+var dict3 = {};
+var dict4 = {};
 
 
 /*
@@ -527,7 +546,7 @@ async function getData(fileSource,x,y){
     });
 }
 */
-async function getChromData4in1(path,dict,x,y){
+async function getChromData4in1(path, dict, x, y) {
     console.log(path);
     const response = await fetch(path);
     var data = await response.text();
@@ -538,17 +557,17 @@ async function getChromData4in1(path,dict,x,y){
         const row = elt.split(',');
         dict[row[0]] = row[1];
         const time = parseFloat(row[0]);
-        
+
         // Add times to x-axis array if they are a number
         if (!isNaN(Number(time))) {
             x.push(time);
         }
-        
+
         // Add signals to y-axis array if they are a number
         const signal = parseFloat(row[1]);
         if (!isNaN(Number(signal))) {
             y.push(signal);
-        }  
+        }
     });
 }
 
@@ -558,16 +577,16 @@ function getMaxY4in1() {
         realTimeYNum.push(Number(number));
     });
     var max = Math.max.apply(Math, realTimeYNum);
-    var roundedMax = Math.ceil(max/1000)*1000;
-    return roundedMax; 
+    var roundedMax = Math.ceil(max / 1000) * 1000;
+    return roundedMax;
 }
 
-async function chart4in1(){
+async function chart4in1() {
     hoverMode = false;
-    await getChromData4in1(first,dict1,x1,y1);
-    await getChromData4in1(second,dict2,x2,y2);
-    await getChromData4in1(third,dict3,x3,y3);
-    await getChromData4in1(forth,dict4,x4,y4);
+    await getChromData4in1(first, dict1, x1, y1);
+    await getChromData4in1(second, dict2, x2, y2);
+    await getChromData4in1(third, dict3, x3, y3);
+    await getChromData4in1(forth, dict4, x4, y4);
     maxY = getMaxY4in1();
     //console.log(maxY);
 
@@ -580,20 +599,21 @@ async function chart4in1(){
             datasets: [{
                 label: 'caffeine 1',
                 data: [],
-                backgroundColor: 
-                'rgba(163, 216, 108, 1)',
-                display:false,
+                backgroundColor:
+                    'rgba(163, 216, 108, 1)',
+                display: false,
             },
-            ]},
+            ]
+        },
         options: {
             responsive: false,
             scales: {
                 xAxes: [{
                     ticks: {
-                    max: 10,
-                    min: 0,
-                    maxTicksLimit: 21,
-                    beginAtZero:true
+                        max: 10,
+                        min: 0,
+                        maxTicksLimit: 21,
+                        beginAtZero: true
                     },
                     scaleLabel: {
                         display: true,
@@ -602,10 +622,10 @@ async function chart4in1(){
                 }],
                 yAxes: [{
                     ticks: {
-                    max: maxY,
-                    min: 0,
-                    stepSize:1000,
-                    beginAtZero:true
+                        max: maxY,
+                        min: 0,
+                        stepSize: 1000,
+                        beginAtZero: true
                     },
                     scaleLabel: {
                         display: true,
@@ -615,20 +635,22 @@ async function chart4in1(){
             },
             title: {
                 display: true,
-                text: 'Calibration Graph 1',},
+                text: 'Calibration Graph 1',
+            },
             legend: {
-                display: false},
-                //onClick:function (elements) {
-                //    console.log(elements);}
-                //onClick: getCursorPosition,
+                display: false
+            },
+            //onClick:function (elements) {
+            //    console.log(elements);}
+            //onClick: getCursorPosition,
             hover: {
                 // Overrides the global setting
                 enabled: true,
                 //mode: 'dataset',
-                onHover: function(elements) {
+                onHover: function (elements) {
                     getCursorPosition1(elements);
                 }
-            }   
+            }
         }
     });
 
@@ -639,23 +661,24 @@ async function chart4in1(){
             // change this to make it draw a data set instead of just y value
             labels: [],
             datasets: [
-            {
-                label: 'caffeine 2',
-                data: [],
-                backgroundColor: 
-                'rgba(86, 191, 132, 1)',
-                display:false,
-            },
-            ]},
+                {
+                    label: 'caffeine 2',
+                    data: [],
+                    backgroundColor:
+                        'rgba(86, 191, 132, 1)',
+                    display: false,
+                },
+            ]
+        },
         options: {
             responsive: false,
             scales: {
                 xAxes: [{
                     ticks: {
-                    max: 10,
-                    min: 0,
-                    maxTicksLimit: 21,
-                    beginAtZero:true
+                        max: 10,
+                        min: 0,
+                        maxTicksLimit: 21,
+                        beginAtZero: true
                     },
                     scaleLabel: {
                         display: true,
@@ -664,10 +687,10 @@ async function chart4in1(){
                 }],
                 yAxes: [{
                     ticks: {
-                    max: maxY,
-                    min: 0,
-                    stepSize:1000,
-                    beginAtZero:true
+                        max: maxY,
+                        min: 0,
+                        stepSize: 1000,
+                        beginAtZero: true
                     },
                     scaleLabel: {
                         display: true,
@@ -677,20 +700,22 @@ async function chart4in1(){
             },
             title: {
                 display: true,
-                text: 'Calibration Graph 2',},
+                text: 'Calibration Graph 2',
+            },
             legend: {
-                display: false},
-                //onClick:function (elements) {
-                //    console.log(elements);}
-                //onClick: getCursorPosition,
+                display: false
+            },
+            //onClick:function (elements) {
+            //    console.log(elements);}
+            //onClick: getCursorPosition,
             hover: {
                 // Overrides the global setting
                 enabled: true,
                 //mode: 'dataset',
-                onHover: function(elements) {
+                onHover: function (elements) {
                     getCursorPosition2(elements);
                 }
-            }   
+            }
         }
     });
 
@@ -701,23 +726,24 @@ async function chart4in1(){
             // change this to make it draw a data set instead of just y value
             labels: [],
             datasets: [
-            {
-                label: 'caffeine 3',
-                data: [],
-                backgroundColor: 
-                'rgba(8, 166, 150, 1)',
-                display:false,
-            },
-            ]},
+                {
+                    label: 'caffeine 3',
+                    data: [],
+                    backgroundColor:
+                        'rgba(8, 166, 150, 1)',
+                    display: false,
+                },
+            ]
+        },
         options: {
             responsive: false,
             scales: {
                 xAxes: [{
                     ticks: {
-                    max: 10,
-                    min: 0,
-                    maxTicksLimit: 21,
-                    beginAtZero:true
+                        max: 10,
+                        min: 0,
+                        maxTicksLimit: 21,
+                        beginAtZero: true
                     },
                     scaleLabel: {
                         display: true,
@@ -726,10 +752,10 @@ async function chart4in1(){
                 }],
                 yAxes: [{
                     ticks: {
-                    max: maxY,
-                    min: 0,
-                    stepSize:1000,
-                    beginAtZero:true
+                        max: maxY,
+                        min: 0,
+                        stepSize: 1000,
+                        beginAtZero: true
                     },
                     scaleLabel: {
                         display: true,
@@ -739,20 +765,22 @@ async function chart4in1(){
             },
             title: {
                 display: true,
-                text: 'Calibration Graph 3',},
-                legend: {
-                    display: false},
-                //onClick:function (elements) {
-                //    console.log(elements);}
-                //onClick: getCursorPosition,
+                text: 'Calibration Graph 3',
+            },
+            legend: {
+                display: false
+            },
+            //onClick:function (elements) {
+            //    console.log(elements);}
+            //onClick: getCursorPosition,
             hover: {
                 // Overrides the global setting
                 enabled: true,
                 //mode: 'dataset',
-                onHover: function(elements) {
+                onHover: function (elements) {
                     getCursorPosition3(elements);
                 }
-            }   
+            }
         }
     });
 
@@ -763,23 +791,24 @@ async function chart4in1(){
             // change this to make it draw a data set instead of just y value
             labels: [],
             datasets: [
-            {
-                label: 'caffeine 4',
-                data: [],
-                backgroundColor: 
-                'rgba(9, 96, 115, 1)',
-                display:false,
-            },
-            ]},
+                {
+                    label: 'caffeine 4',
+                    data: [],
+                    backgroundColor:
+                        'rgba(9, 96, 115, 1)',
+                    display: false,
+                },
+            ]
+        },
         options: {
             responsive: false,
             scales: {
                 xAxes: [{
                     ticks: {
-                    max: 10,
-                    min: 0,
-                    maxTicksLimit: 21,
-                    beginAtZero:true
+                        max: 10,
+                        min: 0,
+                        maxTicksLimit: 21,
+                        beginAtZero: true
                     },
                     scaleLabel: {
                         display: true,
@@ -788,10 +817,10 @@ async function chart4in1(){
                 }],
                 yAxes: [{
                     ticks: {
-                    max: maxY,
-                    min: 0,
-                    stepSize:1000,
-                    beginAtZero:true
+                        max: maxY,
+                        min: 0,
+                        stepSize: 1000,
+                        beginAtZero: true
                     },
                     scaleLabel: {
                         display: true,
@@ -801,31 +830,33 @@ async function chart4in1(){
             },
             title: {
                 display: true,
-                text: 'Calibration Graph 4',},
-                legend: {
-                    display: false},
-                //onClick:function (elements) {
-                //    console.log(elements);}
-                //onClick: getCursorPosition,
+                text: 'Calibration Graph 4',
+            },
+            legend: {
+                display: false
+            },
+            //onClick:function (elements) {
+            //    console.log(elements);}
+            //onClick: getCursorPosition,
             hover: {
                 // Overrides the global setting
                 enabled: true,
                 //mode: 'dataset',
-                onHover: function(elements) {
+                onHover: function (elements) {
                     getCursorPosition4(elements);
                 }
-            }   
+            }
         }
     });
     var i;
-    for(i=0; i < x1.length; i++){
-        await sleep(x1[i]*0.1);
-        addData4in1(Chart1,x1[i],y1[i]);
-        addData4in1(Chart2,x1[i],y2[i]);
-        addData4in1(Chart3,x1[i],y3[i]);
-        addData4in1(Chart4,x1[i],y4[i]);
+    for (i = 0; i < x1.length; i++) {
+        await sleep(x1[i] * 0.1);
+        addData4in1(Chart1, x1[i], y1[i]);
+        addData4in1(Chart2, x1[i], y2[i]);
+        addData4in1(Chart3, x1[i], y3[i]);
+        addData4in1(Chart4, x1[i], y4[i]);
     }
-    hoverMode = true;  
+    hoverMode = true;
 }
 
 function addData4in1(chart, label, data) {
@@ -840,218 +871,218 @@ function sleep(ms) {
 }
 */
 
-function getCursorPosition1(event) { 
-    if(hoverMode){
-    const canvas = document.getElementById('chrom1');
-    let rect = canvas.getBoundingClientRect(); 
-    let x = event.clientX - rect.left; 
-    let y = event.clientY - rect.top; 
-    
-    //Convert x on cavas to x value in the data set
-    var xCoord = ((x-57)/(795-57))*10
+function getCursorPosition1(event) {
+    if (hoverMode) {
+        const canvas = document.getElementById('chrom1');
+        let rect = canvas.getBoundingClientRect();
+        let x = event.clientX - rect.left;
+        let y = event.clientY - rect.top;
 
-    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
-    
-    // Convert y on canvas to y value on the graph
-    var yCoord = (((132-y))/(132))*maxY;
-    //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+        //Convert x on cavas to x value in the data set
+        var xCoord = ((x - 57) / (795 - 57)) * 10
 
-    //ctx.save();
-    if (yCoord < dict1[xData] && yCoord > 0){
-        document.getElementById("Info1").innerHTML= areaInfo4in1(1);
-        document.getElementById("Info1").style.opacity="1";
-    }
-    else {
-        //console.log("outside");
-        document.getElementById("Info1").style.opacity="0";
-    }
-}
-} 
+        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
 
-function getCursorPosition2(event) { 
-    if(hoverMode){
-    const canvas = document.getElementById('chrom2');
-    let rect = canvas.getBoundingClientRect(); 
-    let x = event.clientX - rect.left; 
-    let y = event.clientY - rect.top; 
-    
-    //Convert x on cavas to x value in the data set
-    var xCoord = ((x-57)/(795-57))*10
+        // Convert y on canvas to y value on the graph
+        var yCoord = (((132 - y)) / (132)) * maxY;
+        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
-    
-    // Convert y on canvas to y value on the graph
-    var yCoord = (((132-y))/(132))*maxY;
-    //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
-
-    //ctx.save();
-    if(yCoord < dict2[xData] && yCoord > 0){
-        document.getElementById("Info2").innerHTML= areaInfo4in1(2);
-        document.getElementById("Info2").style.opacity="1";
-    }
-    else {
-        //console.log("outside");
-        document.getElementById("Info2").style.opacity="0";
+        //ctx.save();
+        if (yCoord < dict1[xData] && yCoord > 0) {
+            document.getElementById("Info1").innerHTML = areaInfo4in1(1);
+            document.getElementById("Info1").style.opacity = "1";
+        }
+        else {
+            //console.log("outside");
+            document.getElementById("Info1").style.opacity = "0";
+        }
     }
 }
-} 
 
-function getCursorPosition3(event) { 
-    if(hoverMode){
-    const canvas = document.getElementById('chrom3');
-    let rect = canvas.getBoundingClientRect(); 
-    let x = event.clientX - rect.left; 
-    let y = event.clientY - rect.top; 
-    
-    //Convert x on cavas to x value in the data set
-    var xCoord = ((x-57)/(795-57))*10
+function getCursorPosition2(event) {
+    if (hoverMode) {
+        const canvas = document.getElementById('chrom2');
+        let rect = canvas.getBoundingClientRect();
+        let x = event.clientX - rect.left;
+        let y = event.clientY - rect.top;
 
-    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
-    
-    // Convert y on canvas to y value on the graph
-    var yCoord = (((132-y))/(132))*maxY;
-    //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+        //Convert x on cavas to x value in the data set
+        var xCoord = ((x - 57) / (795 - 57)) * 10
 
-    //ctx.save();
-    
-    if(yCoord < dict3[xData] && yCoord > 0){
-        document.getElementById("Info3").innerHTML= areaInfo4in1(3);
-        document.getElementById("Info3").style.opacity="1";
-    }
-    
-    else {
-        //console.log("outside");
-        document.getElementById("Info3").style.opacity="0";
+        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
+
+        // Convert y on canvas to y value on the graph
+        var yCoord = (((132 - y)) / (132)) * maxY;
+        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+
+        //ctx.save();
+        if (yCoord < dict2[xData] && yCoord > 0) {
+            document.getElementById("Info2").innerHTML = areaInfo4in1(2);
+            document.getElementById("Info2").style.opacity = "1";
+        }
+        else {
+            //console.log("outside");
+            document.getElementById("Info2").style.opacity = "0";
+        }
     }
 }
-} 
 
-function getCursorPosition4(event) { 
-    if(hoverMode){
-    const canvas = document.getElementById('chrom4');
-    let rect = canvas.getBoundingClientRect(); 
-    let x = event.clientX - rect.left; 
-    let y = event.clientY - rect.top; 
-    
-    //Convert x on cavas to x value in the data set
-    var xCoord = ((x-57)/(795-57))*10
+function getCursorPosition3(event) {
+    if (hoverMode) {
+        const canvas = document.getElementById('chrom3');
+        let rect = canvas.getBoundingClientRect();
+        let x = event.clientX - rect.left;
+        let y = event.clientY - rect.top;
 
-    var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
-    
-    // Convert y on canvas to y value on the graph
-    var yCoord = (((132-y))/(132))*maxY;
-    //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+        //Convert x on cavas to x value in the data set
+        var xCoord = ((x - 57) / (795 - 57)) * 10
 
-    //ctx.save();
-    
-    if(yCoord < dict4[xData] && yCoord > 0){
-        document.getElementById("Info4").innerHTML= areaInfo4in1(4);
-        document.getElementById("Info4").style.opacity="1";
-    }
-    else {
-        //console.log("outside");
-        document.getElementById("Info4").style.opacity="0";
+        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
+
+        // Convert y on canvas to y value on the graph
+        var yCoord = (((132 - y)) / (132)) * maxY;
+        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+
+        //ctx.save();
+
+        if (yCoord < dict3[xData] && yCoord > 0) {
+            document.getElementById("Info3").innerHTML = areaInfo4in1(3);
+            document.getElementById("Info3").style.opacity = "1";
+        }
+
+        else {
+            //console.log("outside");
+            document.getElementById("Info3").style.opacity = "0";
+        }
     }
 }
+
+function getCursorPosition4(event) {
+    if (hoverMode) {
+        const canvas = document.getElementById('chrom4');
+        let rect = canvas.getBoundingClientRect();
+        let x = event.clientX - rect.left;
+        let y = event.clientY - rect.top;
+
+        //Convert x on cavas to x value in the data set
+        var xCoord = ((x - 57) / (795 - 57)) * 10
+
+        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
+
+        // Convert y on canvas to y value on the graph
+        var yCoord = (((132 - y)) / (132)) * maxY;
+        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+
+        //ctx.save();
+
+        if (yCoord < dict4[xData] && yCoord > 0) {
+            document.getElementById("Info4").innerHTML = areaInfo4in1(4);
+            document.getElementById("Info4").style.opacity = "1";
+        }
+        else {
+            //console.log("outside");
+            document.getElementById("Info4").style.opacity = "0";
+        }
+    }
 }
 
 
 // things below sets data for different compound choices
 // the selected compound from calibration select page
 var selectedcmpd = -1;
-const area4in1 = [[7370,23804,86891,150534],[9597,23319,91002,227054],[1072,18291,39363,55005],[1072,18291,39363,55005],[3684,12718,46383,118860],[3684,12718,46383,118860],[6574,23554,89508,233279],[13598,69753,127019,452253],[9597,23319,91002,227054],[2090,17676,41710,57836],[13598,69753,127019,452253],[9597,23319,91002,227054],[9597,23319,91002,227054],[13598,69753,127019,452253]];
-const calibrationFilePaths = [["Acetaminophen"],["AcetylsalicylicAcid"],["Amphetamine_Case4"],["Amphetamine_Case123"],["Caffeine"],["Chlorothiazide"],["Ephedrine"],["EthacrynicAcidMethylEster"],["Ibuprofen"],["Methamphetamine"],["Methylphenidate"],["Phenylephrine"],["Pseudoephedrine"],["THC"]];
-const downloadNames = [["Acetaminophen"],["Acetylsalicylic Acid"],["Amphetamine Case4"],["Amphetamine Case123"],["Caffeine"],["Chlorothiazide"],["Ephedrine"],["Ethacrynic Acid MethylEster"],["Ibuprofen"],["Methamphetamine"],["Methylphenidate"],["Phenylephrine"],["Pseudoephedrine"],["THC"]]
+const area4in1 = [[7370, 23804, 86891, 150534], [9597, 23319, 91002, 227054], [1072, 18291, 39363, 55005], [1072, 18291, 39363, 55005], [3684, 12718, 46383, 118860], [3684, 12718, 46383, 118860], [6574, 23554, 89508, 233279], [13598, 69753, 127019, 452253], [9597, 23319, 91002, 227054], [2090, 17676, 41710, 57836], [13598, 69753, 127019, 452253], [9597, 23319, 91002, 227054], [9597, 23319, 91002, 227054], [13598, 69753, 127019, 452253]];
+const calibrationFilePaths = [["Acetaminophen"], ["AcetylsalicylicAcid"], ["Amphetamine_Case4"], ["Amphetamine_Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["EthacrynicAcidMethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]];
+const downloadNames = [["Acetaminophen"], ["Acetylsalicylic Acid"], ["Amphetamine Case4"], ["Amphetamine Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["Ethacrynic Acid MethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]]
 
 // displays the area count when hover
 function areaInfo4in1(peakNum) {
     text = '';
-    text += 'Peak '+ peakNum + ' Area = ' + area4in1[selectedcmpd][peakNum-1];
+    text += 'Peak ' + peakNum + ' Area = ' + area4in1[selectedcmpd][peakNum - 1];
     return text;
 }
 
 // the function that checks which compound is selected
 
-if(localStorage.getItem('select') == 0){
+if (localStorage.getItem('select') == 0) {
     selectCmpd(0);
 }
-else if(localStorage.getItem('select') == 1){
+else if (localStorage.getItem('select') == 1) {
     //console.log("entered");
     selectCmpd(1);
-    }
-else if(localStorage.getItem('select') == 2){
+}
+else if (localStorage.getItem('select') == 2) {
     //console.log("entered");
     selectCmpd(2);
-    }
-else if(localStorage.getItem('select') == 3){
-//console.log("entered");
-selectCmpd(3);
 }
-else if(localStorage.getItem('select') == 4){
-//console.log("entered");
-selectCmpd(4);
-}
-else if(localStorage.getItem('select') == 5){
-//console.log("entered");
-selectCmpd(5);
-}
-else if(localStorage.getItem('select') == 6){
-//console.log("entered");
-selectCmpd(6);
-}
-else if(localStorage.getItem('select') == 7){
-//console.log("entered");
-selectCmpd(7);
-}
-else if(localStorage.getItem('select') == 8){
-//console.log("entered");
-selectCmpd(8);
-}
-else if(localStorage.getItem('select') == 9){
+else if (localStorage.getItem('select') == 3) {
     //console.log("entered");
-selectCmpd(9);
+    selectCmpd(3);
 }
-else if(localStorage.getItem('select') == 10){
-//console.log("entered");
-selectCmpd(10);
+else if (localStorage.getItem('select') == 4) {
+    //console.log("entered");
+    selectCmpd(4);
 }
-else if(localStorage.getItem('select') == 11){
-//console.log("entered");
-selectCmpd(11);
+else if (localStorage.getItem('select') == 5) {
+    //console.log("entered");
+    selectCmpd(5);
 }
-else if(localStorage.getItem('select') == 12){
-//console.log("entered");
-selectCmpd(12);
+else if (localStorage.getItem('select') == 6) {
+    //console.log("entered");
+    selectCmpd(6);
 }
-else if(localStorage.getItem('select') == 13){
-//console.log("entered");
-selectCmpd(13);
+else if (localStorage.getItem('select') == 7) {
+    //console.log("entered");
+    selectCmpd(7);
 }
-else if(localStorage.getItem('select') == 14){
-//console.log("entered");
-selectCmpd(14);
+else if (localStorage.getItem('select') == 8) {
+    //console.log("entered");
+    selectCmpd(8);
 }
-else{
-//console.log(localStorage.getItem('select'));
+else if (localStorage.getItem('select') == 9) {
+    //console.log("entered");
+    selectCmpd(9);
+}
+else if (localStorage.getItem('select') == 10) {
+    //console.log("entered");
+    selectCmpd(10);
+}
+else if (localStorage.getItem('select') == 11) {
+    //console.log("entered");
+    selectCmpd(11);
+}
+else if (localStorage.getItem('select') == 12) {
+    //console.log("entered");
+    selectCmpd(12);
+}
+else if (localStorage.getItem('select') == 13) {
+    //console.log("entered");
+    selectCmpd(13);
+}
+else if (localStorage.getItem('select') == 14) {
+    //console.log("entered");
+    selectCmpd(14);
+}
+else {
+    //console.log(localStorage.getItem('select'));
 }
 
-function selectCmpd(num){
+function selectCmpd(num) {
     selectedcmpd = num;
-    var calibrationPath1 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"1.csv";
-    var calibrationPath2 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"2.csv";
-    var calibrationPath3 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"3.csv";
-    var calibrationPath4 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"4.csv";
-    var calibrationDownloadPath =  "../../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] +".png";
-    var calibrationDownloadName = downloadNames[num]+"_Calibration_Graphs";
-    var calibrationTitleText = downloadNames[num]+" Calibration Graphs";
+    var calibrationPath1 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "1.csv";
+    var calibrationPath2 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "2.csv";
+    var calibrationPath3 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "3.csv";
+    var calibrationPath4 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "4.csv";
+    var calibrationDownloadPath = "../../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + ".png";
+    var calibrationDownloadName = downloadNames[num] + "_Calibration_Graphs";
+    var calibrationTitleText = downloadNames[num] + " Calibration Graphs";
     first = calibrationPath1;
     second = calibrationPath2;
     third = calibrationPath3;
     forth = calibrationPath4;
     //console.log(first, second, third, forth);
-    document.getElementById("calibrationDownload").href=calibrationDownloadPath;
-    document.getElementById("calibrationDownload").download=calibrationDownloadName;
-    document.getElementById("calibrationTitle").innerText=calibrationTitleText;
+    document.getElementById("calibrationDownload").href = calibrationDownloadPath;
+    document.getElementById("calibrationDownload").download = calibrationDownloadName;
+    document.getElementById("calibrationTitle").innerText = calibrationTitleText;
 
     chart4in1();
 }
