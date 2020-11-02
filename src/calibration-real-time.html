@@ -14,9 +14,9 @@
         <a style= "font-size: 130%; ">CHEM230L: Drug Doping Lab</a>
     </div>
     <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%; margin-bottom: 0;" >
-        <a href="calibration-selection.html">
-        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;" onclick="location='best-separation.html'"></button>
-        </a>
+        <!--<a href="calibration-selection.html">
+        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;"></button>
+        </a>-->
         <h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;" id="calibrationTitle">Calibration Curve</h1>
         <a href="" download="" id="calibrationDownload">
         <button class="Download"></button>
@@ -33,6 +33,9 @@
         <canvas id="chrom3" width="800" height="200" margin="auto" display="block"></canvas>
         <h4 class = "text" class="Hover-Info" id="Info4", width="800", height="400", style="opacity: 0; margin: auto; text-align: center;" >Peak 1 Area = %%%</h4>
         <canvas id="chrom4" width="800" height="200" margin="auto" display="block"></canvas>
+    </div>
+    <div class="flex-container text" style="flex-direction: row;">
+        <a><button id= "next" class="GreenButton text" type= "submit" style= "width: 6vw; height: 3vw; margin:20px; opacity: 0;" onclick="location= 'calibration-overlay.html'">Next</button>
     </div>
 </body>
 <script src="app.js"></script>

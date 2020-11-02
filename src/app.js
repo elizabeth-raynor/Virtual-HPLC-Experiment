@@ -907,13 +907,14 @@ async function chart4in1() {
     });
     var i;
     for (i = 0; i < x1.length; i++) {
-        await sleep(x1[i] * 0.1);
+        //await sleep(x1[i] * 1e-1000000);
         addData4in1(Chart1, x1[i], y1[i]);
         addData4in1(Chart2, x1[i], y2[i]);
         addData4in1(Chart3, x1[i], y3[i]);
         addData4in1(Chart4, x1[i], y4[i]);
     }
     hoverMode = true;
+    document.getElementById("next").style.opacity=1;
 }
 
 function addData4in1(chart, label, data) {
@@ -1142,4 +1143,82 @@ function selectCmpd(num) {
     document.getElementById("calibrationTitle").innerText = calibrationTitleText;
 
     chart4in1();
+}
+
+//below are for calibration-overlay.html
+async function chartOverlay(){
+    var chromPathOverlay = '../data/DopingLab_dev/';
+    chromPathOverlay += caseNum + '/' + chromNames[3];
+    //console.log(chromPath);
+    await getChromData4in1(forth,dict4,x4,y4);
+    await getChromData(chromPathOverlay);
+    maxY = getMaxY4in1();
+    //console.log(maxY);
+    if(getMaxY()>getMaxY4in1()){
+        maxY = getMaxY();
+    }
+
+    const ctx = document.getElementById('chromOverlay').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                // change this to make it draw a data set instead of just y value
+                labels: realTimeX,
+                datasets: [{
+                    label: 'solvent',
+                    data: realTimeY,
+                    backgroundColor: 
+                  'rgba(163, 216, 108, 1)',
+                },
+                {
+                    label: 'calibration',
+                    data: y4,
+                    backgroundColor: 
+                  'rgba(9, 96, 115, 1)',
+                },
+                ]},
+            options: {
+                responsive: false,
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                        max: 10,
+                        min: 0,
+                        maxTicksLimit: 21,
+                        beginAtZero:true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Retention Time (min)'
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                        max: maxY,
+                        min: 0,
+                        stepSize:1000,
+                        beginAtZero:true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Signal (arb. units)'
+                        }
+                    }],
+                },
+                    //onClick:function (elements) {
+                    //    console.log(elements);}
+                    //onClick: getCursorPosition,
+                    /*
+                hover: {
+                    // Overrides the global setting
+                    enabled: true,
+                    //mode: 'dataset',
+                    onHover: function(elements) {
+                        getCursorPosition(elements);
+                    }
+                }   
+                */
+            }
+        });
+        document.getElementById("finish").style.opacity=1;
 }
