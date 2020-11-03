@@ -13,9 +13,9 @@ const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
 ];
 //var ratioNum = 1;
 
-var ratioNum = JSON.parse(sessionStorage["ratioNum"]);
-var caseNum = JSON.parse(sessionStorage['caseNum']);
-var runStatus = JSON.parse(sessionStorage['runStatus']);
+ var ratioNum = JSON.parse(sessionStorage["ratioNum"]);
+ var caseNum = JSON.parse(sessionStorage['caseNum']);
+ var runStatus = JSON.parse(sessionStorage['runStatus']);
 
 var bestChrom = true;
 
@@ -32,7 +32,7 @@ const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
 // Add solvent
 
 function changePercent(direction) {
-    runStatus = JSON.parse(sessionStorage['runStatus'])
+    runStatus = JSON.parse(sessionStorage['runStatus']);
 
     if (direction == 1 && ratioNum != percentsB.length-1) {
         ratioNum++;
@@ -40,16 +40,16 @@ function changePercent(direction) {
     if (direction == -1 && ratioNum != 0) {
         ratioNum--;
     }
-    // if (runStatus[ratioNum]) {
-    //     document.getElementById("percentB").style.color = "#b1e0dc";
-    //     document.getElementById("runButton").style.cursor = "context-menu";
-    //     document.getElementById("runButton").disabled = true;
-    // }       
-    // else {
-    //     document.getElementById("percentB").style.color = "#08A696"; 
-    //     document.getElementById("runButton").style.cursor = "pointer";
-    //     document.getElementById("runButton").disabled = false;  
-    // }
+    if (runStatus[ratioNum]) {
+        document.getElementById("percentB").style.color = "#b1e0dc";
+        document.getElementById("runButton").style.cursor = "context-menu";
+        document.getElementById("runButton").disabled = true;
+    }       
+    else {
+        document.getElementById("percentB").style.color = "#08A696"; 
+        document.getElementById("runButton").style.cursor = "pointer";
+        document.getElementById("runButton").disabled = false;  
+    }
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
 
@@ -74,7 +74,7 @@ function MakeChroms() {
 
 //StatusCheck if done running
 function statusCheck(){
-    runStatus = sessionStorage['runStatus'];
+    runStatus = JSON.parse(sessionStorage['runStatus']);
     if (runStatus[ratioNum]) {
         document.getElementById("percentB").style.color = "#b1e0dc";
         document.getElementById("runButton").style.cursor = "context-menu";
@@ -83,7 +83,7 @@ function statusCheck(){
 }
 //get stored ratio info
 function getPerc() {
-    ratioNum = JSON.parse(localStorage["ratioNum"]);
+    ratioNum = JSON.parse(sessionStorage["ratioNum"]);
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
 }
@@ -119,7 +119,7 @@ function selectOption(){
 //Reset the stored value
 function ratioReset(){
     runStatus = [false, false, false, false, false];
-    localStorage["runStat"] = JSON.stringify(runStatus);
+    sessionStorage["runStatus"] = JSON.stringify(runStatus);
 }
 
 
@@ -1164,13 +1164,13 @@ const ctx = document.getElementById('chromOverlay').getContext('2d');
             // change this to make it draw a data set instead of just y value
             labels: realTimeX,
             datasets: [{
-                label: 'solvent',
+                label: 'Best Separation',
                 data: realTimeY,
                 backgroundColor: 
               'rgba(163, 216, 108, 1)',
             },
             {
-                label: 'calibration',
+                label: 'Calibration',
                 data: y4,
                 backgroundColor: 
               'rgba(9, 96, 115, 1)',
