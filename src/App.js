@@ -91,7 +91,7 @@ function selectOption(){
         selectra.options.add(d, 1);
     }
     
-    for (var i = 0; i<=runStatus.length;i++){
+    for (var i = 0; i<runStatus.length;i++){
         if (runStatus[i]){
             ratioNum = JSON.parse(localStorage["percnum"]);
             var c = document.createElement("option");
@@ -101,7 +101,24 @@ function selectOption(){
     }
 
 }
-
+//Add images
+function selectImages(){
+    var count = 0;
+    for (var i = 0; i<runStatus.length;i++){
+        if (runStatus[i]){
+            var img = document.createElement("img");
+            img.src = filepath;
+            if (count % 2 == 0){
+                var src = document.getElementById("cOne");
+            }else{
+                var src = document.getElementById("cTwo");
+            }
+            
+            src.appendChild(img);
+        }
+    }
+    
+}
 //Reset the stored value
 function ratioReset(){
     runStatus = [false, false, false, false, false];

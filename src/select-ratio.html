@@ -10,7 +10,7 @@
 </head>
 
 
-<body  onload="selectOption()">
+<body  onload="selectOption();selectImages();">
 <div class="topNav text">
     <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
 </div>
@@ -25,14 +25,19 @@
     <button class="Download"></button>
 </div>
 
-<div class="content" style="flex-direction: row; justify-content: space-between; margin-left: 7vw; display: inline-block;";>
+<div class="content" style="flex-direction: column; justify-content: space-between; margin-left: 7vw; display: inline-block;">
     
     <div>
         <img src="../images/BlueBottle.png" width = 240vw>
     </div>
-    
+   
 </div>
-<div class = "graphs"></div>
+<div class = "selectRow">
+    <div class = "colOne" id = "cOne"></div>
+    <div class = "colTwo" id = "cTwo"></div>
+</div>
+<div class = "graphs"><div>
+    
 
 </body>
 </html>
