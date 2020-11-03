@@ -65,7 +65,7 @@ function changePercent(direction) {
 // Real-time Graph Current
 
 function MakeChroms() {
-    //ratioNum = JSON.parse(localStorage["percnum"]);
+    ratioNum = JSON.parse(sessionStorage["ratioNum"]);
     runStatus[ratioNum] = true;
     sessionStorage["runStatus"] = JSON.stringify(runStatus);
     var chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
@@ -74,6 +74,7 @@ function MakeChroms() {
 
 //StatusCheck if done running
 function statusCheck(){
+    runStatus = sessionStorage['runStatus'];
     if (runStatus[ratioNum]) {
         document.getElementById("percentB").style.color = "#b1e0dc";
         document.getElementById("runButton").style.cursor = "context-menu";
@@ -82,8 +83,7 @@ function statusCheck(){
 }
 //get stored ratio info
 function getPerc() {
-    
-    ratioNum = JSON.parse(localStorage["percnum"]);
+    ratioNum = JSON.parse(localStorage["ratioNum"]);
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
 }
@@ -599,638 +599,625 @@ var dict4 = {};
 
 /*
 async function getData(fileSource,x,y){
-    const response = await fetch(fileSource);
-    const data = await response.text();
-    console.log(data);
-
-    const rows = data.split('\n');
-    console.log(rows);
-    rows.forEach(elt => {
-        const row = elt.split(',');
-        const time = parseFloat(row[0]);
-        x.push(time);
-        const signal = parseFloat(row[1]);
-        y.push(signal);
-        console.log(time,signal);
-    });
+const response = await fetch(fileSource);
+const data = await response.text();
+console.log(data);
+const rows = data.split('\n');
+console.log(rows);
+rows.forEach(elt => {
+    const row = elt.split(',');
+    const time = parseFloat(row[0]);
+    x.push(time);
+    const signal = parseFloat(row[1]);
+    y.push(signal);
+    console.log(time,signal);
+});
 }
 */
-async function getChromData4in1(path, dict, x, y) {
-    console.log(path);
-    const response = await fetch(path);
-    var data = await response.text();
-    data = data.trim();
+async function getChromData4in1(path,dict,x,y){
+const response = await fetch(path);
+var data = await response.text();
+data = data.trim();
 
-    const rows = data.split('\n');
-    rows.forEach(elt => {
-        const row = elt.split(',');
-        dict[row[0]] = row[1];
-        const time = parseFloat(row[0]);
-
-        // Add times to x-axis array if they are a number
-        if (!isNaN(Number(time))) {
-            x.push(time);
-        }
-
-        // Add signals to y-axis array if they are a number
-        const signal = parseFloat(row[1]);
-        if (!isNaN(Number(signal))) {
-            y.push(signal);
-        }
-    });
+const rows = data.split('\n');
+rows.forEach(elt => {
+    const row = elt.split(',');
+    dict[row[0]] = row[1];
+    const time = parseFloat(row[0]);
+    
+    // Add times to x-axis array if they are a number
+    if (!isNaN(Number(time))) {
+        x.push(time);
+    }
+    
+    // Add signals to y-axis array if they are a number
+    const signal = parseFloat(row[1]);
+    if (!isNaN(Number(signal))) {
+        y.push(signal);
+    }  
+});
 }
 
 function getMaxY4in1() {
-    realTimeYNum = [];
-    y4.forEach(number => {
-        realTimeYNum.push(Number(number));
-    });
-    var max = Math.max.apply(Math, realTimeYNum);
-    var roundedMax = Math.ceil(max / 1000) * 1000;
-    return roundedMax;
+realTimeYNum = [];
+y4.forEach(number => {
+    realTimeYNum.push(Number(number));
+});
+var max = Math.max.apply(Math, realTimeYNum);
+var roundedMax = Math.ceil(max/1000)*1000;
+return roundedMax; 
 }
 
-async function chart4in1() {
-    hoverMode = false;
-    await getChromData4in1(first, dict1, x1, y1);
-    await getChromData4in1(second, dict2, x2, y2);
-    await getChromData4in1(third, dict3, x3, y3);
-    await getChromData4in1(forth, dict4, x4, y4);
-    maxY = getMaxY4in1();
-    //console.log(maxY);
+async function chart4in1(){
+hoverMode = false;
+await getChromData4in1(first,dict1,x1,y1);
+await getChromData4in1(second,dict2,x2,y2);
+await getChromData4in1(third,dict3,x3,y3);
+await getChromData4in1(forth,dict4,x4,y4);
+maxY = getMaxY4in1();
+//console.log(maxY);
 
-    const ctx1 = document.getElementById('chrom1').getContext('2d');
-    var Chart1 = new Chart(ctx1, {
-        type: 'line',
-        data: {
-            // change this to make it draw a data set instead of just y value
-            labels: [],
-            datasets: [{
-                label: 'caffeine 1',
-                data: [],
-                backgroundColor:
-                    'rgba(163, 216, 108, 1)',
-                display: false,
-            },
-            ]
+const ctx1 = document.getElementById('chrom1').getContext('2d');
+var Chart1 = new Chart(ctx1, {
+    type: 'line',
+    data: {
+        // change this to make it draw a data set instead of just y value
+        labels: [],
+        datasets: [{
+            label: 'Calibration Graph 1',
+            data: [],
+            backgroundColor: 
+            'rgba(163, 216, 108, 1)',
+            display:false,
         },
-        options: {
-            responsive: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        max: 10,
-                        min: 0,
-                        maxTicksLimit: 21,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Retention Time (min)'
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        max: maxY,
-                        min: 0,
-                        stepSize: 1000,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Signal (arb. units)'
-                    }
-                }],
-            },
-            title: {
-                display: true,
-                text: 'Calibration Graph 1',
-            },
-            legend: {
-                display: false
-            },
-            //onClick:function (elements) {
-            //    console.log(elements);}
-            //onClick: getCursorPosition,
-            hover: {
-                // Overrides the global setting
-                enabled: true,
-                //mode: 'dataset',
-                onHover: function (elements) {
-                    getCursorPosition1(elements);
-                }
-            }
-        }
-    });
-
-    const ctx2 = document.getElementById('chrom2').getContext('2d');
-    var Chart2 = new Chart(ctx2, {
-        type: 'line',
-        data: {
-            // change this to make it draw a data set instead of just y value
-            labels: [],
-            datasets: [
-                {
-                    label: 'caffeine 2',
-                    data: [],
-                    backgroundColor:
-                        'rgba(86, 191, 132, 1)',
-                    display: false,
+        ]},
+    options: {
+        responsive: false,
+        scales: {
+            xAxes: [{
+                ticks: {
+                max: 10,
+                min: 0,
+                maxTicksLimit: 21,
+                beginAtZero:true
                 },
-            ]
-        },
-        options: {
-            responsive: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        max: 10,
-                        min: 0,
-                        maxTicksLimit: 21,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Retention Time (min)'
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        max: maxY,
-                        min: 0,
-                        stepSize: 1000,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Signal (arb. units)'
-                    }
-                }],
-            },
-            title: {
-                display: true,
-                text: 'Calibration Graph 2',
-            },
-            legend: {
-                display: false
-            },
-            //onClick:function (elements) {
-            //    console.log(elements);}
-            //onClick: getCursorPosition,
-            hover: {
-                // Overrides the global setting
-                enabled: true,
-                //mode: 'dataset',
-                onHover: function (elements) {
-                    getCursorPosition2(elements);
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Retention Time (min)'
                 }
-            }
-        }
-    });
-
-    const ctx3 = document.getElementById('chrom3').getContext('2d');
-    var Chart3 = new Chart(ctx3, {
-        type: 'line',
-        data: {
-            // change this to make it draw a data set instead of just y value
-            labels: [],
-            datasets: [
-                {
-                    label: 'caffeine 3',
-                    data: [],
-                    backgroundColor:
-                        'rgba(8, 166, 150, 1)',
-                    display: false,
+            }],
+            yAxes: [{
+                ticks: {
+                max: maxY,
+                min: 0,
+                stepSize:1000,
+                beginAtZero:true
                 },
-            ]
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Signal (arb. units)'
+                }
+            }],
         },
-        options: {
-            responsive: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        max: 10,
-                        min: 0,
-                        maxTicksLimit: 21,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Retention Time (min)'
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        max: maxY,
-                        min: 0,
-                        stepSize: 1000,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Signal (arb. units)'
-                    }
-                }],
-            },
-            title: {
-                display: true,
-                text: 'Calibration Graph 3',
-            },
-            legend: {
-                display: false
-            },
+        title: {
+            display: true,
+            text: 'Calibration Graph 1',},
+        legend: {
+            display: false},
             //onClick:function (elements) {
             //    console.log(elements);}
             //onClick: getCursorPosition,
-            hover: {
-                // Overrides the global setting
-                enabled: true,
-                //mode: 'dataset',
-                onHover: function (elements) {
-                    getCursorPosition3(elements);
-                }
+        hover: {
+            // Overrides the global setting
+            enabled: true,
+            //mode: 'dataset',
+            onHover: function(elements) {
+                getCursorPosition1(elements);
             }
-        }
-    });
-
-    const ctx4 = document.getElementById('chrom4').getContext('2d');
-    var Chart4 = new Chart(ctx4, {
-        type: 'line',
-        data: {
-            // change this to make it draw a data set instead of just y value
-            labels: [],
-            datasets: [
-                {
-                    label: 'caffeine 4',
-                    data: [],
-                    backgroundColor:
-                        'rgba(9, 96, 115, 1)',
-                    display: false,
-                },
-            ]
-        },
-        options: {
-            responsive: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        max: 10,
-                        min: 0,
-                        maxTicksLimit: 21,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Retention Time (min)'
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        max: maxY,
-                        min: 0,
-                        stepSize: 1000,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Signal (arb. units)',
-                    }
-                }],
-            },
-            title: {
-                display: true,
-                text: 'Calibration Graph 4',
-            },
-            legend: {
-                display: false
-            },
-            //onClick:function (elements) {
-            //    console.log(elements);}
-            //onClick: getCursorPosition,
-            hover: {
-                // Overrides the global setting
-                enabled: true,
-                //mode: 'dataset',
-                onHover: function (elements) {
-                    getCursorPosition4(elements);
-                }
-            }
-        }
-    });
-    var i;
-    for (i = 0; i < x1.length; i++) {
-        //await sleep(x1[i] * 1e-1000000);
-        addData4in1(Chart1, x1[i], y1[i]);
-        addData4in1(Chart2, x1[i], y2[i]);
-        addData4in1(Chart3, x1[i], y3[i]);
-        addData4in1(Chart4, x1[i], y4[i]);
+        }   
     }
-    hoverMode = true;
-    document.getElementById("next").style.opacity=1;
+});
+
+const ctx2 = document.getElementById('chrom2').getContext('2d');
+var Chart2 = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        // change this to make it draw a data set instead of just y value
+        labels: [],
+        datasets: [
+        {
+            label: 'Calibration Graph 2',
+            data: [],
+            backgroundColor: 
+            'rgba(86, 191, 132, 1)',
+            display:false,
+        },
+        ]},
+    options: {
+        responsive: false,
+        scales: {
+            xAxes: [{
+                ticks: {
+                max: 10,
+                min: 0,
+                maxTicksLimit: 21,
+                beginAtZero:true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Retention Time (min)'
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                max: maxY,
+                min: 0,
+                stepSize:1000,
+                beginAtZero:true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Signal (arb. units)'
+                }
+            }],
+        },
+        title: {
+            display: true,
+            text: 'Calibration Graph 2',},
+        legend: {
+            display: false},
+            //onClick:function (elements) {
+            //    console.log(elements);}
+            //onClick: getCursorPosition,
+        hover: {
+            // Overrides the global setting
+            enabled: true,
+            //mode: 'dataset',
+            onHover: function(elements) {
+                getCursorPosition2(elements);
+            }
+        }   
+    }
+});
+
+const ctx3 = document.getElementById('chrom3').getContext('2d');
+var Chart3 = new Chart(ctx3, {
+    type: 'line',
+    data: {
+        // change this to make it draw a data set instead of just y value
+        labels: [],
+        datasets: [
+        {
+            label: 'Calibration Graph 3',
+            data: [],
+            backgroundColor: 
+            'rgba(8, 166, 150, 1)',
+            display:false,
+        },
+        ]},
+    options: {
+        responsive: false,
+        scales: {
+            xAxes: [{
+                ticks: {
+                max: 10,
+                min: 0,
+                maxTicksLimit: 21,
+                beginAtZero:true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Retention Time (min)'
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                max: maxY,
+                min: 0,
+                stepSize:1000,
+                beginAtZero:true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Signal (arb. units)'
+                }
+            }],
+        },
+        title: {
+            display: true,
+            text: 'Calibration Graph 3',},
+            legend: {
+                display: false},
+            //onClick:function (elements) {
+            //    console.log(elements);}
+            //onClick: getCursorPosition,
+        hover: {
+            // Overrides the global setting
+            enabled: true,
+            //mode: 'dataset',
+            onHover: function(elements) {
+                getCursorPosition3(elements);
+            }
+        }   
+    }
+});
+
+const ctx4 = document.getElementById('chrom4').getContext('2d');
+var Chart4 = new Chart(ctx4, {
+    type: 'line',
+    data: {
+        // change this to make it draw a data set instead of just y value
+        labels: [],
+        datasets: [
+        {
+            label: 'Calibration Graph 4',
+            data: [],
+            backgroundColor: 
+            'rgba(9, 96, 115, 1)',
+            display:false,
+        },
+        ]},
+    options: {
+        responsive: false,
+        scales: {
+            xAxes: [{
+                ticks: {
+                max: 10,
+                min: 0,
+                maxTicksLimit: 21,
+                beginAtZero:true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Retention Time (min)'
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                max: maxY,
+                min: 0,
+                stepSize:1000,
+                beginAtZero:true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Signal (arb. units)',
+                }
+            }],
+        },
+        title: {
+            display: true,
+            text: 'Calibration Graph 4',},
+            legend: {
+                display: false},
+            //onClick:function (elements) {
+            //    console.log(elements);}
+            //onClick: getCursorPosition,
+        hover: {
+            // Overrides the global setting
+            enabled: true,
+            //mode: 'dataset',
+            onHover: function(elements) {
+                getCursorPosition4(elements);
+            }
+        }   
+    }
+});
+var i;
+for(i=0; i < x1.length; i++){
+    await sleep(x1[i]*0.1);
+    addData4in1(Chart1,x1[i],y1[i]);
+    addData4in1(Chart2,x1[i],y2[i]);
+    addData4in1(Chart3,x1[i],y3[i]);
+    addData4in1(Chart4,x1[i],y4[i]);
+}
+hoverMode = true;  
+document.getElementById("next").style.opacity=1;
 }
 
 function addData4in1(chart, label, data) {
-    chart.data.labels.push(label);
-    chart.data.datasets[0].data.push(data);
-    chart.update();
+chart.data.labels.push(label);
+chart.data.datasets[0].data.push(data);
+chart.update();
 }
 
 /*
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+return new Promise(resolve => setTimeout(resolve, ms));
 }
 */
 
-function getCursorPosition1(event) {
-    if (hoverMode) {
-        const canvas = document.getElementById('chrom1');
-        let rect = canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
+function getCursorPosition1(event) { 
+if(hoverMode){
+const canvas = document.getElementById('chrom1');
+let rect = canvas.getBoundingClientRect(); 
+let x = event.clientX - rect.left; 
+let y = event.clientY - rect.top; 
 
-        //Convert x on cavas to x value in the data set
-        var xCoord = ((x - 57) / (795 - 57)) * 10
+//Convert x on cavas to x value in the data set
+var xCoord = ((x-57)/(795-57))*10
 
-        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
+var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
 
-        // Convert y on canvas to y value on the graph
-        var yCoord = (((132 - y)) / (132)) * maxY;
-        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+// Convert y on canvas to y value on the graph
+var yCoord = (((132-y))/(132))*maxY;
+//console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-        //ctx.save();
-        if (yCoord < dict1[xData] && yCoord > 0) {
-            document.getElementById("Info1").innerHTML = areaInfo4in1(1);
-            document.getElementById("Info1").style.opacity = "1";
-        }
-        else {
-            //console.log("outside");
-            document.getElementById("Info1").style.opacity = "0";
-        }
-    }
+//ctx.save();
+if (yCoord < dict1[xData] && yCoord > 0){
+    document.getElementById("Info1").innerHTML= areaInfo4in1(1);
+    document.getElementById("Info1").style.opacity="1";
+}
+else {
+    //console.log("outside");
+    document.getElementById("Info1").style.opacity="0";
+}
+}
+} 
+
+function getCursorPosition2(event) { 
+if(hoverMode){
+const canvas = document.getElementById('chrom2');
+let rect = canvas.getBoundingClientRect(); 
+let x = event.clientX - rect.left; 
+let y = event.clientY - rect.top; 
+
+//Convert x on cavas to x value in the data set
+var xCoord = ((x-57)/(795-57))*10
+
+var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
+
+// Convert y on canvas to y value on the graph
+var yCoord = (((132-y))/(132))*maxY;
+//console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+
+//ctx.save();
+if(yCoord < dict2[xData] && yCoord > 0){
+    document.getElementById("Info2").innerHTML= areaInfo4in1(2);
+    document.getElementById("Info2").style.opacity="1";
+}
+else {
+    //console.log("outside");
+    document.getElementById("Info2").style.opacity="0";
+}
+}
+} 
+
+function getCursorPosition3(event) { 
+if(hoverMode){
+const canvas = document.getElementById('chrom3');
+let rect = canvas.getBoundingClientRect(); 
+let x = event.clientX - rect.left; 
+let y = event.clientY - rect.top; 
+
+//Convert x on cavas to x value in the data set
+var xCoord = ((x-57)/(795-57))*10
+
+var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
+
+// Convert y on canvas to y value on the graph
+var yCoord = (((132-y))/(132))*maxY;
+//console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+
+//ctx.save();
+
+if(yCoord < dict3[xData] && yCoord > 0){
+    document.getElementById("Info3").innerHTML= areaInfo4in1(3);
+    document.getElementById("Info3").style.opacity="1";
 }
 
-function getCursorPosition2(event) {
-    if (hoverMode) {
-        const canvas = document.getElementById('chrom2');
-        let rect = canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-
-        //Convert x on cavas to x value in the data set
-        var xCoord = ((x - 57) / (795 - 57)) * 10
-
-        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
-
-        // Convert y on canvas to y value on the graph
-        var yCoord = (((132 - y)) / (132)) * maxY;
-        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
-
-        //ctx.save();
-        if (yCoord < dict2[xData] && yCoord > 0) {
-            document.getElementById("Info2").innerHTML = areaInfo4in1(2);
-            document.getElementById("Info2").style.opacity = "1";
-        }
-        else {
-            //console.log("outside");
-            document.getElementById("Info2").style.opacity = "0";
-        }
-    }
+else {
+    //console.log("outside");
+    document.getElementById("Info3").style.opacity="0";
 }
-
-function getCursorPosition3(event) {
-    if (hoverMode) {
-        const canvas = document.getElementById('chrom3');
-        let rect = canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-
-        //Convert x on cavas to x value in the data set
-        var xCoord = ((x - 57) / (795 - 57)) * 10
-
-        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
-
-        // Convert y on canvas to y value on the graph
-        var yCoord = (((132 - y)) / (132)) * maxY;
-        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
-
-        //ctx.save();
-
-        if (yCoord < dict3[xData] && yCoord > 0) {
-            document.getElementById("Info3").innerHTML = areaInfo4in1(3);
-            document.getElementById("Info3").style.opacity = "1";
-        }
-
-        else {
-            //console.log("outside");
-            document.getElementById("Info3").style.opacity = "0";
-        }
-    }
 }
+} 
 
-function getCursorPosition4(event) {
-    if (hoverMode) {
-        const canvas = document.getElementById('chrom4');
-        let rect = canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
+function getCursorPosition4(event) { 
+if(hoverMode){
+const canvas = document.getElementById('chrom4');
+let rect = canvas.getBoundingClientRect(); 
+let x = event.clientX - rect.left; 
+let y = event.clientY - rect.top; 
 
-        //Convert x on cavas to x value in the data set
-        var xCoord = ((x - 57) / (795 - 57)) * 10
+//Convert x on cavas to x value in the data set
+var xCoord = ((x-57)/(795-57))*10
 
-        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
+var xData = (Math.ceil(xCoord*200)/200).toFixed(2)
 
-        // Convert y on canvas to y value on the graph
-        var yCoord = (((132 - y)) / (132)) * maxY;
-        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
+// Convert y on canvas to y value on the graph
+var yCoord = (((132-y))/(132))*maxY;
+//console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-        //ctx.save();
+//ctx.save();
 
-        if (yCoord < dict4[xData] && yCoord > 0) {
-            document.getElementById("Info4").innerHTML = areaInfo4in1(4);
-            document.getElementById("Info4").style.opacity = "1";
-        }
-        else {
-            //console.log("outside");
-            document.getElementById("Info4").style.opacity = "0";
-        }
-    }
+if(yCoord < dict4[xData] && yCoord > 0){
+    document.getElementById("Info4").innerHTML= areaInfo4in1(4);
+    document.getElementById("Info4").style.opacity="1";
+}
+else {
+    //console.log("outside");
+    document.getElementById("Info4").style.opacity="0";
+}
+}
 }
 
 
 // things below sets data for different compound choices
 // the selected compound from calibration select page
 var selectedcmpd = -1;
-const area4in1 = [[7370, 23804, 86891, 150534], [9597, 23319, 91002, 227054], [1072, 18291, 39363, 55005], [1072, 18291, 39363, 55005], [3684, 12718, 46383, 118860], [3684, 12718, 46383, 118860], [6574, 23554, 89508, 233279], [13598, 69753, 127019, 452253], [9597, 23319, 91002, 227054], [2090, 17676, 41710, 57836], [13598, 69753, 127019, 452253], [9597, 23319, 91002, 227054], [9597, 23319, 91002, 227054], [13598, 69753, 127019, 452253]];
-const calibrationFilePaths = [["Acetaminophen"], ["AcetylsalicylicAcid"], ["Amphetamine_Case4"], ["Amphetamine_Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["EthacrynicAcidMethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]];
-const downloadNames = [["Acetaminophen"], ["Acetylsalicylic Acid"], ["Amphetamine Case4"], ["Amphetamine Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["Ethacrynic Acid MethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]]
+const area4in1 = [[7370,23804,86891,150534],[9597,23319,91002,227054],[1072,18291,39363,55005],[1072,18291,39363,55005],[3684,12718,46383,118860],[3684,12718,46383,118860],[6574,23554,89508,233279],[13598,69753,127019,452253],[9597,23319,91002,227054],[2090,17676,41710,57836],[13598,69753,127019,452253],[9597,23319,91002,227054],[9597,23319,91002,227054],[13598,69753,127019,452253]];
+const calibrationFilePaths = [["Acetaminophen"],["AcetylsalicylicAcid"],["Amphetamine_Case4"],["Amphetamine_Case123"],["Caffeine"],["Chlorothiazide"],["Ephedrine"],["EthacrynicAcidMethylEster"],["Ibuprofen"],["Methamphetamine"],["Methylphenidate"],["Phenylephrine"],["Pseudoephedrine"],["THC"]];
+const downloadNames = [["Acetaminophen"],["Acetylsalicylic Acid"],["Amphetamine Case4"],["Amphetamine Case123"],["Caffeine"],["Chlorothiazide"],["Ephedrine"],["Ethacrynic Acid MethylEster"],["Ibuprofen"],["Methamphetamine"],["Methylphenidate"],["Phenylephrine"],["Pseudoephedrine"],["THC"]]
 
 // displays the area count when hover
 function areaInfo4in1(peakNum) {
-    text = '';
-    text += 'Peak ' + peakNum + ' Area = ' + area4in1[selectedcmpd][peakNum - 1];
-    return text;
+text = '';
+text += 'Peak '+ peakNum + ' Area = ' + area4in1[selectedcmpd][peakNum-1];
+return text;
 }
 
 // the function that checks which compound is selected
 
-if (localStorage.getItem('select') == 0) {
-    selectCmpd(0);
+if(localStorage.getItem('select') == 0){
+selectCmpd(0);
 }
-else if (localStorage.getItem('select') == 1) {
-    //console.log("entered");
-    selectCmpd(1);
+else if(localStorage.getItem('select') == 1){
+//console.log("entered");
+selectCmpd(1);
 }
-else if (localStorage.getItem('select') == 2) {
-    //console.log("entered");
-    selectCmpd(2);
+else if(localStorage.getItem('select') == 2){
+//console.log("entered");
+selectCmpd(2);
 }
-else if (localStorage.getItem('select') == 3) {
-    //console.log("entered");
-    selectCmpd(3);
+else if(localStorage.getItem('select') == 3){
+//console.log("entered");
+selectCmpd(3);
 }
-else if (localStorage.getItem('select') == 4) {
-    //console.log("entered");
-    selectCmpd(4);
+else if(localStorage.getItem('select') == 4){
+//console.log("entered");
+selectCmpd(4);
 }
-else if (localStorage.getItem('select') == 5) {
-    //console.log("entered");
-    selectCmpd(5);
+else if(localStorage.getItem('select') == 5){
+//console.log("entered");
+selectCmpd(5);
 }
-else if (localStorage.getItem('select') == 6) {
-    //console.log("entered");
-    selectCmpd(6);
+else if(localStorage.getItem('select') == 6){
+//console.log("entered");
+selectCmpd(6);
 }
-else if (localStorage.getItem('select') == 7) {
-    //console.log("entered");
-    selectCmpd(7);
+else if(localStorage.getItem('select') == 7){
+//console.log("entered");
+selectCmpd(7);
 }
-else if (localStorage.getItem('select') == 8) {
-    //console.log("entered");
-    selectCmpd(8);
+else if(localStorage.getItem('select') == 8){
+//console.log("entered");
+selectCmpd(8);
 }
-else if (localStorage.getItem('select') == 9) {
-    //console.log("entered");
-    selectCmpd(9);
+else if(localStorage.getItem('select') == 9){
+//console.log("entered");
+selectCmpd(9);
 }
-else if (localStorage.getItem('select') == 10) {
-    //console.log("entered");
-    selectCmpd(10);
+else if(localStorage.getItem('select') == 10){
+//console.log("entered");
+selectCmpd(10);
 }
-else if (localStorage.getItem('select') == 11) {
-    //console.log("entered");
-    selectCmpd(11);
+else if(localStorage.getItem('select') == 11){
+//console.log("entered");
+selectCmpd(11);
 }
-else if (localStorage.getItem('select') == 12) {
-    //console.log("entered");
-    selectCmpd(12);
+else if(localStorage.getItem('select') == 12){
+//console.log("entered");
+selectCmpd(12);
 }
-else if (localStorage.getItem('select') == 13) {
-    //console.log("entered");
-    selectCmpd(13);
+else if(localStorage.getItem('select') == 13){
+//console.log("entered");
+selectCmpd(13);
 }
-else if (localStorage.getItem('select') == 14) {
-    //console.log("entered");
-    selectCmpd(14);
+else if(localStorage.getItem('select') == 14){
+//console.log("entered");
+selectCmpd(14);
 }
-else {
-    //console.log(localStorage.getItem('select'));
+else{
+//console.log(localStorage.getItem('select'));
 }
 
-function selectCmpd(num) {
-    selectedcmpd = num;
-    var calibrationPath1 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "1.csv";
-    var calibrationPath2 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "2.csv";
-    var calibrationPath3 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "3.csv";
-    var calibrationPath4 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "4.csv";
-    var calibrationDownloadPath = "../../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + ".png";
-    var calibrationDownloadName = downloadNames[num] + "_Calibration_Graphs";
-    var calibrationTitleText = downloadNames[num] + " Calibration Graphs";
-    first = calibrationPath1;
-    second = calibrationPath2;
-    third = calibrationPath3;
-    forth = calibrationPath4;
-    //console.log(first, second, third, forth);
-    document.getElementById("calibrationDownload").href = calibrationDownloadPath;
-    document.getElementById("calibrationDownload").download = calibrationDownloadName;
-    document.getElementById("calibrationTitle").innerText = calibrationTitleText;
+function selectCmpd(num){
+selectedcmpd = num;
+var calibrationPath1 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"_1.csv";
+var calibrationPath2 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"_2.csv";
+var calibrationPath3 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"_3.csv";
+var calibrationPath4 = "../data/DopingLab_dev/Calibrations/"+calibrationFilePaths[num]+"_4.csv";
+var calibrationDownloadPath =  "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] +".png";
+var calibrationDownloadName = downloadNames[num]+"_Calibration_Graphs";
+var calibrationTitleText = downloadNames[num]+" Calibration Graphs";
+first = calibrationPath1;
+second = calibrationPath2;
+third = calibrationPath3;
+forth = calibrationPath4;
 
-    chart4in1();
+document.getElementById("calibrationDownload").href=calibrationDownloadPath;
+document.getElementById("calibrationDownload").download=calibrationDownloadName;
+document.getElementById("calibrationTitle").innerText=calibrationTitleText;
+
+chart4in1();
+chartOverlay();
 }
 
 //below are for calibration-overlay.html
 async function chartOverlay(){
-    var chromPathOverlay = '../data/DopingLab_dev/';
-    chromPathOverlay += caseNum + '/' + chromNames[3];
-    //console.log(chromPath);
-    await getChromData4in1(forth,dict4,x4,y4);
-    await getChromData(chromPathOverlay);
-    maxY = getMaxY4in1();
-    //console.log(maxY);
-    if(getMaxY()>getMaxY4in1()){
-        maxY = getMaxY();
-    }
+var chromPathOverlay = '../data/DopingLab_dev/';
+chromPathOverlay += caseNames[caseNum] + '/' + chromNames[3];
+//console.log(chromPath);
+await getChromData4in1(forth,dict4,x4,y4);
+await getChromData(chromPathOverlay);
+maxY = getMaxY4in1();
+//console.log(maxY);
+if(getMaxY()>getMaxY4in1()){
+    maxY = getMaxY();
+}
 
-    const ctx = document.getElementById('chromOverlay').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                // change this to make it draw a data set instead of just y value
-                labels: realTimeX,
-                datasets: [{
-                    label: 'solvent',
-                    data: realTimeY,
-                    backgroundColor: 
-                  'rgba(163, 216, 108, 1)',
-                },
-                {
-                    label: 'calibration',
-                    data: y4,
-                    backgroundColor: 
-                  'rgba(9, 96, 115, 1)',
-                },
-                ]},
-            options: {
-                responsive: false,
-                scales: {
-                    xAxes: [{
-                        ticks: {
-                        max: 10,
-                        min: 0,
-                        maxTicksLimit: 21,
-                        beginAtZero:true
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Retention Time (min)'
-                        }
-                    }],
-                    yAxes: [{
-                        ticks: {
-                        max: maxY,
-                        min: 0,
-                        stepSize:1000,
-                        beginAtZero:true
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Signal (arb. units)'
-                        }
-                    }],
-                },
-                    //onClick:function (elements) {
-                    //    console.log(elements);}
-                    //onClick: getCursorPosition,
-                    /*
-                hover: {
-                    // Overrides the global setting
-                    enabled: true,
-                    //mode: 'dataset',
-                    onHover: function(elements) {
-                        getCursorPosition(elements);
+const ctx = document.getElementById('chromOverlay').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            // change this to make it draw a data set instead of just y value
+            labels: realTimeX,
+            datasets: [{
+                label: 'solvent',
+                data: realTimeY,
+                backgroundColor: 
+              'rgba(163, 216, 108, 1)',
+            },
+            {
+                label: 'calibration',
+                data: y4,
+                backgroundColor: 
+              'rgba(9, 96, 115, 1)',
+            },
+            ]},
+        options: {
+            responsive: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                    max: 10,
+                    min: 0,
+                    maxTicksLimit: 21,
+                    beginAtZero:true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Retention Time (min)'
                     }
-                }   
-                */
-            }
-        });
-        document.getElementById("finish").style.opacity=1;
+                }],
+                yAxes: [{
+                    ticks: {
+                    max: maxY,
+                    min: 0,
+                    stepSize:1000,
+                    beginAtZero:true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Signal (arb. units)'
+                    }
+                }],
+            },
+                //onClick:function (elements) {
+                //    console.log(elements);}
+                //onClick: getCursorPosition,
+                /*
+            hover: {
+                // Overrides the global setting
+                enabled: true,
+                //mode: 'dataset',
+                onHover: function(elements) {
+                    getCursorPosition(elements);
+                }
+            }   
+            */
+        }
+    });
+    document.getElementById("finish").style.opacity=1;
 }
