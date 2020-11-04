@@ -1,6 +1,8 @@
 // Global constant for case
 //var caseNum = 0;
 
+let checker = arr => arr.every(v => v === false);
+
 // Global constants for solvent ratios
 const percentsB = ["0%", "15%", "25%", "45%", "70%"];
 const percentsA = ["100%", "85%", "75%", "55%", "30%"];
@@ -107,12 +109,26 @@ function selectOption(){
         selectra.options.add(d, 1);
     }
     
-    for (var i = 0; i<=runStatus.length;i++){
+    for (var i = 0; i< runStatus.length;i++){
         if (runStatus[i]){
-            ratioNum = JSON.parse(localStorage["percnum"]);
+            ratioNum = JSON.parse(sessionStorage["ratioNum"]);
             var c = document.createElement("option");
             c.text = percentsA[i] + ' Solvent A, ' + percentsB[i] + ' Solvent B ';
             selectra.options.add(c, i);
+        }
+    }
+
+    var graphNum = 1;
+    runStatus = JSON.parse(sessionStorage['runStatus']);
+    for (i = 0; i < runStatus.length; i ++) {
+        if (runStatus[i]) {
+            var graphID = 'graph' + graphNum;
+            var graphTitleID = graphID + 'Title';
+            //console.log(caseStartPath + caseNames[caseNum] + '/' + chromPics[i]);
+            console.log(graphTitleID);
+            document.getElementById(graphID).src = caseStartPath + caseNames[caseNum] + '/' + chromPics[i];
+            document.getElementById(graphTitleID).innerHTML = percentsA[i] + ' Solvent A, ' + percentsB[i] + ' Solvent B ';
+            graphNum++;
         }
     }
 
@@ -448,16 +464,7 @@ function areaInfo() {
 /********************************************************************************** */
 // Select Best
 function selectBest() {
-    var graphNum = 1;
-    runStatus = JSON.parse(sessionStorage['runStatus']);
-    for (i = 0; i < runStatus.length - 1; i ++) {
-        if (runStatus[i]) {
-            var graphID = 'graph' + graphNum;
-            console.log(caseStartPath + caseNames[caseNum] + '/' + chromPics[i]);
-            document.getElementById(graphID).src = caseStartPath + caseNames[caseNum] + '/' + chromPics[i];
-            graphNum++;
-        }
-    }
+    
 }
 
 /**************************************************************************************/

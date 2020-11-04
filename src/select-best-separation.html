@@ -17,24 +17,25 @@
 <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
     <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;" onclick="location='add-solvent.html'"></button>
 </div>
-<!--<div>
+<div style="display:inline-block; margin: 0 auto;">
     <h2 class="text" style="font-weight: bold; color: #096073; font-size: 180%;">Select the most desirable result</h2>
-    <select name="ratio" id="selectRatio"></select>
+    <select name="ratio" id="selectRatio" style="width: 20vw;"></select>
     <input type="button" class= "GreenButton" onclick="submitChoice()" value="Submit" >
-</div>-->
+</div>
 
-<div class="content" style="flex-direction: row; justify-content: space-between; margin-left: 7vw; display: inline-block;";>
+<!--<div class="content" style="flex-direction: row; justify-content: space-between; margin-left: 7vw; display: inline-block;";>
     <p class="text" style= "color: #096073; font-size: 3vw;">Select the chromatogram with the best separation</p>
+</div>-->
+<div class = "graphs" style="align-content: center;">
+    <h3 id="graph1Title" class="text"></h3>
+    <img id="graph1" src="" style="width: 80vw; align-content: center;">
+    <h3 id="graph2Title" class="text"></h3>
+    <img id="graph2" src="" style="width: 80vw;">
+    <h3 id="graph3Title" class="text"></h3>
+    <img id="graph3" src="" style="width: 80vw;">
+    <h3 id="graph4Title" class="text"></h3>
+    <img id="graph4" src="" style="width: 80vw;">
+    <h3 id="graph5Title" class="text"></h3>
+    <img id="graph5" src="" style="width: 80vw;">
 </div>
-<div class = "graphs">
-    <a><img id="graph1" src="" style="width: 80vw;"></a>
-    <a><img id="graph2" src="" style="width: 80vw;"></a>
-    <a><img id="graph3" src="" style="width: 80vw;"></a>
-    <a><img id="graph4" src="" style="width: 80vw;"></a>
-    <a><img id="graph5" src="" style="width: 80vw;"></a>
-</div>
-<button class="GreenButton" onclick = "location='best-separation.html'">Submit</button>
-</body>
-<script>selectBest()</script>
-
 </html>
