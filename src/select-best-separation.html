@@ -25,11 +25,16 @@
 
 <div class="content" style="flex-direction: row; justify-content: space-between; margin-left: 7vw; display: inline-block;";>
     <p class="text" style= "color: #096073; font-size: 3vw;">Select the chromatogram with the best separation</p>
-    <button class="GreenButton" onclick = "location='best-separation.html'">Submit</button>
-    
 </div>
-<div class = "graphs"></div>
-
+<div class = "graphs">
+    <a><img id="graph1" src="" style="width: 80vw;"></a>
+    <a><img id="graph2" src="" style="width: 80vw;"></a>
+    <a><img id="graph3" src="" style="width: 80vw;"></a>
+    <a><img id="graph4" src="" style="width: 80vw;"></a>
+    <a><img id="graph5" src="" style="width: 80vw;"></a>
+</div>
+<button class="GreenButton" onclick = "location='best-separation.html'">Submit</button>
 </body>
+<script>selectBest()</script>
 
 </html>

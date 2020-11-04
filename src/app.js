@@ -236,7 +236,7 @@ async function chartChrom(path) {
     var i;
     for (i = 0; i < realTimeX.length; i++) {
         if (!bestChrom) {
-            await sleep(realTimeX[i]* 1e-1000000);
+            //await sleep(realTimeX[i]* 1e-1000000);
         }
         addData(myChart, realTimeX[i], realTimeY[i]);
     }
@@ -445,9 +445,23 @@ function areaInfo() {
     return text;
 }
 
+/********************************************************************************** */
+// Select Best
+function selectBest() {
+    var graphNum = 1;
+    runStatus = JSON.parse(sessionStorage['runStatus']);
+    for (i = 0; i < runStatus.length - 1; i ++) {
+        if (runStatus[i]) {
+            var graphID = 'graph' + graphNum;
+            console.log(caseStartPath + caseNames[caseNum] + '/' + chromPics[i]);
+            document.getElementById(graphID).src = caseStartPath + caseNames[caseNum] + '/' + chromPics[i];
+            graphNum++;
+        }
+    }
+}
 
 /**************************************************************************************/
-// Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
+// Mass Spectra
 
 // arrays for x and y values
 const xValsMS = [];
@@ -591,7 +605,7 @@ async function chartMS(path) {
 }
 
 /****************************************************************************/
-// calibration 4 in 1 graphs -- uncomment when running calibration-real-time.html, comment out when not
+// calibration 4 in 1 graphs
 
 var first;
 var second;
@@ -1159,6 +1173,9 @@ document.getElementById("calibrationTitle").innerText=calibrationTitleText;
 chart4in1();
 chartOverlay();
 }
+
+/************************************************************************ */
+// Overlay
 
 //below are for calibration-overlay.html
 async function chartOverlay(){
