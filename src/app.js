@@ -26,7 +26,9 @@ var calibStartPath = '../data/DopingLab_dev/Calibrations/';
 // Arrays of filenames
 const caseNames = ["Case1", "Case2", "Case3", "Case4"];
 const chromNames = ['Chrom1.csv', 'Chrom2.csv', 'Chrom3.csv', 'Chrom4.csv', 'Chrom5.csv'];
+const chromPics = ['Chrom1.png', 'Chrom2.png', 'Chrom3.png', 'Chrom4.png', 'Chrom5.png'];
 const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
+const MSPics = ['Peak1_MS.png', 'Peak2_MS.png', 'Peak3_MS.png'];
 
 /************************************************************** */
 // Add solvent
@@ -247,13 +249,21 @@ async function chartChrom(path) {
         document.getElementById('again').disabled = false;
         document.getElementById('download').style.opacity = 1;
         document.getElementById('download').disabled = false;
+
+        var chromDownloadPath = caseStartPath + caseNames[caseNum] + '/' + chromPics[ratioNum];
+        var chromDownloadName = caseNames[caseNum] + '_' + chromPics[ratioNum];
+        console.log(chromDownloadPath);
+        document.getElementById("chromDownload").href=chromDownloadPath;
+        document.getElementById("chromDownload").download=chromDownloadName;
     }
     document.getElementById('hover-tip').style.opacity = 1;
     document.getElementById('next').style.opacity = 1;
     document.getElementById('next').disabled = false;
 
+
     // enable click function for MS
     if (bestChrom) {
+        //ratioNum = JSON.parse(sessionStorage["ratioNum"]);
         enableMSClick(ctx);
     }
 }
@@ -438,7 +448,13 @@ function areaInfo() {
 
 /**************************************************************************************/
 // Mass Spectra -- Uncomment when run Mass-spectra.html, comment out when not
+
+// arrays for x and y values
+const xValsMS = [];
+const yValsMS = [];
+
 function enableMSClick(ctx) {
+    //console.log('in enable ms');
     ratioNum = sessionStorage['ratioNum'];
     const canvas = document.getElementById('bestChrom');
     canvas.onclick = function (elements) {
@@ -475,104 +491,103 @@ function enableMSClick(ctx) {
 
 function runMS() {
     var MSPath = sessionStorage.getItem("path-to-MS");
-    //console.log("peakNum after click: " + sessionStorage["peakNum"]);
-    //console.log(MSPath);
+
     chartMS(MSPath);
 
+    var peakNum = JSON.parse(sessionStorage['peakNum']);
+    var MSDownloadPath = caseStartPath + caseNames[caseNum] + '/' + MSPics[peakNum];
+    var MSDownloadName = caseNames[caseNum] + '_' + MSPics[peakNum];
+    console.log(MSDownloadPath);
+    document.getElementById("MSDownload").href=MSDownloadPath;
+    document.getElementById("MSDownload").download=MSDownloadName;
+}
 
-    // arrays for x and y values
-    const xValsMS = [];
-    const yValsMS = [];
 
+// source: https://www.youtube.com/watch?v=RfMkdvN-23o 
+async function getMSData(path) {
+    // reads csv file and trims is
+    const response = await fetch(path);
+    var data = await response.text();
+    data = data.trim();
 
-    // source: https://www.youtube.com/watch?v=RfMkdvN-23o 
-    async function getMSData(path) {
+    // populate the arrays with the data
+    const rows = data.split('\n');
+    //console.log(rows);
+    rows.forEach(element => {
+        const row = element.split(',');
+        const ratio = parseFloat(row[0]);
+        xValsMS.push(ratio);
+        const abund = parseFloat(row[1] / 10000);
+        yValsMS.push(abund);
+        //console.log(ratio, abund);
+    });
+    return { xVals: xValsMS, yVals: yValsMS };
+}
 
+async function chartMS(path) {
+    const data = await getMSData(path);
 
-        // reads csv file and trims is
-        const response = await fetch(path);
-        var data = await response.text();
-        data = data.trim();
+    // Add the title of the graph to the page
+    const title = caseNames[caseNum] + ': Peak ' + (JSON.parse(sessionStorage["peakNum"]) + 1) + " Mass Spectra";
+    document.getElementById("MS-chart-title").innerHTML = title;
+    document.getElementById("MS-chart-title").style.opacity = 1;
 
-        // populate the arrays with the data
-        const rows = data.split('\n');
-        //console.log(rows);
-        rows.forEach(element => {
-            const row = element.split(',');
-            const ratio = parseFloat(row[0]);
-            xValsMS.push(ratio);
-            const abund = parseFloat(row[1] / 10000);
-            yValsMS.push(abund);
-            //console.log(ratio, abund);
-        });
-        return { xVals: xValsMS, yVals: yValsMS };
-    }
+    // Make MS graph
+    var ctx = document.getElementById('massSpectra');
+    var chart = new Chart(ctx, {
 
-    async function chartMS(path) {
-        const data = await getMSData(path);
+        // The type of chart we want to create
+        type: 'bar',
 
-        // Add the title of the graph to the page
-        const title = caseNames[caseNum] + ': Peak ' + (Number(sessionStorage["peakNum"]) + 1) + " Mass Spectra";
-        document.getElementById("MS-chart-title").innerHTML = title;
-        document.getElementById("MS-chart-title").style.opacity = 1;
+        // The data for our dataset
+        data: {
+            labels: data.xVals,
+            datasets: [{
+                data: data.yVals,
+                backgroundColor: '#A3D86C',
+                borderColor: 'grey',
+                hoverBackgroundColor: '#56BF84',
+                barPercentage: 1.0
+            }]
+        },
 
-        // Make MS graph
-        var ctx = document.getElementById('massSpectra');
-        var chart = new Chart(ctx, {
+        // Configuration options go here
+        options: {
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Relative Abundance',
+                    },
+                }],
+                xAxes: [{
 
-            // The type of chart we want to create
-            type: 'bar',
-
-            // The data for our dataset
-            data: {
-                labels: data.xVals,
-                datasets: [{
-                    data: data.yVals,
-                    backgroundColor: '#A3D86C',
-                    borderColor: 'grey',
-                    hoverBackgroundColor: '#56BF84',
-                    barPercentage: 1.0
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Mass-to-Change Ratio (m/z)',
+                    },
+                    ticks: {
+                        beginAtZero: false,
+                    }
                 }]
             },
-
-            // Configuration options go here
-            options: {
-                legend: {
-                    display: false
-                },
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Relative Abundance',
-                        },
-                    }],
-                    xAxes: [{
-
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Mass-to-Change Ratio (m/z)',
-                        },
-                        ticks: {
-                            beginAtZero: false,
-                        }
-                    }]
-                },
-                tooltips: {
-                    callbacks: {
-                        title: function (tooltipItem, data) {
-                            var title = "Mass-to-Change Ratio: " + xValsMS[tooltipItem[0].index];
-                            return title;
-                        },
-                        label: function (tooltipItem, data) {
-                            var label = "Relative Abundance: " + tooltipItem.yLabel;
-                            return label;
-                        }
+            tooltips: {
+                callbacks: {
+                    title: function (tooltipItem, data) {
+                        var title = "Mass-to-Change Ratio: " + xValsMS[tooltipItem[0].index];
+                        return title;
+                    },
+                    label: function (tooltipItem, data) {
+                        var label = "Relative Abundance: " + tooltipItem.yLabel;
+                        return label;
                     }
                 }
             }
-        })
-    }
+        }
+    })
 }
 
 /****************************************************************************/
