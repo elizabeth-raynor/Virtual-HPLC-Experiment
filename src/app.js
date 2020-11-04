@@ -236,7 +236,7 @@ async function chartChrom(path) {
     var i;
     for (i = 0; i < realTimeX.length; i++) {
         if (!bestChrom) {
-            //await sleep(realTimeX[i]* 1e-10000);
+            await sleep(realTimeX[i]* 1e-1000000);
         }
         addData(myChart, realTimeX[i], realTimeY[i]);
     }
