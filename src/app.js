@@ -928,6 +928,7 @@ for(i=0; i < x1.length; i++){
 }
 hoverMode = true;  
 document.getElementById("next").style.opacity=1;
+document.getElementById('calibratioDownload').style.opacity = 1;
 }
 
 function addData4in1(chart, label, data) {
@@ -1161,78 +1162,78 @@ chartOverlay();
 
 //below are for calibration-overlay.html
 async function chartOverlay(){
-var chromPathOverlay = '../data/DopingLab_dev/';
-chromPathOverlay += caseNames[caseNum] + '/' + chromNames[3];
-//console.log(chromPath);
-await getChromData4in1(forth,dict4,x4,y4);
-await getChromData(chromPathOverlay);
-maxY = getMaxY4in1();
-//console.log(maxY);
-if(getMaxY()>getMaxY4in1()){
-    maxY = getMaxY();
-}
+    var chromPathOverlay = '../data/DopingLab_dev/';
+    chromPathOverlay += caseNames[caseNum] + '/' + chromNames[3];
+    //console.log(chromPath);
+    await getChromData4in1(forth,dict4,x4,y4);
+    await getChromData(chromPathOverlay);
+    maxY = getMaxY4in1();
+    //console.log(maxY);
+    if(getMaxY()>getMaxY4in1()){
+        maxY = getMaxY();
+    }
 
-const ctx = document.getElementById('chromOverlay').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            // change this to make it draw a data set instead of just y value
-            labels: realTimeX,
-            datasets: [{
-                label: 'Best Separation',
-                data: realTimeY,
-                backgroundColor: 
-              'rgba(163, 216, 108, 1)',
-            },
-            {
-                label: 'Calibration',
-                data: y4,
-                backgroundColor: 
-              'rgba(9, 96, 115, 1)',
-            },
-            ]},
-        options: {
-            responsive: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                    max: 10,
-                    min: 0,
-                    maxTicksLimit: 21,
-                    beginAtZero:true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Retention Time (min)'
+    const ctx = document.getElementById('chromOverlay').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                // change this to make it draw a data set instead of just y value
+                labels: realTimeX,
+                datasets: [{
+                    label: 'Best Separation',
+                    data: realTimeY,
+                    backgroundColor: 
+                'rgba(163, 216, 108, 1)',
+                },
+                {
+                    label: 'Calibration',
+                    data: y4,
+                    backgroundColor: 
+                'rgba(9, 96, 115, 1)',
+                },
+                ]},
+            options: {
+                responsive: false,
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                        max: 10,
+                        min: 0,
+                        maxTicksLimit: 21,
+                        beginAtZero:true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Retention Time (min)'
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                        max: maxY,
+                        min: 0,
+                        stepSize:1000,
+                        beginAtZero:true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Signal (arb. units)'
+                        }
+                    }],
+                },
+                    //onClick:function (elements) {
+                    //    console.log(elements);}
+                    //onClick: getCursorPosition,
+                    /*
+                hover: {
+                    // Overrides the global setting
+                    enabled: true,
+                    //mode: 'dataset',
+                    onHover: function(elements) {
+                        getCursorPosition(elements);
                     }
-                }],
-                yAxes: [{
-                    ticks: {
-                    max: maxY,
-                    min: 0,
-                    stepSize:1000,
-                    beginAtZero:true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Signal (arb. units)'
-                    }
-                }],
-            },
-                //onClick:function (elements) {
-                //    console.log(elements);}
-                //onClick: getCursorPosition,
-                /*
-            hover: {
-                // Overrides the global setting
-                enabled: true,
-                //mode: 'dataset',
-                onHover: function(elements) {
-                    getCursorPosition(elements);
-                }
-            }   
-            */
-        }
-    });
-    document.getElementById("finish").style.opacity=1;
+                }   
+                */
+            }
+        });
+        document.getElementById("finish").style.opacity=1;
 }
