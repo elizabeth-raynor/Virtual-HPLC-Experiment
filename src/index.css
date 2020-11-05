@@ -44,7 +44,7 @@ source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
     border-radius: 10px;
     background: #56BF84;
     color: white;
-    padding: 1vw 1vw;
+    padding: .5vw .5vw;
     text-align: center;
     display: inline-block;
     font-weight: bold;
