@@ -152,6 +152,7 @@ var maxY = 0;
 async function chartChrom(path) {
     console.log("bestChrom: " + bestChrom);
 
+    hoverMode: false;
     await getChromData(path);
 
     // Add the title of the chromatogram to the page
@@ -252,7 +253,7 @@ async function chartChrom(path) {
     var i;
     for (i = 0; i < realTimeX.length; i++) {
         if (!bestChrom) {
-            //await sleep(realTimeX[i]* 1e-1000000);
+            await sleep(realTimeX[i]*1e-1000000);
         }
         addData(myChart, realTimeX[i], realTimeY[i]);
     }
@@ -947,7 +948,7 @@ var Chart4 = new Chart(ctx4, {
 });
 var i;
 for(i=0; i < x1.length; i++){
-    await sleep(x1[i]*0.1);
+    await sleep(200);
     addData4in1(Chart1,x1[i],y1[i]);
     addData4in1(Chart2,x1[i],y2[i]);
     addData4in1(Chart3,x1[i],y3[i]);
@@ -956,6 +957,7 @@ for(i=0; i < x1.length; i++){
 hoverMode = true;  
 document.getElementById("next").style.opacity=1;
 document.getElementById('calibratioDownload').style.opacity = 1;
+document.getElementById('hover-tip').style.opacity = 1;
 }
 
 function addData4in1(chart, label, data) {
@@ -1213,13 +1215,13 @@ async function chartOverlay(){
                     label: 'Best Separation',
                     data: realTimeY,
                     backgroundColor: 
-                'rgba(163, 216, 108, 1)',
+                'rgba(163, 216, 108, .2)',
                 },
                 {
                     label: 'Calibration',
                     data: y4,
                     backgroundColor: 
-                'rgba(9, 96, 115, 1)',
+                'rgba(9, 96, 115, .2)',
                 },
                 ]},
             options: {
