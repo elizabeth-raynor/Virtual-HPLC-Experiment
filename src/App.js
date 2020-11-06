@@ -469,7 +469,7 @@ function submitChoice(){
         
         alert("This one ("+content+") will not work. Please select another ratio!");
     }else{
-        window.location.href = "mass-spectra.html";
+        window.location.href = "best-separation.html";
     }
 }
 
