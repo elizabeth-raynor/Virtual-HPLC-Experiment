@@ -261,8 +261,14 @@ async function chartChrom(path) {
     // Enable all buttons on the graph after the graph is made
     if (!bestChrom) {
         
-        document.getElementById('again').style.opacity = 1;
-        document.getElementById('again').disabled = false;
+        if (runStatus.includes(false)) {
+            document.getElementById('again').style.opacity = 1;
+            document.getElementById('again').disabled = false;
+        }
+        else {
+            document.getElementById('again').disabled = true;
+        }
+        
         document.getElementById('download').style.opacity = 1;
         document.getElementById('download').disabled = false;
 
@@ -459,12 +465,6 @@ function areaInfo() {
             break;
     }
     return text;
-}
-
-/********************************************************************************** */
-// Select Best
-function selectBest() {
-    
 }
 
 /**************************************************************************************/
