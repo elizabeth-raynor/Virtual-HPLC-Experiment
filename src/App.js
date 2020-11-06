@@ -253,7 +253,7 @@ async function chartChrom(path) {
     var i;
     for (i = 0; i < realTimeX.length; i++) {
         if (!bestChrom) {
-            await sleep(realTimeX[i]*1e-1000000);
+            await sleep(265); //265 on Jenny's computer makes the graphs take 10 min 
         }
         addData(myChart, realTimeX[i], realTimeY[i]);
     }
@@ -948,7 +948,7 @@ var Chart4 = new Chart(ctx4, {
 });
 var i;
 for(i=0; i < x1.length; i++){
-    await sleep(170);
+    await sleep(170); //170 on Jenny's computer makes the graphs take 10 min
     addData4in1(Chart1,x1[i],y1[i]);
     addData4in1(Chart2,x1[i],y2[i]);
     addData4in1(Chart3,x1[i],y3[i]);
@@ -966,11 +966,6 @@ chart.data.datasets[0].data.push(data);
 chart.update();
 }
 
-/*
-function sleep(ms) {
-return new Promise(resolve => setTimeout(resolve, ms));
-}
-*/
 
 function getCursorPosition1(event) { 
 if(hoverMode){
