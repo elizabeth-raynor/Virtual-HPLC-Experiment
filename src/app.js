@@ -9,6 +9,9 @@ const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
 [[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
 [[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
 ];
+const columnInfo = ', C18 Reverse Phase, 100 mm long, 5 µm particles';
+const solventA = ' H<sub>2</sub>O';
+const solventB = ' CH<sub>3</sub>CN';
 var ratioNum = JSON.parse(sessionStorage["ratioNum"]);
 var caseNum = JSON.parse(sessionStorage['caseNum']);
 var runStatus = JSON.parse(sessionStorage['runStatus']);
@@ -107,7 +110,7 @@ function selectOption() {
         if (runStatus[i]) {
             ratioNum = JSON.parse(sessionStorage["ratioNum"]);
             var c = document.createElement("option");
-            c.text = percentsA[i] + ' Solvent A, ' + percentsB[i] + ' Solvent B ';
+            c.text = percentsA[i] + ' H2O, ' + percentsB[i] + " CH3CN";
             selectra.options.add(c, i);
         }
     }
@@ -119,9 +122,9 @@ function selectOption() {
             var graphID = 'graph' + graphNum;
             var graphTitleID = graphID + 'Title';
             //console.log(caseStartPath + caseNames[caseNum] + '/' + chromPics[i]);
-            console.log(graphTitleID);
+            //console.log(graphTitleID);
             document.getElementById(graphID).src = caseStartPath + caseNames[caseNum] + '/' + chromPics[i];
-            document.getElementById(graphTitleID).innerHTML = percentsA[i] + ' Solvent A, ' + percentsB[i] + ' Solvent B ';
+            document.getElementById(graphTitleID).innerHTML = percentsA[i] + solventA + ', ' + percentsB[i] + solventB;
             graphNum++;
         }
     }
@@ -141,7 +144,7 @@ async function chartChrom(path) {
 
     // Add the title of the chromatogram to the page
     var caseName = caseNames[caseNum].substring(0, caseNames[caseNum].length - 1) + ' ' + caseNames[caseNum].substring(caseNames[caseNum].length - 1);
-    const title = caseName + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
+    const title = caseName + ': ' + percentsA[ratioNum] + solventA + ', ' + percentsB[ratioNum] + solventB + columnInfo;
     document.getElementById("chrom-chart-title").innerHTML = title;
     document.getElementById("chrom-chart-title").style.opacity = 1;
 
@@ -438,10 +441,14 @@ function areaInfo() {
 function submitChoice() {
     var content = document.getElementById("selectRatio").value;
     var choice = content.match(/\d+/g);
-    if (choice != "55,45") {
-
-        alert("This one (" + content + ") will not work. Please select another ratio!");
-    } else {
+    console.log('choice: ' + choice);
+    if (choice != "55,2,45,3" && choice != "30,2,70,3") {
+        alert("This one (" + content + ") will not work. Peaks may not be fully separated. Please select another ratio!");
+    } 
+    else if (choice == "30,2,70,3") {
+        alert("This one (" + content + ") will not work. Peaks may be cut off at the end. Please select another ratio!")
+    }
+    else {
         window.location.href = "best-separation.html";
     }
 }
@@ -455,7 +462,7 @@ async function chartBest() {
 
     // Add the title of the chromatogram to the page
     var caseName = caseNames[caseNum].substring(0, caseNames[caseNum].length - 1) + ' ' + caseNames[caseNum].substring(caseNames[caseNum].length - 1);
-    const title = caseName + ': ' + percentsA[ratioNum] + ' Solvent A, ' + percentsB[ratioNum] + ' Solvent B ';
+    const title = caseName + ': ' + percentsA[ratioNum] + solventA + ', ' + percentsB[ratioNum] + solventB;
     document.getElementById("chrom-chart-title").innerHTML = title;
     document.getElementById("chrom-chart-title").style.opacity = 1;
 
@@ -1205,6 +1212,7 @@ function selectCmpd(num) {
     third = calibrationPath3;
     forth = calibrationPath4;
 
+    document.getElementById("calibrationDownload").style.opacity = 1;
     document.getElementById("calibrationDownload").href = calibrationDownloadPath;
     document.getElementById("calibrationDownload").download = calibrationDownloadName;
     document.getElementById("calibrationTitle").innerText = calibrationTitleText;
@@ -1296,4 +1304,5 @@ async function chartOverlay() {
         }
     });
     document.getElementById("finish").style.opacity = 1;
+    document.getElementById('try-again').style.opacity = 1;
 }
