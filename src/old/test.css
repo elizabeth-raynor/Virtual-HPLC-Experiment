@@ -1,0 +1,42 @@
+ /*Source: http://androidcss.com/css-shape-icon-generator/# */
+ .Arrow{
+    display:inline-block;
+    position:relative;
+    width:100px;height:100px;
+    background-color:#08A696;
+    border-radius:50%;
+    border:none;
+    cursor: pointer;
+}
+
+.UpArrow:before{
+    position:absolute;
+    content:'';
+    margin:auto;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:calc(33.33%);
+    height:calc(33.33%);
+    background:rgba(0,0,0,0);
+    border:calc(100px/10) solid #fff;
+    border-right:none;
+    border-top:none;
+    transform:rotate(135deg);
+    box-sizing:content-box
+}
+
+.UpArrow:after{
+    position:absolute;
+    content:'';
+    margin:auto;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    width:calc(10%);
+    height:calc(49%);
+    background-color:#fff;
+    box-sizing:content-box
+}

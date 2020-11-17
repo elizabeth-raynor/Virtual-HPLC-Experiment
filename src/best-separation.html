@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Best Separation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <script src="app.js"></script>
+</head>
+
+<body onload="MakeChroms();">
+    <div class="topNav text">
+        <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1vw; margin-bottom: 0;" >
+        <h1 id="chrom-chart-title" class="header text" style="font-weight: bold; color: #096073; font-size: 2vw; margin-left: 5vw;">Chromatogram</h1>
+        <button id='download' class="Download" style="opacity: 0; align-self: flex-end;" disabled></button>
+    </div>
+    <h4 id="hover-tip" class="text" style=" text-align: left; font-size: 80%; margin: .7%; color: #A3D86C; opacity: 0; margin-left: 7vw;">Tip: Click on each peak to show its mass spectra.</h4>
+    <div id="bestChromContainer" class="chart-container" style="margin:1vw;">
+        <canvas id="bestChrom" width="800" height="400" margin="auto" display="block"></canvas>
+        <div class="flex-container text" style="flex-direction: column; justify-content: space-between;">
+            <p id="hover-info" style=" text-align: left; opacity: 0; color: #096073;" margin="auto", display="block">Area (1)= XXXXXXX</p>
+            <div class="flex-container text" style="flex-direction: row;">
+                <a><button id= "next" class="GreenButton text" type= "submit" style= "width: 6vw; height: 3vw; opacity: 0;" onclick="location= 'calibration-selection.html'">Next</button>
+            </div>
+            
+        </div>
+    </div>
+<script>
+    bestChrom = true;
+    sessionStorage['ratioNum'] = 3;
+</script>
+
+</body>
+</html>

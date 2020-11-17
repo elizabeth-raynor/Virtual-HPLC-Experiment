@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Best Separation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+
+<body  onload="selectOption()">
+<div class="topNav text">
+    <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
+</div>
+<div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
+    <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;" onclick="location='add-solvent.html'"></button>
+    
+</div>
+<h2 class="text" style="font-weight: bold; color: #096073; font-size: 180%;">Select the most desirable result</h2>
+<div class = "flex-container">
+    
+    <select name="ratio" id="selectRatio" style="width: auto; margin-right: 2vw;" ></select>
+    
+</div>
+<div class = "center">
+    <input type="button" class= "GreenButton" onclick="submitChoice()" value="Submit" style="flex-direction: row; justify-content: space-between;">
+</div>
+
+<div  style="align-content: center;">
+    <h1 id="graph1Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
+    <img id="graph1" class = "graphs" src="" style="width: 70vw;">
+    <h1 id="graph2Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
+    <img id="graph2" class = "graphs" src="" style="width: 70vw;">
+    <h1 id="graph3Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
+    <img id="graph3" class = "graphs" src="" style="width: 70vw;">
+    <h1 id="graph4Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
+    <img id="graph4"class = "graphs"  src="" style="width: 70vw;">
+    <h1 id="graph5Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
+    <img id="graph5" class = "graphs" src="" style="width: 70vw;">
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Comparing Peaks</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="topNav text">
+        <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%; margin-bottom: 0;" >
+        <a href="calibration-selection.html">
+        <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;"></button>
+        </a>
+        <h1 class="header text" style="font-weight: bold; color: #096073; font-size: 180%;" id="calibrationTitle">Calibration Curve</h1>
+        <a id="calibrationDownload"></a>
+    </div>
+    <h4 class="text" style="font-size: 80%; margin: .7%;">Tip: Click on the legends to hide and show the graphs.</h4>
+
+    <div class="charts-container">
+        <h4 class = "text" class="Hover-Info" id="InfoOverLay", width="800", height="400", style="opacity: 0; margin: auto; text-align: center;" >Peak 1 Area = %%%</h4>
+        <canvas id="chromOverlay" width="800" height="400" margin="auto" display="block"></canvas>
+    </div>
+    <div class="flex-container text" style="flex-direction: row;">
+        <a><button id= "finish" class="GreenButton text" type= "submit" style= "width: 7vw; height: 3vw; margin:20px; opacity: 0;" onclick="alert('Congrats! This is the end of the lab. Click on the back button to check out calibration graphs of other compounds.');">Finish</button>
+    </div>
+</body>
+<script src="app.js">chartOverlay()</script>
+</html>
