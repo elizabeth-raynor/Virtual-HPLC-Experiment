@@ -570,7 +570,7 @@ async function chart4in1(){
     });
     var i;
     for(i=0; i < x1.length; i++){
-        await sleep(x1[i]*0.1);
+        await sleep(170);
         addData4in1(Chart1,x1[i],y1[i]);
         addData4in1(Chart2,x1[i],y2[i]);
         addData4in1(Chart3,x1[i],y3[i]);

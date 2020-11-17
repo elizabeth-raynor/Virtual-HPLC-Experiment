@@ -131,7 +131,7 @@ async function chartChrom(path){
     hoverMode = false;
     var i;
     for(i=0; i < realTimeX.length; i++){
-        await sleep(realTimeX[i]*0);
+        await sleep(265);
         addData(myChart,realTimeX[i],realTimeY[i]);
     }
     hoverMode = true;  

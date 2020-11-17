@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Page</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <div class="topNav text">
+        <a style= "font-size: 2.3vw; ">CHEM230L: Drug Doping Lab</a>
+    </div>
+    <div>
+        <!--<p class="text" style="color:  #096073;">This is where the instruction page will go and where users will select the case they are doing</p>-->
+        <div>
+            <p class="text" style= "color: #096073; font-size: 230%;">Choose a case from the dropdown <br> menu and click Start</p>
+        </div>
+        <div class="flex-container" style="flex-direction: row;">
+            <form>  
+                <select id = "caseList">
+                    <option>Case</option>
+                </select> 
+            </form>
+        </div>
+        <div class="flex-container" style=" flex-direction: column; align-self: flex-end; margin: 7%;">
+            <a><button id= "startButton" class="GreenButton text" type= "submit" style= "width: 140%; height: 50%" onclick="select()">Start</button>
+        </div>
+        
+    </div>
+</body>
+<script>
+sessionStorage['caseNum'] = 0;
+sessionStorage['ratioNum'] = 0;
+sessionStorage['runStatus'] = JSON.stringify([false, false, false, false, false]);
+var cases = ['Case 1', 'Case 2', 'Case 3', 'Case 4'];
+var caseSelection = document.getElementById('caseList');
+for   (var i = 0; i < cases.length; i++) {
+    caseNum = cases[i];
+    var opt = document.createElement('option');
+    opt.textContent = caseNum;
+    opt.value = i;
+    caseSelection.appendChild(opt);
+}
+
+var btn = document.getElementById('startButton');
+
+function select() {
+    var select = document.getElementById('caseList');
+    if(select.options.length > 0 && select.options[select.selectedIndex].text != "Case") {
+                //window.alert("Text: " + select.options[select.selectedIndex].text + "\nValue: " + select.options[select.selectedIndex].value);
+                sessionStorage['caseNum'] = select.options[select.selectedIndex].value;
+                window.location.replace("add-solvent.html");
+            }
+            else {
+                window.alert("Please select a case.");
+            }
+}
+
+</script>
+
+</html>
