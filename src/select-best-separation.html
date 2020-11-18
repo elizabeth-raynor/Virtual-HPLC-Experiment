@@ -16,27 +16,23 @@
 </div>
 <div class="flex-container" style="flex-direction: row; justify-content: space-between; margin:1%" >
     <button class="Arrow" style="background-color: #08A696; transform: rotate(270deg); width: 4vw; height: 4vw;" onclick="location='add-solvent.html'"></button>
-    
-</div>
-<h2 class="text" style="font-weight: bold; color: #096073; font-size: 180%;">Select the most desirable result</h2>
-<div class = "flex-container">
-    
-    <select name="ratio" id="selectRatio" style="width: auto; margin-right: 2vw;" ></select>
-    
-</div>
-<div class = "center">
-    <input type="button" class= "GreenButton" onclick="submitChoice()" value="Submit" style="flex-direction: row; justify-content: space-between;">
 </div>
 
-<div  style="align-content: center;">
-    <h1 id="graph1Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
-    <img id="graph1" class = "graphs" src="" style="width: 70vw;">
-    <h1 id="graph2Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
-    <img id="graph2" class = "graphs" src="" style="width: 70vw;">
-    <h1 id="graph3Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
-    <img id="graph3" class = "graphs" src="" style="width: 70vw;">
-    <h1 id="graph4Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
-    <img id="graph4"class = "graphs"  src="" style="width: 70vw;">
-    <h1 id="graph5Title" class="text" style="padding-top: 2vw; color: #08A696; margin-bottom: 0;"></h1>
-    <img id="graph5" class = "graphs" src="" style="width: 70vw;">
+<div class = "flex-container" style="flex-direction: column;">
+    <div>
+        <h2 class="text" style="font-weight: bold; color: #096073; font-size: 180%; margin-top: 0;">Select the most desirable result</h2>
+        <select name="ratio" id="selectRatio" style="width: 20vw;"></select>
+        <input type="button" class= "GreenButton" onclick="submitChoice()" value="Submit" >
+    </div>
+    <h3 id="graph1Title" class="text" style="color: #08A696; margin-bottom: 0;"></h3>
+    <img id="graph1" src="" style="width: 60vw;">
+    <h3 id="graph2Title" class="text" style="color: #08A696; margin-bottom: 0;"></h3>
+    <img id="graph2" src="" style="width: 60vw;">
+    <h3 id="graph3Title" class="text" style="color: #08A696; margin-bottom: 0;"></h3>
+    <img id="graph3" src="" style="width: 60vw;">
+    <h3 id="graph4Title" class="text" style="color: #08A696; margin-bottom: 0;"></h3>
+    <img id="graph4" src="" style="width: 60vw;">
+    <h3 id="graph5Title" class="text" style="color: #08A696; margin-bottom: 0;"></h3>
+    <img id="graph5" src="" style="width: 60vw;">
+</div>
 </html>
