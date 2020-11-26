@@ -1,0 +1,56 @@
+/* Format all text in the web app*/
+.text {
+    font-family: "Arial";
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Format the body pages */
+body {
+    margin: 0px;
+    margin-bottom: 1%;
+}
+
+/* Format the header */
+.header {
+    text-align: center;
+}
+
+/* Format the bar at the top of each page
+source: https://www.w3schools.com/howto/howto_js_topnav.asp*/
+.topNav {
+    background-color: #096073;
+    overflow: hidden;
+}
+
+.topNav a {
+    float: left;
+    color: white;
+    text-align: left;
+    padding: 1% 2%;
+    text-decoration: none;
+    font-size: 5%;
+}
+
+
+.instruction{
+    text-align: center;
+    color: #08A696;
+}
+
+.instruction .demoimg{
+    width:50%;
+}
+
+.instruction p{
+    font:Arial;
+    font-size: 2vw;
+    width:50%;
+    margin: auto;
+    margin-top: 2vw;
+}
+h1{
+    color: #096073;
+    font-size: 5vw;
+    margin-left: auto;
+}
