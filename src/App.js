@@ -720,6 +720,7 @@ var dict1 = {};
 var dict2 = {};
 var dict3 = {};
 var dict4 = {};
+var dicts = [dict1, dict2, dict3, dict4];
 
 //the selected compound from calibration select page
 var selectedcmpd = -1;
@@ -730,7 +731,7 @@ const calibrationFilePaths = [["Acetaminophen"], ["AcetylsalicylicAcid"], ["Amph
 //names of the images when they are downloaded
 const calibraitonDownloadNames = [["Acetaminophen"], ["Acetylsalicylic Acid"], ["Amphetamine Case4"], ["Amphetamine Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["Ethacrynic Acid MethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]]
 //value to delay adding the data to the graph
-const calibrationSleep = 0; //265 makes it take 10 min on Jenny's computer
+const calibrationSleep =1e-1000000000; //265 makes it take 10 min on Jenny's computer
 //calibraiton chromatogram titles
 const calibrationChromTitles = ['Calibration conditions 1', 'Calibration conditions 2', 'Calibration conditions 3', 'Calibration conditions 4'];
 
@@ -835,7 +836,7 @@ async function chart4in1() {
                 enabled: true,
                 //mode: 'dataset',
                 onHover: function (elements) {
-                    getCursorPosition1(elements);
+                    getCursorPositionCalib(elements, 0);
                 }
             },
             tooltips: {
@@ -845,7 +846,7 @@ async function chart4in1() {
                         return title;
                     },
                     label: function (tooltipItem, data) {
-                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                        var label = 'Signal (arb. units)';
                         if (label) {
                             label += ': ';
                         }
@@ -914,7 +915,7 @@ async function chart4in1() {
                 enabled: true,
                 //mode: 'dataset',
                 onHover: function (elements) {
-                    getCursorPosition2(elements);
+                    getCursorPositionCalib(elements, 1);
                 }
             },
             tooltips: {
@@ -993,7 +994,7 @@ async function chart4in1() {
                 enabled: true,
                 //mode: 'dataset',
                 onHover: function (elements) {
-                    getCursorPosition3(elements);
+                    getCursorPositionCalib(elements, 2);
                 }
             },
             tooltips: {
@@ -1072,7 +1073,7 @@ async function chart4in1() {
                 enabled: true,
                 //mode: 'dataset',
                 onHover: function (elements) {
-                    getCursorPosition4(elements);
+                    getCursorPositionCalib(elements, 3);
                 }
             },
             tooltips: {
@@ -1117,10 +1118,12 @@ function addData4in1(chart, label, data) {
     chart.update();
 }
 
-//get the cursor position for the first chart
-function getCursorPosition1(event) {
+//get the cursor positons for all calibration charts
+function getCursorPositionCalib(event, index) {
+    const chartID = ['chrom1', 'chrom2', 'chrom3', 'chrom4'];
+    const infoID = ['Info1', 'Info2', 'Info3', 'Info4'];
     if (hoverMode) {
-        const canvas = document.getElementById('chrom1');
+        const canvas = document.getElementById(chartID[index]);
         let rect = canvas.getBoundingClientRect();
         let x = event.clientX - rect.left;
         let y = event.clientY - rect.top;
@@ -1131,97 +1134,17 @@ function getCursorPosition1(event) {
         var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
 
         // Convert y on canvas to y value on the graph
-        var yCoord = (((132 - y)) / (132)) * maxY;
+        var yCoord = (((330 - y)) / (332)) * maxY;
         //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-        if (yCoord < dict1[xData] && yCoord > 0) {
-            document.getElementById("Info1").innerHTML = areaInfo4in1(1);
-            document.getElementById("Info1").style.opacity = "1";
+        if (yCoord < dicts[index][xData] && yCoord > 0) {
+            //console.log('inside');
+            document.getElementById(infoID[index]).innerHTML = areaInfo4in1(index);
+            document.getElementById(infoID[index]).style.opacity = "1";
         }
         else {
-            document.getElementById("Info1").style.opacity = "0";
-        }
-    }
-}
-
-//get the cursor position for the second chart
-function getCursorPosition2(event) {
-    if (hoverMode) {
-        const canvas = document.getElementById('chrom2');
-        let rect = canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-
-        //Convert x on cavas to x value in the data set
-        var xCoord = ((x - 57) / (795 - 57)) * 10
-
-        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
-
-        // Convert y on canvas to y value on the graph
-        var yCoord = (((132 - y)) / (132)) * maxY;
-        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
-
-        if (yCoord < dict2[xData] && yCoord > 0) {
-            document.getElementById("Info2").innerHTML = areaInfo4in1(2);
-            document.getElementById("Info2").style.opacity = "1";
-        }
-        else {
-            document.getElementById("Info2").style.opacity = "0";
-        }
-    }
-}
-
-//get the cursor position for the third chart
-function getCursorPosition3(event) {
-    if (hoverMode) {
-        const canvas = document.getElementById('chrom3');
-        let rect = canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-
-        //Convert x on cavas to x value in the data set
-        var xCoord = ((x - 57) / (795 - 57)) * 10
-
-        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
-
-        // Convert y on canvas to y value on the graph
-        var yCoord = (((132 - y)) / (132)) * maxY;
-        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
-
-        if (yCoord < dict3[xData] && yCoord > 0) {
-            document.getElementById("Info3").innerHTML = areaInfo4in1(3);
-            document.getElementById("Info3").style.opacity = "1";
-        }
-
-        else {
-            document.getElementById("Info3").style.opacity = "0";
-        }
-    }
-}
-
-//get hte cursor positon for the forth chart
-function getCursorPosition4(event) {
-    if (hoverMode) {
-        const canvas = document.getElementById('chrom4');
-        let rect = canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-
-        //Convert x on cavas to x value in the data set
-        var xCoord = ((x - 57) / (795 - 57)) * 10
-
-        var xData = (Math.ceil(xCoord * 200) / 200).toFixed(2)
-
-        // Convert y on canvas to y value on the graph
-        var yCoord = (((132 - y)) / (132)) * maxY;
-        //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
-
-        if (yCoord < dict4[xData] && yCoord > 0) {
-            document.getElementById("Info4").innerHTML = areaInfo4in1(4);
-            document.getElementById("Info4").style.opacity = "1";
-        }
-        else {
-            document.getElementById("Info4").style.opacity = "0";
+            //console.log('outside');
+            document.getElementById(infoID[index]).style.opacity = "0";
         }
     }
 }
@@ -1229,7 +1152,7 @@ function getCursorPosition4(event) {
 // displays the area count when hover
 function areaInfo4in1(peakNum) {
     text = '';
-    text += 'Peak ' + peakNum + ' Area = ' + calibrationArea[selectedcmpd][peakNum - 1];
+    text += 'Calibration Graph ' + (peakNum+1) + ' Area = ' + calibrationArea[selectedcmpd][peakNum];
     return text;
 }
 
