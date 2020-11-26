@@ -52,17 +52,12 @@
         function select(){
         var select = document.getElementById("compoundList");
             if(select.options.length > 0 && select.options[select.selectedIndex].text != "Compound") {
-                //window.alert("Text: " + select.options[select.selectedIndex].text + "\nValue: " + select.options[select.selectedIndex].value);
                 localStorage.setItem('select',select.options[select.selectedIndex].value);
                 window.location.replace("calibration-real-time.html");
             }
             else {
                 window.alert("Please select a compound.");
             }
-        }
-
-        function compoundPageDownload(){
-            //window.alert("Nothing available for downloading on this page.");
         }
     </script>
     
