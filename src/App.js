@@ -1,35 +1,30 @@
-let checker = arr => arr.every(v => v === false);
+/**************************************************************************************/
+// VARIABLES
 
-// Global constants for solvent ratios
-const percentsB = ["0%", "15%", "25%", "45%", "70%"];
-const percentsA = ["100%", "85%", "75%", "55%", "30%"];
-const areas = [[86674, 99256, 110955], [21250, 141568, 6225], [15203, 42560, 10525], [2256, 9536, 25638]];
-const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
-[[.97, 1.5], [2.445, 4.47], [5.005, 6.82]],
-[[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
-[[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
-];
-const columnInfo = ', C18 Reverse Phase, 100 mm long, 5 µm particles';
-const solventA = ' H<sub>2</sub>O';
-const solventB = ' CH<sub>3</sub>CN';
+//keep track of ratio selections
 var ratioNum = JSON.parse(sessionStorage["ratioNum"]);
 var caseNum = JSON.parse(sessionStorage['caseNum']);
 var runStatus = JSON.parse(sessionStorage['runStatus']);
 
-// Paths
-var caseStartPath = '../data/DopingLab_dev/';
-var calibStartPath = '../data/DopingLab_dev/Calibrations/';
+// Base paths
+var caseBasePath = '../data/DopingLab_dev/';
+var calibBasePath = '../data/DopingLab_dev/Calibrations/';
 
-// Arrays of filenames
+// Arrays of folder/file names
 const caseNames = ["Case1", "Case2", "Case3", "Case4"];
 const chromNames = ['Chrom1.csv', 'Chrom2.csv', 'Chrom3.csv', 'Chrom4.csv', 'Chrom5.csv'];
 const chromPics = ['Chrom1.png', 'Chrom2.png', 'Chrom3.png', 'Chrom4.png', 'Chrom5.png'];
 const MSNames = ['Peak1_MS.csv', 'Peak2_MS.csv', 'Peak3_MS.csv'];
 const MSPics = ['Peak1_MS.png', 'Peak2_MS.png', 'Peak3_MS.png'];
 
-/************************************************************** */
-// Add solvent
+/**************************************************************************************/
+// ADD SOLVENT
+const percentsB = ["0%", "15%", "25%", "45%", "70%"];
+const percentsA = ["100%", "85%", "75%", "55%", "30%"];
+const solventA = ' H<sub>2</sub>O';
+const solventB = ' CH<sub>3</sub>CN';
 
+//change the percent when the up and down arrows are click on add-solvent.html
 function changePercent(direction) {
     runStatus = JSON.parse(sessionStorage['runStatus']);
 
@@ -57,7 +52,7 @@ function changePercent(direction) {
     sessionStorage["ratioNum"] = JSON.stringify(ratioNum);
 }
 
-//StatusCheck if done running
+//check if the ratio has been run already
 function statusCheck() {
     runStatus = JSON.parse(sessionStorage['runStatus']);
     if (runStatus[ratioNum]) {
@@ -73,20 +68,36 @@ function getPerc() {
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
 }
 
-//Reset the stored value
+//reset the stored value
 function ratioReset() {
     runStatus = [false, false, false, false, false];
     sessionStorage["runStatus"] = JSON.stringify(runStatus);
 }
 
-/****************************************************************************/
-// Real-time Graph Current
+/**************************************************************************************/
+// SOLVENT RATIO REAL-TIME
+var realTimeDict = {};
+const realTimeX = [];
+const realTimeY = [];
+var hoverMode = false;
+var maxY = 0;
 
-function MakeChroms() {
+//column info that is displayed in the title of the solvent ratio real-time graphs
+const columnInfo = ', C18 Reverse Phase, 100 mm long, 5 µm particles';
+// the areas of the peaks in each case
+const areas = [[86674, 99256, 110955], 
+[21250, 141568, 6225], 
+[15203, 42560, 10525], 
+[2256, 9536, 25638]];
+//solvent ratio sleep value
+const solventRatioSleep = 0; //170 makes it take 10 min on Jenny's computer
+
+//initiate the making of the solvent ratio chromatograms
+function runChroms() {
     ratioNum = JSON.parse(sessionStorage["ratioNum"]);
     runStatus[ratioNum] = true;
     sessionStorage["runStatus"] = JSON.stringify(runStatus);
-    var chromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[ratioNum];
+    var chromPath = caseBasePath + caseNames[caseNum] + '/' + chromNames[ratioNum];
     chartChrom(chromPath);
 }
 
@@ -98,6 +109,7 @@ function showButtons() {
 }
 
 //show the selection page
+let checker = arr => arr.every(v => v === false);
 function selectOption() {
     var selectra = document.getElementById("selectRatio");
     if (checker(runStatus)) {
@@ -123,7 +135,7 @@ function selectOption() {
             var graphTitleID = graphID + 'Title';
             //console.log(caseStartPath + caseNames[caseNum] + '/' + chromPics[i]);
             //console.log(graphTitleID);
-            document.getElementById(graphID).src = caseStartPath + caseNames[caseNum] + '/' + chromPics[i];
+            document.getElementById(graphID).src = caseBasePath + caseNames[caseNum] + '/' + chromPics[i];
             document.getElementById(graphTitleID).innerHTML = percentsA[i] + solventA + ', ' + percentsB[i] + solventB;
             graphNum++;
         }
@@ -131,27 +143,23 @@ function selectOption() {
 
 }
 
-var dict = {};
-const realTimeX = [];
-const realTimeY = [];
-var hoverMode = false;
-var maxY = 0;
-
+//make the solvent ratio chromatogram
 async function chartChrom(path) {
 
-    // Get dta
+    // Get data
     await getChromData(path);
 
-    // Add the title of the chromatogram to the page
+    //add the title of the chromatogram to the page
     var caseName = caseNames[caseNum].substring(0, caseNames[caseNum].length - 1) + ' ' + caseNames[caseNum].substring(caseNames[caseNum].length - 1);
     const title = caseName + ': ' + percentsA[ratioNum] + solventA + ', ' + percentsB[ratioNum] + solventB + columnInfo;
     document.getElementById("chrom-chart-title").innerHTML = title;
     document.getElementById("chrom-chart-title").style.opacity = 1;
 
-    // Make the chart
+    //make the chart
     ctx = document.getElementById('chrom').getContext('2d');
     canvas = document.getElementById('chrom');
 
+    //the chart
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -200,7 +208,7 @@ async function chartChrom(path) {
                     const yCoord = coords[0];
                     const xData = coords[1];
                     //console.log('xCoord:' + xData, 'yCoord: ' + yCoord);
-                    if (yCoord > 0 && yCoord < dict[xData]) {
+                    if (yCoord > 0 && yCoord < realTimeDict[xData]) {
                         document.getElementById("hover-info").innerHTML = areaInfo();
                         document.getElementById("hover-info").style.opacity = "1";
                     }
@@ -232,7 +240,7 @@ async function chartChrom(path) {
     hoverMode = false;
     var i;
     for (i = 0; i < realTimeX.length; i++) {
-        await sleep(1e-1000000); //170 makes it take 10 min on Jenny's
+        await sleep(solventRatioSleep); 
         addData(myChart, realTimeX[i], realTimeY[i]);
     }
     hoverMode = true;
@@ -249,7 +257,7 @@ async function chartChrom(path) {
     document.getElementById('download').style.opacity = 1;
     document.getElementById('download').disabled = false;
 
-    var chromDownloadPath = caseStartPath + caseNames[caseNum] + '/' + chromPics[ratioNum];
+    var chromDownloadPath = caseBasePath + caseNames[caseNum] + '/' + chromPics[ratioNum];
     var chromDownloadName = caseNames[caseNum] + '_' + chromPics[ratioNum];
 
     document.getElementById("chromDownload").href = chromDownloadPath;
@@ -260,6 +268,7 @@ async function chartChrom(path) {
     document.getElementById('next').disabled = false;
 }
 
+//read and parse the CSV, add the data to arrays and dictionary for the solvent ratio chromatrogram
 async function getChromData(path) {
     const response = await fetch(path);
     var data = await response.text();
@@ -268,7 +277,7 @@ async function getChromData(path) {
     const rows = data.split('\n');
     rows.forEach(elt => {
         const row = elt.split(',');
-        dict[row[0]] = row[1];
+        realTimeDict[row[0]] = row[1];
         const time = parseFloat(row[0]);
 
         // Add times to x-axis array if they are a number
@@ -285,6 +294,7 @@ async function getChromData(path) {
     maxY = getMaxY();
 }
 
+//determine the max y value in the data to set the y-axis
 function getMaxY() {
     realTimeYNum = [];
     realTimeY.forEach(number => {
@@ -295,6 +305,7 @@ function getMaxY() {
     return roundedMax;
 }
 
+//add the data to the solvent ratio chromatogram
 function addData(chart, label, data) {
     chart.data.labels.push(label);
     chart.data.datasets.forEach((dataset) => {
@@ -303,10 +314,12 @@ function addData(chart, label, data) {
     chart.update();
 }
 
+//add the data in real time to the solvent ratio chromatogram
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+//get the cursor position for the real-time graph
 function getCursorPosition(event, ctx, canvas) {
     // source: https://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
 
@@ -326,6 +339,7 @@ function getCursorPosition(event, ctx, canvas) {
     return [yCoord, xData];
 }
 
+//make the labels to display the area information
 function areaInfo() {
     text = '';
     ratioNum = JSON.parse(sessionStorage['ratioNum']);
@@ -436,8 +450,8 @@ function areaInfo() {
     }
     return text;
 }
-/*********************************************************************/
-// Select Best
+/**************************************************************************************/
+// SELECT BEST
 function submitChoice() {
     var content = document.getElementById("selectRatio").value;
     var choice = content.match(/\d+/g);
@@ -452,12 +466,14 @@ function submitChoice() {
         window.location.href = "best-separation.html";
     }
 }
-/*************************************************************************/
-// Best Separation
+
+/**************************************************************************************/
+// BEST SEPARATION
+
 async function chartBest() {
 
     //Get the data
-    bestChromPath = caseStartPath + caseNames[caseNum] + '/' + chromNames[3];
+    bestChromPath = caseBasePath + caseNames[caseNum] + '/' + chromNames[3];
     await getChromData(bestChromPath);
 
     // Add the title of the chromatogram to the page
@@ -515,7 +531,7 @@ async function chartBest() {
                     const coords = getCursorPosition(elements, ctx, canvas);
                     const yCoord = coords[0];
                     const xData = coords[1];
-                    if (yCoord > 0 && yCoord < dict[xData]) {
+                    if (yCoord > 0 && yCoord < realTimeDict[xData]) {
                         document.getElementById("hover-info").innerHTML = areaInfo();
                         document.getElementById("hover-info").style.opacity = "1";
                     }
@@ -547,33 +563,41 @@ async function chartBest() {
 }
 
 /**************************************************************************************/
-// Mass Spectra
+// MASS SPECTRA
 
-// arrays for x and y values
+// arrays to store the MS data
 const xValsMS = [];
 const yValsMS = [];
 
+// x ranges of the peaks of the best separation for all cases
+const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
+[[.97, 1.5], [2.445, 4.47], [5.005, 6.82]],
+[[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
+[[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
+];
+
+//enable the click function to see the MS graphs
 function enableMSClick(ctx) {
     ratioNum = sessionStorage['ratioNum'];
     const canvas = document.getElementById('bestChrom');
-    canvas.onclick = function (elements) {
 
+    canvas.onclick = function (elements) {
         if (ratioNum == 3) {
             const coords = getCursorPosition(elements, ctx, canvas);
             const yCoord = coords[0];
             const xData = coords[1];
             var MSPath = '';
-            if (yCoord > 0 && yCoord < dict[xData]) {
+            if (yCoord > 0 && yCoord < realTimeDict[xData]) {
                 if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
-                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[0];
+                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[0];
                     sessionStorage["peakNum"] = 0;
                 }
                 else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
-                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[1];
+                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[1];
                     sessionStorage["peakNum"] = 1;
                 }
                 else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
-                    MSPath = caseStartPath + caseNames[caseNum] + '/' + MSNames[2];
+                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[2];
                     sessionStorage["peakNum"] = 2;
                 }
                 window.location.href = "mass-spectra.html";
@@ -583,21 +607,22 @@ function enableMSClick(ctx) {
     }
 }
 
+//initiate the making of the MS chart
 function runMS() {
     var MSPath = sessionStorage.getItem("path-to-MS");
 
     chartMS(MSPath);
 
     var peakNum = JSON.parse(sessionStorage['peakNum']);
-    var MSDownloadPath = caseStartPath + caseNames[caseNum] + '/' + MSPics[peakNum];
+    var MSDownloadPath = caseBasePath + caseNames[caseNum] + '/' + MSPics[peakNum];
     var MSDownloadName = caseNames[caseNum] + '_' + MSPics[peakNum];
 
     document.getElementById("MSDownload").href = MSDownloadPath;
     document.getElementById("MSDownload").download = MSDownloadName;
 }
 
-
-// source: https://www.youtube.com/watch?v=RfMkdvN-23o 
+//read and the CSV that has the MS data, and store the data in array
+//source: https://www.youtube.com/watch?v=RfMkdvN-23o 
 async function getMSData(path) {
     // reads csv file and trims is
     const response = await fetch(path);
@@ -616,6 +641,7 @@ async function getMSData(path) {
     return { xVals: xValsMS, yVals: yValsMS };
 }
 
+//make the chart
 async function chartMS(path) {
     const data = await getMSData(path);
 
@@ -682,13 +708,14 @@ async function chartMS(path) {
     })
 }
 
-/****************************************************************************/
-// calibration 4 in 1 graphs
+/**************************************************************************************/
+// CALIBRATION REAL-TIME
 
 var first;
 var second;
 var third;
 var forth;
+//arrays to store the data for each graph
 const x1 = [];
 const y1 = [];
 const x2 = [];
@@ -697,13 +724,26 @@ const x3 = [];
 const y3 = [];
 const x4 = [];
 const y4 = [];
-
+//dictionarys to access the data for each graph
 var dict1 = {};
 var dict2 = {};
 var dict3 = {};
 var dict4 = {};
 
+//the selected compound from calibration select page
+var selectedcmpd = -1;
+//areas of the calibraiton curves
+const calibrationArea = [[7370, 23804, 86891, 150534], [9597, 23319, 91002, 227054], [1072, 18291, 39363, 55005], [1072, 18291, 39363, 55005], [3684, 12718, 46383, 118860], [3684, 12718, 46383, 118860], [6574, 23554, 89508, 233279], [13598, 69753, 127019, 452253], [9597, 23319, 91002, 227054], [2090, 17676, 41710, 57836], [13598, 69753, 127019, 452253], [9597, 23319, 91002, 227054], [9597, 23319, 91002, 227054], [13598, 69753, 127019, 452253]];
+//file names for the calibraiton compounds
+const calibrationFilePaths = [["Acetaminophen"], ["AcetylsalicylicAcid"], ["Amphetamine_Case4"], ["Amphetamine_Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["EthacrynicAcidMethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]];
+//names of the images when they are downloaded
+const calibraitonDownloadNames = [["Acetaminophen"], ["Acetylsalicylic Acid"], ["Amphetamine Case4"], ["Amphetamine Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["Ethacrynic Acid MethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]]
+//value to delay adding the data to the graph
+const calibrationSleep = 0; //265 makes it take 10 min on Jenny's computer
+//calibraiton chromatogram titles
+const calibrationChromTitles = ['Calibration conditions 1', 'Calibration conditions 2', 'Calibration conditions 3', 'Calibration conditions 4'];
 
+//read and parse the CSVs, store the data in arrays and a dictionary
 async function getChromData4in1(path, dict, x, y) {
     const response = await fetch(path);
     var data = await response.text();
@@ -728,6 +768,7 @@ async function getChromData4in1(path, dict, x, y) {
     });
 }
 
+//determine max y value in the data to set the y-axis mas value
 function getMaxY4in1() {
     realTimeYNum = [];
     y4.forEach(number => {
@@ -738,6 +779,7 @@ function getMaxY4in1() {
     return roundedMax;
 }
 
+//create the charts
 async function chart4in1() {
     hoverMode = false;
     await getChromData4in1(first, dict1, x1, y1);
@@ -746,6 +788,7 @@ async function chart4in1() {
     await getChromData4in1(forth, dict4, x4, y4);
     maxY = getMaxY4in1();
 
+    //first calibraiton graph
     const ctx1 = document.getElementById('chrom1').getContext('2d');
     var Chart1 = new Chart(ctx1, {
         type: 'line',
@@ -791,7 +834,7 @@ async function chart4in1() {
             },
             title: {
                 display: true,
-                text: 'Calibration Graph 1',
+                text: calibrationChromTitles[0],
             },
             legend: {
                 display: false
@@ -823,6 +866,7 @@ async function chart4in1() {
         }
     });
 
+    //second calibraiton graph
     const ctx2 = document.getElementById('chrom2').getContext('2d');
     var Chart2 = new Chart(ctx2, {
         type: 'line',
@@ -869,7 +913,7 @@ async function chart4in1() {
             },
             title: {
                 display: true,
-                text: 'Calibration Graph 2',
+                text: calibrationChromTitles[1],
             },
             legend: {
                 display: false
@@ -901,6 +945,7 @@ async function chart4in1() {
         }
     });
 
+    //third calibraiton graph
     const ctx3 = document.getElementById('chrom3').getContext('2d');
     var Chart3 = new Chart(ctx3, {
         type: 'line',
@@ -947,7 +992,7 @@ async function chart4in1() {
             },
             title: {
                 display: true,
-                text: 'Calibration Graph 3',
+                text: calibrationChromTitles[2],
             },
             legend: {
                 display: false
@@ -979,6 +1024,7 @@ async function chart4in1() {
         }
     });
 
+    //fouth calibration graph
     const ctx4 = document.getElementById('chrom4').getContext('2d');
     var Chart4 = new Chart(ctx4, {
         type: 'line',
@@ -1025,7 +1071,7 @@ async function chart4in1() {
             },
             title: {
                 display: true,
-                text: 'Calibration Graph 4',
+                text: calibrationChromTitles[3],
             },
             legend: {
                 display: false
@@ -1056,25 +1102,31 @@ async function chart4in1() {
             }
         }
     });
+
+    //add the data to the graph in real time
     var i;
     for (i = 0; i < x1.length; i++) {
-        await sleep(0); // 265 makes it take 10 min on Jenny's computer
+        await sleep(calibrationSleep); // 265 makes it take 10 min on Jenny's computer
         addData4in1(Chart1, x1[i], y1[i]);
         addData4in1(Chart2, x1[i], y2[i]);
         addData4in1(Chart3, x1[i], y3[i]);
         addData4in1(Chart4, x1[i], y4[i]);
     }
+
+    //graph is done, so show Download and Next buttons
     hoverMode = true;
     document.getElementById("next").style.opacity = 1;
     document.getElementById('calibratioDownload').style.opacity = 1;
 }
 
+//add the data to the charts
 function addData4in1(chart, label, data) {
     chart.data.labels.push(label);
     chart.data.datasets[0].data.push(data);
     chart.update();
 }
 
+//get the cursor position for the first chart
 function getCursorPosition1(event) {
     if (hoverMode) {
         const canvas = document.getElementById('chrom1');
@@ -1101,6 +1153,7 @@ function getCursorPosition1(event) {
     }
 }
 
+//get the cursor position for the second chart
 function getCursorPosition2(event) {
     if (hoverMode) {
         const canvas = document.getElementById('chrom2');
@@ -1127,6 +1180,7 @@ function getCursorPosition2(event) {
     }
 }
 
+//get the cursor position for the third chart
 function getCursorPosition3(event) {
     if (hoverMode) {
         const canvas = document.getElementById('chrom3');
@@ -1154,6 +1208,7 @@ function getCursorPosition3(event) {
     }
 }
 
+//get hte cursor positon for the forth chart
 function getCursorPosition4(event) {
     if (hoverMode) {
         const canvas = document.getElementById('chrom4');
@@ -1180,24 +1235,15 @@ function getCursorPosition4(event) {
     }
 }
 
-
-// things below sets data for different compound choices
-// the selected compound from calibration select page
-var selectedcmpd = -1;
-const area4in1 = [[7370, 23804, 86891, 150534], [9597, 23319, 91002, 227054], [1072, 18291, 39363, 55005], [1072, 18291, 39363, 55005], [3684, 12718, 46383, 118860], [3684, 12718, 46383, 118860], [6574, 23554, 89508, 233279], [13598, 69753, 127019, 452253], [9597, 23319, 91002, 227054], [2090, 17676, 41710, 57836], [13598, 69753, 127019, 452253], [9597, 23319, 91002, 227054], [9597, 23319, 91002, 227054], [13598, 69753, 127019, 452253]];
-const calibrationFilePaths = [["Acetaminophen"], ["AcetylsalicylicAcid"], ["Amphetamine_Case4"], ["Amphetamine_Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["EthacrynicAcidMethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]];
-const downloadNames = [["Acetaminophen"], ["Acetylsalicylic Acid"], ["Amphetamine Case4"], ["Amphetamine Case123"], ["Caffeine"], ["Chlorothiazide"], ["Ephedrine"], ["Ethacrynic Acid MethylEster"], ["Ibuprofen"], ["Methamphetamine"], ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]]
-
 // displays the area count when hover
 function areaInfo4in1(peakNum) {
     text = '';
-    text += 'Peak ' + peakNum + ' Area = ' + area4in1[selectedcmpd][peakNum - 1];
+    text += 'Peak ' + peakNum + ' Area = ' + calibrationArea[selectedcmpd][peakNum - 1];
     return text;
 }
 
 // the function that checks which compound is selected
 selectCmpd(JSON.parse(localStorage.getItem('select')));
-
 function selectCmpd(num) {
     selectedcmpd = num;
     var calibrationPath1 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "_1.csv";
@@ -1205,8 +1251,8 @@ function selectCmpd(num) {
     var calibrationPath3 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "_3.csv";
     var calibrationPath4 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "_4.csv";
     var calibrationDownloadPath = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + ".png";
-    var calibrationDownloadName = downloadNames[num] + "_Calibration_Graphs";
-    var calibrationTitleText = downloadNames[num] + " Calibration Graphs";
+    var calibrationDownloadName = calibraitonDownloadNames[num] + "_Calibration_Graphs";
+    var calibrationTitleText = calibraitonDownloadNames[num] + " Calibration Graphs";
     first = calibrationPath1;
     second = calibrationPath2;
     third = calibrationPath3;
@@ -1221,8 +1267,8 @@ function selectCmpd(num) {
     chartOverlay();
 }
 
-/************************************************************************ */
-// Overlay
+/**************************************************************************************/
+// OVERALY
 
 //below are for calibration-overlay.html
 async function chartOverlay() {
