@@ -26,8 +26,6 @@ const solventB = ' CH<sub>3</sub>CN';
 
 //change the percent when the up and down arrows are click on add-solvent.html
 function changePercent(direction) {
-    runStatus = JSON.parse(sessionStorage['runStatus']);
-
     if (direction == 1 && ratioNum != percentsB.length - 1) {
         ratioNum++;
     }
@@ -54,7 +52,6 @@ function changePercent(direction) {
 
 //check if the ratio has been run already
 function statusCheck() {
-    runStatus = JSON.parse(sessionStorage['runStatus']);
     if (runStatus[ratioNum]) {
         document.getElementById("percentB").style.color = "#b1e0dc";
         document.getElementById("runButton").style.cursor = "context-menu";
@@ -63,7 +60,6 @@ function statusCheck() {
 }
 //get stored ratio info
 function getPerc() {
-    ratioNum = JSON.parse(sessionStorage["ratioNum"]);
     document.getElementById("percentA").innerHTML = percentsA[ratioNum];
     document.getElementById("percentB").innerHTML = percentsB[ratioNum];
 }
@@ -94,7 +90,6 @@ const solventRatioSleep = 0; //170 makes it take 10 min on Jenny's computer
 
 //initiate the making of the solvent ratio chromatograms
 function runChroms() {
-    ratioNum = JSON.parse(sessionStorage["ratioNum"]);
     runStatus[ratioNum] = true;
     sessionStorage["runStatus"] = JSON.stringify(runStatus);
     var chromPath = caseBasePath + caseNames[caseNum] + '/' + chromNames[ratioNum];
@@ -120,7 +115,6 @@ function selectOption() {
 
     for (var i = 0; i < runStatus.length; i++) {
         if (runStatus[i]) {
-            ratioNum = JSON.parse(sessionStorage["ratioNum"]);
             var c = document.createElement("option");
             c.text = percentsA[i] + ' H2O, ' + percentsB[i] + " CH3CN";
             selectra.options.add(c, i);
@@ -128,7 +122,6 @@ function selectOption() {
     }
 
     var graphNum = 1;
-    runStatus = JSON.parse(sessionStorage['runStatus']);
     for (i = 0; i < runStatus.length; i++) {
         if (runStatus[i]) {
             var graphID = 'graph' + graphNum;
@@ -342,7 +335,6 @@ function getCursorPosition(event, ctx, canvas) {
 //make the labels to display the area information
 function areaInfo() {
     text = '';
-    ratioNum = JSON.parse(sessionStorage['ratioNum']);
     switch (caseNum) {
         case 0:
             switch (ratioNum) {
@@ -613,7 +605,6 @@ function runMS() {
 
     chartMS(MSPath);
 
-    var peakNum = JSON.parse(sessionStorage['peakNum']);
     var MSDownloadPath = caseBasePath + caseNames[caseNum] + '/' + MSPics[peakNum];
     var MSDownloadName = caseNames[caseNum] + '_' + MSPics[peakNum];
 
