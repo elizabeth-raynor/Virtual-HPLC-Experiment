@@ -31,9 +31,12 @@
     </div>
 </body>
 <script>
+//initialized session storage for the caseNum, ratioNum, and runStatus
 sessionStorage['caseNum'] = 0;
 sessionStorage['ratioNum'] = 0;
 sessionStorage['runStatus'] = JSON.stringify([false, false, false, false, false]);
+
+//make the dropdown menu to choose the case
 var cases = ['Case 1', 'Case 2', 'Case 3', 'Case 4'];
 var caseSelection = document.getElementById('caseList');
 for   (var i = 0; i < cases.length; i++) {
@@ -44,12 +47,13 @@ for   (var i = 0; i < cases.length; i++) {
     caseSelection.appendChild(opt);
 }
 
+//button connected to the dropdown menu selection
 var btn = document.getElementById('startButton');
 
+//functionality of startButton
 function select() {
     var select = document.getElementById('caseList');
     if(select.options.length > 0 && select.options[select.selectedIndex].text != "Case") {
-                //window.alert("Text: " + select.options[select.selectedIndex].text + "\nValue: " + select.options[select.selectedIndex].value);
                 sessionStorage['caseNum'] = select.options[select.selectedIndex].value;
                 window.location.replace("add-solvent.html");
             }
