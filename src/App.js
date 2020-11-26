@@ -715,6 +715,8 @@ const x3 = [];
 const y3 = [];
 const x4 = [];
 const y4 = [];
+const xs = [x1, x2, x3, x4];
+const ys = [y1, y2, y3, y4];
 //dictionarys to access the data for each graph
 var dict1 = {};
 var dict2 = {};
@@ -734,6 +736,12 @@ const calibraitonDownloadNames = [["Acetaminophen"], ["Acetylsalicylic Acid"], [
 const calibrationSleep =1e-1000000000; //265 makes it take 10 min on Jenny's computer
 //calibraiton chromatogram titles
 const calibrationChromTitles = ['Calibration conditions 1', 'Calibration conditions 2', 'Calibration conditions 3', 'Calibration conditions 4'];
+//calibraiton chromtrogram colors
+const calibratioChromColors = ['rgba(163, 216, 108, .5)', 'rgba(86, 191, 132, .5)', 'rgba(8, 166, 150, .5)', 'rgba(9, 96, 115, .5)']
+
+const chartID = ['chrom1', 'chrom2', 'chrom3', 'chrom4'];
+const infoID = ['Info1', 'Info2', 'Info3', 'Info4'];
+
 
 //read and parse the CSVs, store the data in arrays and a dictionary
 async function getChromData4in1(path, dict, x, y) {
@@ -782,16 +790,53 @@ async function chart4in1() {
 
     //first calibraiton graph
     const ctx1 = document.getElementById('chrom1').getContext('2d');
-    var Chart1 = new Chart(ctx1, {
+    var Chart1 = makeChart4in1(ctx1, 0);
+
+    //second calibraiton graph
+    const ctx2 = document.getElementById('chrom2').getContext('2d');
+    var Chart2 = makeChart4in1(ctx2, 1);
+
+    //third calibraiton graph
+    const ctx3 = document.getElementById('chrom3').getContext('2d');
+    var Chart3 = makeChart4in1(ctx3, 2);
+
+    //fouth calibration graph
+    const ctx4 = document.getElementById('chrom4').getContext('2d');
+    var Chart4 = makeChart4in1(ctx4, 3);
+
+    //add the data to the graph in real time
+    var i;
+    for (i = 0; i < x1.length; i++) {
+        await sleep(calibrationSleep); // 265 makes it take 10 min on Jenny's computer
+        addData4in1(Chart1, x1[i], y1[i]);
+        addData4in1(Chart2, x1[i], y2[i]);
+        addData4in1(Chart3, x1[i], y3[i]);
+        addData4in1(Chart4, x1[i], y4[i]);
+    }
+
+    //graph is done, so show Download and Next buttons
+    hoverMode = true;
+    document.getElementById("next").style.opacity = 1;
+    document.getElementById('calibratioDownload').style.opacity = 1;
+}
+
+//add the data to the charts
+function addData4in1(chart, label, data) {
+    chart.data.labels.push(label);
+    chart.data.datasets[0].data.push(data);
+    chart.update();
+}
+
+function makeChart4in1(ctx, index) {
+    var chart =  new Chart(ctx, {
         type: 'line',
         data: {
             // change this to make it draw a data set instead of just y value
             labels: [],
             datasets: [{
-                label: 'Calibration Graph 1',
                 data: [],
-                backgroundColor:
-                    'rgba(163, 216, 108, 1)',
+                label: 'Calibration Graph',
+                backgroundColor: calibratioChromColors[index],
                 display: false,
             },
             ]
@@ -826,7 +871,7 @@ async function chart4in1() {
             },
             title: {
                 display: true,
-                text: calibrationChromTitles[0],
+                text: calibrationChromTitles[index],
             },
             legend: {
                 display: false
@@ -836,7 +881,7 @@ async function chart4in1() {
                 enabled: true,
                 //mode: 'dataset',
                 onHover: function (elements) {
-                    getCursorPositionCalib(elements, 0);
+                    getCursorPositionCalib(elements, index);
                 }
             },
             tooltips: {
@@ -857,271 +902,11 @@ async function chart4in1() {
             }
         }
     });
-
-    //second calibraiton graph
-    const ctx2 = document.getElementById('chrom2').getContext('2d');
-    var Chart2 = new Chart(ctx2, {
-        type: 'line',
-        data: {
-            // change this to make it draw a data set instead of just y value
-            labels: [],
-            datasets: [
-                {
-                    label: 'Calibration Graph 2',
-                    data: [],
-                    backgroundColor:
-                        'rgba(86, 191, 132, 1)',
-                    display: false,
-                },
-            ]
-        },
-        options: {
-            responsive: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        max: 10,
-                        min: 0,
-                        maxTicksLimit: 21,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Retention Time (min)'
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        max: maxY,
-                        min: 0,
-                        stepSize: 1000,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Signal (arb. units)'
-                    }
-                }],
-            },
-            title: {
-                display: true,
-                text: calibrationChromTitles[1],
-            },
-            legend: {
-                display: false
-            },
-            hover: {
-                // Overrides the global setting
-                enabled: true,
-                //mode: 'dataset',
-                onHover: function (elements) {
-                    getCursorPositionCalib(elements, 1);
-                }
-            },
-            tooltips: {
-                callbacks: {
-                    title: function (tooltipItem, data) {
-                        var title = "Retention Time (min): " + realTimeX[tooltipItem[0].index];
-                        return title;
-                    },
-                    label: function (tooltipItem, data) {
-                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        label += Math.round(tooltipItem.yLabel * 100) / 100;
-                        return label;
-                    }
-                }
-            }
-        }
-    });
-
-    //third calibraiton graph
-    const ctx3 = document.getElementById('chrom3').getContext('2d');
-    var Chart3 = new Chart(ctx3, {
-        type: 'line',
-        data: {
-            // change this to make it draw a data set instead of just y value
-            labels: [],
-            datasets: [
-                {
-                    label: 'Calibration Graph 3',
-                    data: [],
-                    backgroundColor:
-                        'rgba(8, 166, 150, 1)',
-                    display: false,
-                },
-            ]
-        },
-        options: {
-            responsive: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        max: 10,
-                        min: 0,
-                        maxTicksLimit: 21,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Retention Time (min)'
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        max: maxY,
-                        min: 0,
-                        stepSize: 1000,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Signal (arb. units)'
-                    }
-                }],
-            },
-            title: {
-                display: true,
-                text: calibrationChromTitles[2],
-            },
-            legend: {
-                display: false
-            },
-            hover: {
-                // Overrides the global setting
-                enabled: true,
-                //mode: 'dataset',
-                onHover: function (elements) {
-                    getCursorPositionCalib(elements, 2);
-                }
-            },
-            tooltips: {
-                callbacks: {
-                    title: function (tooltipItem, data) {
-                        var title = "Retention Time (min): " + realTimeX[tooltipItem[0].index];
-                        return title;
-                    },
-                    label: function (tooltipItem, data) {
-                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        label += Math.round(tooltipItem.yLabel * 100) / 100;
-                        return label;
-                    }
-                }
-            }
-        }
-    });
-
-    //fouth calibration graph
-    const ctx4 = document.getElementById('chrom4').getContext('2d');
-    var Chart4 = new Chart(ctx4, {
-        type: 'line',
-        data: {
-            // change this to make it draw a data set instead of just y value
-            labels: [],
-            datasets: [
-                {
-                    label: 'Calibration Graph 4',
-                    data: [],
-                    backgroundColor:
-                        'rgba(9, 96, 115, 1)',
-                    display: false,
-                },
-            ]
-        },
-        options: {
-            responsive: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        max: 10,
-                        min: 0,
-                        maxTicksLimit: 21,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Retention Time (min)'
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        max: maxY,
-                        min: 0,
-                        stepSize: 1000,
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Signal (arb. units)',
-                    }
-                }],
-            },
-            title: {
-                display: true,
-                text: calibrationChromTitles[3],
-            },
-            legend: {
-                display: false
-            },
-            hover: {
-                // Overrides the global setting
-                enabled: true,
-                //mode: 'dataset',
-                onHover: function (elements) {
-                    getCursorPositionCalib(elements, 3);
-                }
-            },
-            tooltips: {
-                callbacks: {
-                    title: function (tooltipItem, data) {
-                        var title = "Retention Time (min): " + realTimeX[tooltipItem[0].index];
-                        return title;
-                    },
-                    label: function (tooltipItem, data) {
-                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        label += Math.round(tooltipItem.yLabel * 100) / 100;
-                        return label;
-                    }
-                }
-            }
-        }
-    });
-
-    //add the data to the graph in real time
-    var i;
-    for (i = 0; i < x1.length; i++) {
-        await sleep(calibrationSleep); // 265 makes it take 10 min on Jenny's computer
-        addData4in1(Chart1, x1[i], y1[i]);
-        addData4in1(Chart2, x1[i], y2[i]);
-        addData4in1(Chart3, x1[i], y3[i]);
-        addData4in1(Chart4, x1[i], y4[i]);
-    }
-
-    //graph is done, so show Download and Next buttons
-    hoverMode = true;
-    document.getElementById("next").style.opacity = 1;
-    document.getElementById('calibratioDownload').style.opacity = 1;
-}
-
-//add the data to the charts
-function addData4in1(chart, label, data) {
-    chart.data.labels.push(label);
-    chart.data.datasets[0].data.push(data);
-    chart.update();
+    return chart;
 }
 
 //get the cursor positons for all calibration charts
 function getCursorPositionCalib(event, index) {
-    const chartID = ['chrom1', 'chrom2', 'chrom3', 'chrom4'];
-    const infoID = ['Info1', 'Info2', 'Info3', 'Info4'];
     if (hoverMode) {
         const canvas = document.getElementById(chartID[index]);
         let rect = canvas.getBoundingClientRect();
