@@ -173,17 +173,7 @@ async function chartChrom(path) {
             },
             hover: {
                 onHover: function (elements) {
-                    const coords = getCursorPosition(elements, ctx, canvas);
-                    const yCoord = coords[0];
-                    const xData = coords[1];
-                    //console.log('xCoord:' + xData, 'yCoord: ' + yCoord);
-                    if (yCoord > 0 && yCoord < realTimeDict[xData]) {
-                        document.getElementById("hover-info").innerHTML = areaInfo();
-                        document.getElementById("hover-info").style.opacity = "1";
-                    }
-                    else {
-                        document.getElementById("hover-info").style.opacity = "0";
-                    }
+                    getCursorPosition(elements, canvas);
                 }
             },
             tooltips: {
@@ -288,9 +278,10 @@ function sleep(ms) {
 }
 
 //get the cursor position for the real-time graph
-function getCursorPosition(event, ctx, canvas) {
+function getCursorPosition(event, canvas) {
     // source: https://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
-
+    
+if (hoverMode) {
     let rect = canvas.getBoundingClientRect();
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
@@ -304,7 +295,14 @@ function getCursorPosition(event, ctx, canvas) {
     var yCoord = (((331 - y)) / (331)) * maxY;
     //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-    return [yCoord, xData];
+    if (yCoord > 0 && yCoord < realTimeDict[xData]) {
+        document.getElementById("hover-info").innerHTML = areaInfo();
+        document.getElementById("hover-info").style.opacity = "1";
+    }
+    else {
+        document.getElementById("hover-info").style.opacity = "0";
+    }
+}
 }
 
 //make the labels to display the area information
@@ -532,16 +530,8 @@ async function chartBest() {
             },
             hover: {
                 onHover: function (elements) {
-                    const coords = getCursorPosition(elements, ctx, canvas);
-                    const yCoord = coords[0];
-                    const xData = coords[1];
-                    if (yCoord > 0 && yCoord < realTimeDict[xData]) {
-                        document.getElementById("hover-info").innerHTML = areaInfo();
-                        document.getElementById("hover-info").style.opacity = "1";
-                    }
-                    else {
-                        document.getElementById("hover-info").style.opacity = "0";
-                    }
+                    getCursorPosition(elements, canvas);
+                    
                 }
             },
             tooltips: {
