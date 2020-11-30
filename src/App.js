@@ -978,11 +978,11 @@ function calibAreaInfo(peakNum) {
 selectCmpd(JSON.parse(localStorage.getItem('select')));
 function selectCmpd(num) {
     selectedcmpd = num;
-    var calibrationPath1 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "_1.csv";
-    var calibrationPath2 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "_2.csv";
-    var calibrationPath3 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "_3.csv";
-    var calibrationPath4 = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + "_4.csv";
-    var calibrationDownloadPath = "../data/DopingLab_dev/Calibrations/" + calibrationFilePaths[num] + ".png";
+    var calibrationPath1 = calibBasePath + calibrationFilePaths[num] + "_1.csv";
+    var calibrationPath2 = calibBasePath + calibrationFilePaths[num] + "_2.csv";
+    var calibrationPath3 = calibBasePath + calibrationFilePaths[num] + "_3.csv";
+    var calibrationPath4 = calibBasePath + calibrationFilePaths[num] + "_4.csv";
+    var calibrationDownloadPath = calibBasePath + calibrationFilePaths[num] + ".png";
     var calibrationDownloadName = calibraitonDownloadNames[num] + "_Calibration_Graphs";
     var calibrationTitleText = calibraitonDownloadNames[num] + " Calibration Graphs";
     first = calibrationPath1;
@@ -1006,8 +1006,7 @@ function selectCmpd(num) {
 async function chartOverlay() {
 
     //the path to the solvent ratio with the best separation
-    var chromPathOverlay = '../data/DopingLab_dev/';
-    chromPathOverlay += caseNames[caseNum] + '/' + chromNames[3];
+    var chromPathOverlay = caseBasePath + caseNames[caseNum] + '/' + chromNames[3];
 
     //get the calib data for the calibration graph with the talleest peak
     await getCalibData(forth, dict4, x4, y4);
