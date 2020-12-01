@@ -497,6 +497,8 @@ function submitChoice() {
 //make the chart of the best separation
 async function chartBest() {
 
+    sessionStorage['ratioNum'] = 3;
+
     //Get the data
     bestChromPath = caseBasePath + caseNames[caseNum] + '/' + chromNames[3];
     await getChromData(bestChromPath);
