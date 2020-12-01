@@ -101,6 +101,7 @@ const solventRatioSleep = 0; //170 makes it take 10 min on Jenny's computer
 //initiate the making of the solvent ratio chromatograms
 function runChroms() {
     var hoverMode = false;
+    var MSClick = false;
 
     //running real-time graph for solvent ratio so set runStatus to true
     runStatus[ratioNum] = true;
@@ -301,6 +302,28 @@ if (hoverMode) {
     }
     else {
         document.getElementById("hover-info").style.opacity = "0";
+    }
+
+    if (MSClick) {
+        canvas.onclick = function (elements) {
+        var MSPath = '';
+            if (yCoord > 0 && yCoord < realTimeDict[xData]) {
+                if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
+                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[0];
+                    sessionStorage["peakNum"] = 0;
+                }
+                else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
+                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[1];
+                    sessionStorage["peakNum"] = 1;
+                }
+                else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
+                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[2];
+                    sessionStorage["peakNum"] = 2;
+                }
+                window.location.href = "mass-spectra.html";
+                sessionStorage["path-to-MS"] = MSPath;
+            }
+        }
     }
 }
 }
@@ -556,7 +579,7 @@ async function chartBest() {
     hoverMode = true;
 
     //this graph is the best separation graph so enable the MS click function
-    enableMSClick(ctx);
+    MSClick = true;
 }
 
 /**************************************************************************************/
@@ -572,37 +595,6 @@ const ranges = [[[.955, 1.5], [2.352, 3.23], [3.23, 4.345]],
 [[.96, 1.5], [1.93, 3.685], [4.655, 7.215]],
 [[1.5, 2.265], [2.265, 3.5], [5.605, 8.745]]
 ];
-
-//enable the click function to see the MS graphs
-function enableMSClick(ctx) {
-    ratioNum = sessionStorage['ratioNum'];
-    const canvas = document.getElementById('bestChrom');
-
-    canvas.onclick = function (elements) {
-        if (ratioNum == 3) {
-            const coords = getCursorPosition(elements, ctx, canvas);
-            const yCoord = coords[0];
-            const xData = coords[1];
-            var MSPath = '';
-            if (yCoord > 0 && yCoord < realTimeDict[xData]) {
-                if (ranges[caseNum][0][0] < xData && xData < ranges[caseNum][0][1]) {
-                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[0];
-                    sessionStorage["peakNum"] = 0;
-                }
-                else if (ranges[caseNum][1][0] < xData && xData < ranges[caseNum][1][1]) {
-                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[1];
-                    sessionStorage["peakNum"] = 1;
-                }
-                else if (ranges[caseNum][2][0] < xData && xData < ranges[caseNum][2][1]) {
-                    MSPath = caseBasePath + caseNames[caseNum] + '/' + MSNames[2];
-                    sessionStorage["peakNum"] = 2;
-                }
-                window.location.href = "mass-spectra.html";
-                sessionStorage["path-to-MS"] = MSPath;
-            }
-        }
-    }
-}
 
 //initiate the making of the MS chart
 function runMS() {
