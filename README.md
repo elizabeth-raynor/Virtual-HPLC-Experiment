@@ -25,6 +25,6 @@ The primary features are:
 * The calibration chromatograms are drawn in real-time
 * The calibration and best separation chromatrograms can be analyzed with an overlay of the graphs
 
-## Infromation for Running the Application
-Students can access the official application that is hosted on the Bucknell server using this [Bucknell link](https://www.projects.bucknell.edu/drugdopinglab/). During devlopement, the application was hosted on GitHub and can be accessed using this [GitHub link](https://jw4590.github.io/Virtual-Chem-Lab/src/) .
+## Information for Running the Application
+Students can access the official application that is hosted on the Bucknell server using this [Bucknell link](https://www.projects.bucknell.edu/drugdopinglab/). During devlopement, the application was hosted on GitHub and can be accessed using this [GitHub link](https://jw4590.github.io/Virtual-Chem-Lab/src/). A video demonstration of this web application can be found [here](insert link).
 
