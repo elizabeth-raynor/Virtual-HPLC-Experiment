@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Page</title>
-    <link rel="stylesheet" href="index.css">
-    <script src="app.js"></script>
+    <link rel="stylesheet" href="src/index.css">
+    <script src="src/app.js"></script>
 </head>
 
 <body onload="ratioReset()">
     <div class="topNav text">
         <a>CHEM230L: Drug Doping Lab</a>
-        <a href="doc.html" target="_blank" style= "float: right;">Documents</a>
+        <a href="src/doc.html" target="_blank" style= "float: right;">Documents</a>
     </div>
     <div>
         <div>
@@ -55,7 +55,7 @@ function select() {
     var select = document.getElementById('caseList');
     if(select.options.length > 0 && select.options[select.selectedIndex].text != "Case") {
                 sessionStorage['caseNum'] = select.options[select.selectedIndex].value;
-                window.location.replace("add-solvent.html");
+                window.location.replace("src/add-solvent.html");
             }
             else {
                 window.alert("Please select a case.");
