@@ -3,9 +3,9 @@ Bucknell University
 Lewisburg, PA
 
 ## Course Information
-Course Title: CSCI 479
-Instructor: Xiannong Meng
-Semester: Fall 2020
+Course Title: CSCI 479  
+Instructor: Xiannong Meng  
+Semester: Fall 2020  
 
 ## Student Information
 Bill Chen, Elizabeth Raynor, and Jenny Wu
@@ -26,5 +26,5 @@ The primary features are:
 * The calibration and best separation chromatrograms can be analyzed with an overlay of the graphs
 
 ## Infromation for Running the Application
-Students can access the official application that is hosted on the Bucknell server using this [ Bucknell link] (https://www.projects.bucknell.edu/drugdopinglab/). During devlopement, the application was hosted on GitHub and can be accessed using this [GitHub link] (https://jw4590.github.io/Virtual-Chem-Lab/src/).
+Students can access the official application that is hosted on the Bucknell server using this [Bucknell link](https://www.projects.bucknell.edu/drugdopinglab/). During devlopement, the application was hosted on GitHub and can be accessed using this [GitHub link](https://jw4590.github.io/Virtual-Chem-Lab/src/) .
 
