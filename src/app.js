@@ -724,6 +724,7 @@ var dict1 = {};
 var dict2 = {};
 var dict3 = {};
 var dict4 = {};
+var dicts = [dict1, dict2, dict3, dict4];
 
 //the selected compound from calibration select page
 var selectedcmpd = -1;
@@ -940,7 +941,7 @@ function getCursorPositionCalib(event, index) {
         var yCoord = (((330 - y)) / (332)) * maxY;
         //console.log("x: " + x + "\nxCoord: " + xCoord + "\ny: " + y + "\nyCoord: " + yCoord);
 
-        if (yCoord < dicts[index][xData] && ygitCoord > 0) {
+        if (yCoord < dicts[index][xData] && yCoord > 0) {
             //console.log('inside');
             document.getElementById(infoID[index]).innerHTML = calibAreaInfo(index);
             document.getElementById(infoID[index]).style.opacity = "1";
