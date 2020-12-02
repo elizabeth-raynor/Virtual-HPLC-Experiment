@@ -193,7 +193,7 @@ The sections are:
 
 ### <span style="text-decoration:underline;">VARIABLES</span>
 
-This section contains paths and file names. Blue variables are ones that contain data that can be changed.
+This section contains paths and file names. **Bold** variables are ones that contain data that can be changed.
 
 
 #### Variables:
@@ -203,28 +203,28 @@ This section contains paths and file names. Blue variables are ones that contain
 *   ratioNum: the current ratio selection listed 0-5
 *   caseNum: the current case selection list 0-2
 *   runStatus: array of boolean values that state if a ratioNum has been run. The order is ratioNum 0-5
-*   caseBasePath: string of the base path to the folder that has all the Case folders
-*   calibBasePath: string of the base path to the folder that has all the Calibration data
-*   caseName: array of strings of the Case# folder names
-*   chromNames: array of strings of the CSV file names for each solvent ratio in a Case
-*   chromPics: array of strings of the PNG file names for each solvent ratio in a Case
-*   MSNames: array of strings of the CSV file names for each peak of the best separation chromatogram 
-*   MSPics: array of strings of the PNG file names for each peak of the best separation chromatogram 
+*   **caseBasePath**: string of the base path to the folder that has all the Case folders
+*   **calibBasePath**: string of the base path to the folder that has all the Calibration data
+*   **caseName**: array of strings of the Case# folder names
+*   **chromNames**: array of strings of the CSV file names for each solvent ratio in a Case
+*   **chromPics**: array of strings of the PNG file names for each solvent ratio in a Case
+*   **MSNames**: array of strings of the CSV file names for each peak of the best separation chromatogram 
+*   **MSPics**: array of strings of the PNG file names for each peak of the best separation chromatogram 
 
 
 ### <span style="text-decoration:underline;">ADD SOLVENT</span>
 
-This section contains the code to give functionality to the add-solvent.html page. Blue variables are ones that contain data that can be changed.
+This section contains the code to give functionality to the add-solvent.html page. **Bold** variables are ones that contain data that can be changed.
 
 
 #### Variables:
 
 
 
-*   percentsB: array of strings for the possible percents of the blue bottle. The order is ratioNum 0-5
-*   percentsA: array of the strings for the possible percents of the green bottle. The order is ratioNum 0-5
-*   solventA: string of the solvent in the green bottle
-*   solventB: string of the solvent in the blue bottle
+*   **percentsB**: array of strings for the possible percents of the blue bottle. The order is ratioNum 0-5
+*   **percentsA**: array of the strings for the possible percents of the green bottle. The order is ratioNum 0-5
+*   **solventA**: string of the solvent in the green bottle
+*   **solventB****: string of the solvent in the blue bottle
 
 
 #### Methods:
@@ -239,7 +239,7 @@ This section contains the code to give functionality to the add-solvent.html pag
 
 ### <span style="text-decoration:underline;">SOLVENT RATIO REAL-TIME</span>
 
-This section contains code to make the real-time graphs on hover-real-time.html. Blue variables and methods are ones that contain data that can be changed.
+This section contains code to make the real-time graphs on hover-real-time.html. **Bold** variables and methods are ones that contain data that can be changed.
 
 
 #### Variables:
@@ -250,9 +250,9 @@ This section contains code to make the real-time graphs on hover-real-time.html.
 *   realTimeY: array to store the y values of the solvent real-time graph
 *   realTimeDict: a dictionary to allow access to the xy value pairs
 *   maxY: the maximum y value in the data set. Used to set the y-axis of the graph
-*   columnInfo: a string that is appended to the title of the graph to show the column information
-*   areas: nested array of peak area values. The order is [[Case1Peak1, Case1Peak2, Case1Peak3], [Case2Peak1, Case2Peak2, Case2Peak3]...]
-*   solventRatioSleep: the value used to delay the addition of data to the graph so it is in real-time. The larger the number, the bigger delay. 170 makes the graph take 10 minutes on Jenny’s computer
+*   **columnInfo**: a string that is appended to the title of the graph to show the column information
+*   **areas**: nested array of peak area values. The order is [[Case1Peak1, Case1Peak2, Case1Peak3], [Case2Peak1, Case2Peak2, Case2Peak3]...]
+*   **solventRatioSleep**: the value used to delay the addition of data to the graph so it is in real-time. The larger the number, the bigger delay. 170 makes the graph take 10 minutes on Jenny’s computer
 
 
 #### Methods:
@@ -266,7 +266,7 @@ This section contains code to make the real-time graphs on hover-real-time.html.
 *   addData(chart, label, data): adds data to the chart
 *   sleep(ms): delays adding the data so it is in real-time
 *   getCursorPosition(event, ctx, canvas): converts cursor position in pixel values to the corresponding x and y values of the chart data and returns the xy coordinates
-*   areaInfo(): makes strings that have the area information for the current chromatogram. Each solvent ratio in each Case has a unique area label.
+*   **areaInfo()**: makes strings that have the area information for the current chromatogram. Each solvent ratio in each Case has a unique area label.
 
 
 ### <span style="text-decoration:underline;">SELECT BEST</span>
@@ -291,12 +291,12 @@ This section makes the graph of the best separation.
 
 
 
-*   chartBest():  sets bestChromPath and waits for getChromData(bestChromPath) to get the data, then makes the title of the graph and the chart with data, then calls enableMSClick(ctx) since this is the best separation
+*   chartBest():  sets bestChromPath and waits for getChromData(bestChromPath) to get the data, then makes the title of the graph and the chart with data.
 
 
 ### <span style="text-decoration:underline;">MASS SPECTRA</span>
 
-This section makes the mass spectra graphs. Blue variables are ones that contain data that can be changed.
+This section makes the mass spectra graphs. **Bold** variables are ones that contain data that can be changed.
 
 
 #### Variables:
@@ -305,14 +305,13 @@ This section makes the mass spectra graphs. Blue variables are ones that contain
 
 *   xValsMS: array to store the x values of the MS data
 *   yValsMS: array to store the y values of the MS data
-*   ranges: nested arrays that contain the x values that define the start and end of each peak of the best separation for each Case. The order is [[[Case1Peak1Startx, Case1Peak1Endx], [Case1Peak2Startx, Case1Peak2Endx], [Case1Peak3Startx, Case1Peak3Endx]]...]
+*   **ranges**: nested arrays that contain the x values that define the start and end of each peak of the best separation for each Case. The order is [[[Case1Peak1Startx, Case1Peak1Endx], [Case1Peak2Startx, Case1Peak2Endx], [Case1Peak3Startx, Case1Peak3Endx]]...]
 
 
 #### Methods:
 
 
 
-*   enableMSClick(ctx): where _ctx_ is the chart. When the user clicks on the graph, calls getCursorPosition(elements, ctx, canvas) which returns the xy coordinates of the cursor. If the cursor is under a peak, the path to the appropriate MS graph  is set.
 *   runMS(): calls chartMS(MSPath) and sets up the Download button
 *   getMSData(path): reads and parses the CSV files, and stores the data in xValsMS and yValsMS
 *   chartMS(path): waits for getMSData(path) to get the data, then makes the title of the graph and the chart with data
@@ -320,14 +319,14 @@ This section makes the mass spectra graphs. Blue variables are ones that contain
 
 ### <span style="text-decoration:underline;">CALIBRATION REAL-TIME</span>
 
-This section contains code to make the real-time graphs on calibration-real-time.html. Blue variables and methods are ones that contain data that can be changed.
+This section contains code to make the real-time graphs on calibration-real-time.html. **Bold** variables and methods are ones that contain data that can be changed.
 
 
 #### Variables:
 
 
 
-*   Paths:
+*   **Paths**:
     *   first: string of the path to the file that contains the data for the first graph
     *   second: string of the path to the file that contains the data for the second graph
     *   third: string of the path to the file that contains the data for the third graph on this page 
@@ -347,12 +346,12 @@ This section contains code to make the real-time graphs on calibration-real-time
     *   dict3: dictionary that stores xy value pairs of the third graph
     *   dict4: dictionary that stores xy value pairs of the fourth graph
 *   selectedcmpd: a number that represents the compound selected by the user in the previous page(calibration-selection.html). The default value of this variable is -1, meaning that no compound is selected. 
-*   calibrationArea: nested array of peak area values. The order is [[Compound1Graph1, Compound1Graph2, Compound1Graph3, Compound1Graph4], [Compound2Graph1, Compound2Graph2, Compound2Graph3, Compound2Graph4]...]
-*   calibrationFilePaths: file names for the calibration compounds used to build the strings of the paths, so has to exactly match the actual file names. 
-*   calibraitonDownloadNames: names of the images appear when they are downloaded, so can be different from the actual file names, for example, spaces can be added.
-*   calibrationSleep: value of the time(ms) to delay adding the data to the graph to make it close to real-time. Currently, we have 2000 data to be added to the graph in 10 minutes, so adding each data should take 300ms. However, the CPU needs time to process for each process of adding data, so in reality, this value should be set to less than 300. According to the test we did, setting this variable to 265 makes it take exactly 10 min on Jenny's laptop computer.
-*   calibrationChromTitles: array that stores the titles of the chromatograms.
-*   calibratioChromColors: array that stores the rgba colors of the calibration chromatograms.
+*   **calibrationArea**: nested array of peak area values. The order is [[Compound1Graph1, Compound1Graph2, Compound1Graph3, Compound1Graph4], [Compound2Graph1, Compound2Graph2, Compound2Graph3, Compound2Graph4]...]
+*   **calibrationFilePaths**: file names for the calibration compounds used to build the strings of the paths, so has to exactly match the actual file names. 
+*   **calibraitonDownloadNames**: names of the images appear when they are downloaded, so can be different from the actual file names, for example, spaces can be added.
+*   **calibrationSleep**: value of the time(ms) to delay adding the data to the graph to make it close to real-time. Currently, we have 2000 data to be added to the graph in 10 minutes, so adding each data should take 300ms. However, the CPU needs time to process for each process of adding data, so in reality, this value should be set to less than 300. According to the test we did, setting this variable to 265 makes it take exactly 10 min on Jenny's laptop computer.
+*   **calibrationChromTitles**: array that stores the titles of the chromatograms.
+*   **calibratioChromColors**: array that stores the rgba colors of the calibration chromatograms.
 *   chartID: array that stores the id of each chart, used to refer to the charts. 
 *   infoID: array that stores the id of the information displayed when hovering on each chart. 
 
