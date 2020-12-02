@@ -487,6 +487,7 @@ function submitChoice() {
         alert("This one (" + content + ") will not work. Peaks may be cut off at the end. Please select another ratio!")
     }
     else {
+        sessionStorage['ratioNum'] = 3;
         window.location.href = "best-separation.html";
     }
 }
@@ -497,7 +498,7 @@ function submitChoice() {
 //make the chart of the best separation
 async function chartBest() {
 
-    sessionStorage['ratioNum'] = 3;
+   
 
     //Get the data
     bestChromPath = caseBasePath + caseNames[caseNum] + '/' + chromNames[3];

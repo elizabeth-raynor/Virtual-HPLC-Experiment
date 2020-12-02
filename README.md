@@ -21,12 +21,14 @@ The primary features are:
 * The chromatograms for each solvent ratio are drawn in real-time
 * The area of the peaks is shown when they are hovered over
 * The xy values of each data point is shown when they are hovered over
-* The mass spectra of each peak is shown when the peaks of the chromatogram with the best separation are clicked on
+* The mass spectra of each peak are shown when the peaks of the chromatogram with the best separation are clicked on
 * The calibration chromatograms are drawn in real-time
 * The calibration and best separation chromatograms can be analyzed with an overlay of the graphs
  
 ## Information for Running the Application
-Students can access the official application that is hosted on the Bucknell server using this [Bucknell link](https://www.projects.bucknell.edu/drugdopinglab/). During development, the application was hosted on GitHub and can be accessed using this [GitHub link](https://jw4590.github.io/Virtual-Chem-Lab/).
+Students can access the official application that is hosted on the Bucknell server using this [Bucknell link](https://www.projects.bucknell.edu/drugdopinglab/). During development, the application was hosted on GitHub and can be accessed using this [GitHub link](https://jw4590.github.io/Virtual-Chem-Lab/). A video demonstration of the web application can be accessed using this [demo link](insertLink).
+
+
 
 
 
