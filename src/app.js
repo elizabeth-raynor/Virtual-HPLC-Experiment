@@ -742,7 +742,7 @@ const calibraitonDownloadNames = [["Acetaminophen"], ["Acetylsalicylic Acid"], [
 ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]]
 
 //value to delay adding the data to the graph
-const calibrationSleep =1e-1000000000; //265 makes it take 10 min on Jenny's computer
+const calibrationSleep =0; //265 makes it take 10 min on Jenny's computer
 
 //calibraiton chromatogram titles
 const calibrationChromTitles = ['Calibration conditions 1', 'Calibration conditions 2', 'Calibration conditions 3', 'Calibration conditions 4'];
