@@ -96,7 +96,7 @@ const areas = [[86674, 99256, 110955],
 [2256, 9536, 25638]];
 
 //solvent ratio sleep value
-const solventRatioSleep = 0; //170 makes it take 10 min on Jenny's computer
+const solventRatioSleep = 0; //265 makes it take 10 min on Jenny's computer
 
 //initiate the making of the solvent ratio chromatograms
 function runChroms() {
@@ -609,6 +609,7 @@ function runMS() {
 
     //set up Download Button
     var MSDownloadPath = caseBasePath + caseNames[caseNum] + '/' + MSPics[peakNum];
+    console.log(MSDownloadPath);
     var MSDownloadName = caseNames[caseNum] + '_' + MSPics[peakNum];
     document.getElementById("MSDownload").href = MSDownloadPath;
     document.getElementById("MSDownload").download = MSDownloadName;
@@ -743,7 +744,7 @@ const calibraitonDownloadNames = [["Acetaminophen"], ["Acetylsalicylic Acid"], [
 ["Methylphenidate"], ["Phenylephrine"], ["Pseudoephedrine"], ["THC"]]
 
 //value to delay adding the data to the graph
-const calibrationSleep =0; //265 makes it take 10 min on Jenny's computer
+const calibrationSleep =0; //170 makes it take 10 min on Jenny's computer
 
 //calibraiton chromatogram titles
 const calibrationChromTitles = ['Calibration conditions 1', 'Calibration conditions 2', 'Calibration conditions 3', 'Calibration conditions 4'];
