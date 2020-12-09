@@ -608,8 +608,8 @@ function runMS() {
     chartMS(MSPath);
 
     //set up Download Button
+    peakNum = sessionStorage['peakNum'];
     var MSDownloadPath = caseBasePath + caseNames[caseNum] + '/' + MSPics[peakNum];
-    console.log(MSDownloadPath);
     var MSDownloadName = caseNames[caseNum] + '_' + MSPics[peakNum];
     document.getElementById("MSDownload").href = MSDownloadPath;
     document.getElementById("MSDownload").download = MSDownloadName;
