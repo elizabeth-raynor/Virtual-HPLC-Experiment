@@ -252,7 +252,7 @@ This section contains code to make the real-time graphs on hover-real-time.html.
 *   maxY: the maximum y value in the data set. Used to set the y-axis of the graph
 *   **columnInfo**: a string that is appended to the title of the graph to show the column information
 *   **areas**: nested array of peak area values. The order is [[Case1Peak1, Case1Peak2, Case1Peak3], [Case2Peak1, Case2Peak2, Case2Peak3]...]
-*   **solventRatioSleep**: the value used to delay the addition of data to the graph so it is in real-time. The larger the number, the bigger delay. 170 makes the graph take 10 minutes on Jenny’s computer
+*   **solventRatioSleep**: the value used to delay the addition of data to the graph so it is in real-time. The larger the number, the bigger delay. 265 makes the graph take 10 minutes on Jenny’s computer
 
 
 #### Methods:
@@ -349,7 +349,7 @@ This section contains code to make the real-time graphs on calibration-real-time
 *   **calibrationArea**: nested array of peak area values. The order is [[Compound1Graph1, Compound1Graph2, Compound1Graph3, Compound1Graph4], [Compound2Graph1, Compound2Graph2, Compound2Graph3, Compound2Graph4]...]
 *   **calibrationFilePaths**: file names for the calibration compounds used to build the strings of the paths, so has to exactly match the actual file names. 
 *   **calibraitonDownloadNames**: names of the images appear when they are downloaded, so can be different from the actual file names, for example, spaces can be added.
-*   **calibrationSleep**: value of the time(ms) to delay adding the data to the graph to make it close to real-time. Currently, we have 2000 data to be added to the graph in 10 minutes, so adding each data should take 300ms. However, the CPU needs time to process for each process of adding data, so in reality, this value should be set to less than 300. According to the test we did, setting this variable to 265 makes it take exactly 10 min on Jenny's laptop computer.
+*   **calibrationSleep**: value of the time(ms) to delay adding the data to the graph to make it close to real-time. Currently, we have 2000 data to be added to the graph in 10 minutes, so adding each data should take 300ms. However, the CPU needs time to process for each process of adding data, so in reality, this value should be set to less than 300. According to the test we did, setting this variable to 170 makes it take exactly 10 min on Jenny's laptop computer.
 *   **calibrationChromTitles**: array that stores the titles of the chromatograms.
 *   **calibratioChromColors**: array that stores the rgba colors of the calibration chromatograms.
 *   chartID: array that stores the id of each chart, used to refer to the charts. 
